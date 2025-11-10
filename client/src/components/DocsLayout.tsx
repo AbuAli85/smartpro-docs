@@ -23,19 +23,7 @@ const navigationItems: NavItem[] = [
     children: [
       { title: 'Product Overview', href: '/docs/product-overview' },
       { title: 'Features', href: '/docs/features' },
-      { title: 'Pricing', href: '/docs/pricing' },
-      { title: 'Integrations', href: '/docs/integrations' },
-    ],
-  },
-  {
-    title: 'Components',
-    href: '#',
-    icon: '⚙️',
-    children: [
-      { title: 'Component Overview', href: '/docs/components' },
-      { title: 'UI Components', href: '/docs/components/ui' },
-      { title: 'Feature Components', href: '/docs/components/features' },
-      { title: 'Specifications', href: '/docs/components/specs' },
+      { title: 'Pricing', href: '/pricing' },
     ],
   },
   {
@@ -45,8 +33,6 @@ const navigationItems: NavItem[] = [
     children: [
       { title: 'Architecture', href: '/docs/architecture' },
       { title: 'API Documentation', href: '/docs/api' },
-      { title: 'Security', href: '/docs/security' },
-      { title: 'Deployment', href: '/docs/deployment' },
     ],
   },
   {
@@ -54,21 +40,18 @@ const navigationItems: NavItem[] = [
     href: '#',
     icon: '💼',
     children: [
-      { title: 'Business Plan', href: '/docs/business-plan' },
-      { title: 'Market Analysis', href: '/docs/market-analysis' },
-      { title: 'Sales Strategy', href: '/docs/sales-strategy' },
-      { title: 'Marketing Strategy', href: '/docs/marketing-strategy' },
+      { title: 'Business Plan Summary', href: '/docs/business-plan' },
+      { title: 'Complete Business Plan', href: '/docs/business-plan-full' },
     ],
   },
   {
-    title: 'Resources',
+    title: 'Support',
     href: '#',
     icon: '📚',
     children: [
-      { title: 'User Guide', href: '/docs/user-guide' },
       { title: 'FAQ', href: '/docs/faq' },
-      { title: 'Tutorials', href: '/docs/tutorials' },
       { title: 'Support', href: '/docs/support' },
+      { title: 'Contact Us', href: '/contact' },
     ],
   },
 ];
