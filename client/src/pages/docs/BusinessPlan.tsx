@@ -2,6 +2,8 @@ import DocsLayout from '@/components/DocsLayout';
 import { TrendingUp, Users, DollarSign, Target } from 'lucide-react';
 import { useEffect } from 'react';
 import { setSEOTags } from '@/lib/seoUtils';
+import { Button } from '@/components/ui/button';
+import { Link } from 'wouter';
 
 export default function BusinessPlan() {
   useEffect(() => {
