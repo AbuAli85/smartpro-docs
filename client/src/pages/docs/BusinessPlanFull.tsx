@@ -195,71 +195,6 @@ export default function BusinessPlanFull() {
           </div>
         </section>
 
-        {/* Financial Highlights */}
-        <section id="financials">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">8. Financial Plan Highlights</h2>
-          
-          <div className="space-y-6">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-6 border border-green-200">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Startup Investment</h3>
-              <div className="text-4xl font-bold text-green-600 mb-2">$455,000</div>
-              <p className="text-gray-700">Initial investment required for platform development and launch</p>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">5-Year Revenue Projections</h3>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse">
-                  <thead>
-                    <tr className="bg-gray-100 border-b-2 border-gray-300">
-                      <th className="text-left px-4 py-3 font-bold text-gray-900">Year</th>
-                      <th className="text-right px-4 py-3 font-bold text-gray-900">Revenue</th>
-                      <th className="text-right px-4 py-3 font-bold text-gray-900">Expenses</th>
-                      <th className="text-right px-4 py-3 font-bold text-gray-900">Net Income</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      { year: 1, revenue: '$200,000', expenses: '$520,000', net: '-$320,000' },
-                      { year: 2, revenue: '$550,000', expenses: '$700,000', net: '-$150,000' },
-                      { year: 3, revenue: '$1,100,000', expenses: '$1,000,000', net: '$100,000' },
-                      { year: 4, revenue: '$1,800,000', expenses: '$1,330,000', net: '$470,000' },
-                      { year: 5, revenue: '$2,500,000', expenses: '$1,700,000', net: '$800,000' },
-                    ].map((row) => (
-                      <tr key={row.year} className="border-b border-gray-200 hover:bg-gray-50">
-                        <td className="px-4 py-3 font-semibold text-gray-900">Year {row.year}</td>
-                        <td className="px-4 py-3 text-right text-gray-700">{row.revenue}</td>
-                        <td className="px-4 py-3 text-right text-gray-700">{row.expenses}</td>
-                        <td className={`px-4 py-3 text-right font-semibold ${row.net.startsWith('-') ? 'text-red-600' : 'text-green-600'}`}>
-                          {row.net}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="text-sm text-gray-600 mb-2">Break-even Point</div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">Q4 Year 2</div>
-                <div className="text-sm text-gray-600">~1,000 active paying users</div>
-              </div>
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="text-sm text-gray-600 mb-2">5-Year ROI</div>
-                <div className="text-2xl font-bold text-green-600 mb-1">230%</div>
-                <div className="text-sm text-gray-600">Based on projected cash flows</div>
-              </div>
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <div className="text-sm text-gray-600 mb-2">Gross Margin</div>
-                <div className="text-2xl font-bold text-blue-600 mb-1">70%</div>
-                <div className="text-sm text-gray-600">Target margin after COGS</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Company Description */}
         <section id="company-description">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">2. Company Description</h2>
@@ -1633,9 +1568,14 @@ export default function BusinessPlanFull() {
           </div>
         </section>
 
-        {/* Revenue Streams */}
-        <section>
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Revenue Model & Streams</h2>
+        {/* Financial Plan - COMPREHENSIVE SECTION 8 */}
+        <section id="financials">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">8. Financial Plan</h2>
+          
+          <div className="space-y-8">
+            {/* Revenue Model & Streams */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Revenue Model & Streams</h3>
           <div className="grid md:grid-cols-2 gap-6">
             {[
               {
@@ -1690,6 +1630,262 @@ export default function BusinessPlanFull() {
                 </div>
               </div>
             ))}
+          </div>
+            </div>
+
+            {/* 5-Year Financial Projections */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">5-Year Financial Projections</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+                  <thead>
+                    <tr className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+                      <th className="text-left px-4 py-3 font-bold">Year</th>
+                      <th className="text-right px-4 py-3 font-bold">Revenue</th>
+                      <th className="text-right px-4 py-3 font-bold">COGS</th>
+                      <th className="text-right px-4 py-3 font-bold">Gross Profit</th>
+                      <th className="text-right px-4 py-3 font-bold">Operating Expenses</th>
+                      <th className="text-right px-4 py-3 font-bold">Net Income</th>
+                      <th className="text-right px-4 py-3 font-bold">Margin</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { year: 1, revenue: 200000, cogs: 60000, opex: 460000, net: -320000, margin: '-160%' },
+                      { year: 2, revenue: 550000, cogs: 165000, opex: 535000, net: -150000, margin: '-27%' },
+                      { year: 3, revenue: 1100000, cogs: 330000, opex: 670000, net: 100000, margin: '9%' },
+                      { year: 4, revenue: 1800000, cogs: 540000, opex: 790000, net: 470000, margin: '26%' },
+                      { year: 5, revenue: 2500000, cogs: 750000, opex: 950000, net: 800000, margin: '32%' },
+                    ].map((row, index) => (
+                      <tr key={row.year} className={`border-b border-gray-200 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
+                        <td className="px-4 py-3 font-bold text-gray-900">Year {row.year}</td>
+                        <td className="px-4 py-3 text-right text-gray-700">${(row.revenue / 1000).toFixed(0)}K</td>
+                        <td className="px-4 py-3 text-right text-gray-700">${(row.cogs / 1000).toFixed(0)}K</td>
+                        <td className="px-4 py-3 text-right font-semibold text-blue-600">${((row.revenue - row.cogs) / 1000).toFixed(0)}K</td>
+                        <td className="px-4 py-3 text-right text-gray-700">${(row.opex / 1000).toFixed(0)}K</td>
+                        <td className={`px-4 py-3 text-right font-bold ${row.net < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                          ${Math.abs(row.net / 1000).toFixed(0)}K
+                        </td>
+                        <td className={`px-4 py-3 text-right font-semibold ${row.net < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                          {row.margin}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Key Financial Metrics */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Key Financial Metrics</h3>
+              <div className="grid md:grid-cols-4 gap-6">
+                {[
+                  { label: 'Startup Investment', value: '$455,000', desc: 'Initial capital required', icon: <DollarSign className="w-8 h-8" />, color: 'blue' },
+                  { label: 'Break-even Point', value: 'Q4 Year 2', desc: '~1,000 paying users', icon: <TrendingUp className="w-8 h-8" />, color: 'green' },
+                  { label: '5-Year ROI', value: '230%', desc: 'Return on investment', icon: <BarChart3 className="w-8 h-8" />, color: 'purple' },
+                  { label: 'Gross Margin', value: '70%', desc: 'Target after COGS', icon: <Award className="w-8 h-8" />, color: 'orange' },
+                ].map((metric, index) => (
+                  <div key={index} className={`bg-gradient-to-br from-${metric.color}-50 to-${metric.color}-100 rounded-lg border-2 border-${metric.color}-200 p-6 text-center hover:shadow-lg transition-shadow`}>
+                    <div className={`text-${metric.color}-600 mb-3 flex justify-center`}>{metric.icon}</div>
+                    <div className="text-sm text-gray-600 mb-2">{metric.label}</div>
+                    <div className={`text-3xl font-bold text-${metric.color}-600 mb-2`}>{metric.value}</div>
+                    <div className="text-xs text-gray-600">{metric.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Funding Requirements */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Funding Requirements & Use of Funds</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border-2 border-green-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4 text-lg">Initial Investment Breakdown</h4>
+                  <div className="space-y-3">
+                    {[
+                      { category: 'Platform Development', amount: '$180,000', percentage: '40%', desc: 'Full-stack development, UI/UX, testing' },
+                      { category: 'Marketing & Launch', amount: '$90,000', percentage: '20%', desc: 'Brand building, campaigns, PR' },
+                      { category: 'Operations Setup', amount: '$70,000', percentage: '15%', desc: 'Office, equipment, infrastructure' },
+                      { category: 'Team Salaries (6 months)', amount: '$90,000', percentage: '20%', desc: 'Core team compensation' },
+                      { category: 'Legal & Compliance', amount: '$25,000', percentage: '5%', desc: 'Registration, licenses, contracts' },
+                    ].map((item, index) => (
+                      <div key={index} className="flex items-start justify-between pb-3 border-b border-green-200 last:border-0">
+                        <div className="flex-1">
+                          <div className="font-semibold text-gray-900">{item.category}</div>
+                          <div className="text-xs text-gray-600">{item.desc}</div>
+                        </div>
+                        <div className="text-right ml-4">
+                          <div className="font-bold text-green-600">{item.amount}</div>
+                          <div className="text-xs text-gray-600">{item.percentage}</div>
+                        </div>
+                      </div>
+                    ))}
+                    <div className="pt-3 border-t-2 border-green-300 flex justify-between items-center">
+                      <span className="font-bold text-gray-900">Total Required:</span>
+                      <span className="text-2xl font-bold text-green-600">$455,000</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4 text-lg">Funding Strategy</h4>
+                  <div className="space-y-4">
+                    <div className="bg-white rounded-lg border border-blue-200 p-4">
+                      <h5 className="font-bold text-blue-900 mb-2">Seed Round ($455K)</h5>
+                      <ul className="space-y-2 text-sm text-gray-700">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <span>Angel investors and regional VCs</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <span>12-18 month runway to MVP and initial traction</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <span>Equity: 15-20% for seed investors</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-white rounded-lg border border-blue-200 p-4">
+                      <h5 className="font-bold text-blue-900 mb-2">Series A ($2-3M) - Year 2</h5>
+                      <ul className="space-y-2 text-sm text-gray-700">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <span>Scale operations and expand to UAE/Qatar</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <span>Enhance platform features and AI capabilities</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <span>Build regional team and infrastructure</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-white rounded-lg border border-blue-200 p-4">
+                      <h5 className="font-bold text-blue-900 mb-2">Series B ($5-8M) - Year 4</h5>
+                      <ul className="space-y-2 text-sm text-gray-700">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <span>Full GCC expansion (Saudi, Kuwait, Bahrain)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <span>Market leadership and potential acquisition</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Cash Flow & Runway */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Cash Flow Analysis</h3>
+              <div className="bg-white rounded-lg border-2 border-gray-200 p-6">
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="bg-gray-100 border-b-2 border-gray-300">
+                        <th className="text-left px-4 py-3 font-bold text-gray-900">Quarter</th>
+                        <th className="text-right px-4 py-3 font-bold text-gray-900">Cash In</th>
+                        <th className="text-right px-4 py-3 font-bold text-gray-900">Cash Out</th>
+                        <th className="text-right px-4 py-3 font-bold text-gray-900">Net Cash Flow</th>
+                        <th className="text-right px-4 py-3 font-bold text-gray-900">Cash Balance</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { q: 'Q1 Y1', cashIn: 455000, cashOut: 130000, balance: 325000 },
+                        { q: 'Q2 Y1', cashIn: 30000, cashOut: 130000, balance: 225000 },
+                        { q: 'Q3 Y1', cashIn: 50000, cashOut: 130000, balance: 145000 },
+                        { q: 'Q4 Y1', cashIn: 70000, cashOut: 130000, balance: 85000 },
+                        { q: 'Q1 Y2', cashIn: 100000, cashOut: 150000, balance: 35000 },
+                        { q: 'Q2 Y2', cashIn: 150000, cashOut: 175000, balance: 10000 },
+                      ].map((row, index) => {
+                        const netCashFlow = row.cashIn - row.cashOut;
+                        return (
+                          <tr key={row.q} className={`border-b border-gray-200 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
+                            <td className="px-4 py-3 font-semibold text-gray-900">{row.q}</td>
+                            <td className="px-4 py-3 text-right text-green-600">${(row.cashIn / 1000).toFixed(0)}K</td>
+                            <td className="px-4 py-3 text-right text-red-600">${(row.cashOut / 1000).toFixed(0)}K</td>
+                            <td className={`px-4 py-3 text-right font-semibold ${netCashFlow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                              ${Math.abs(netCashFlow / 1000).toFixed(0)}K
+                            </td>
+                            <td className="px-4 py-3 text-right font-bold text-blue-600">${(row.balance / 1000).toFixed(0)}K</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-sm text-gray-700">
+                    <strong>Note:</strong> Cash flow analysis shows the need for Series A funding by Q2 Year 2 to maintain operations and support growth. The company is projected to reach positive cash flow by Q4 Year 2.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Financial Assumptions */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Key Financial Assumptions</h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  {
+                    title: 'Revenue Assumptions',
+                    items: [
+                      'Average subscription: $49/month',
+                      'Commission rate: 15% average',
+                      'User growth: 50% YoY',
+                      'Conversion rate: 5% free to paid',
+                      'Churn rate: 3% monthly',
+                    ],
+                    color: 'blue'
+                  },
+                  {
+                    title: 'Cost Assumptions',
+                    items: [
+                      'COGS: 30% of revenue',
+                      'Cloud hosting: $5K-20K/month',
+                      'Team growth: 10-15 new hires/year',
+                      'Marketing: 25% of revenue',
+                      'R&D: 20% of revenue',
+                    ],
+                    color: 'orange'
+                  },
+                  {
+                    title: 'Growth Assumptions',
+                    items: [
+                      'Market penetration: 2% by Year 5',
+                      'Provider network: 2,000+ by Year 5',
+                      'Active users: 10,000+ by Year 5',
+                      'GCC expansion: 3 markets by Year 4',
+                      'Enterprise contracts: 50+ by Year 5',
+                    ],
+                    color: 'green'
+                  },
+                ].map((section, index) => (
+                  <div key={index} className={`bg-gradient-to-br from-${section.color}-50 to-${section.color}-100 rounded-lg border-2 border-${section.color}-200 p-6`}>
+                    <h4 className="font-bold text-gray-900 mb-4">{section.title}</h4>
+                    <ul className="space-y-2">
+                      {section.items.map((item, idx) => (
+                        <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+                          <CheckCircle className={`w-4 h-4 text-${section.color}-600 flex-shrink-0 mt-0.5`} />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
