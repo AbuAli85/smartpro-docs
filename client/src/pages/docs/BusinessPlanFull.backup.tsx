@@ -379,256 +379,94 @@ export default function BusinessPlanFull() {
           </div>
         </section>
 
-        {/* Products & Services - COMPREHENSIVE */}
+        {/* Products & Services */}
         <section id="products-services">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">4. Products & Services</h2>
           
-          <div className="space-y-8">
+          <div className="space-y-6">
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Platform Description</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Platform Description</h3>
               <p className="text-gray-700 leading-relaxed mb-4">
-                SmartPRO is a smart bilingual (Arabic/English) platform that connects companies, service providers, and individuals with fully integrated digital business and administrative services. The platform serves as a centralized hub for managing administrative tasks, booking services, and facilitating communication between clients and service providers.
-              </p>
-              <p className="text-gray-700 leading-relaxed">
-                The platform is designed with a clean, intuitive interface that works seamlessly in both Arabic and English, making it accessible to the diverse population of Oman and the broader GCC region. SmartPRO operates through web and mobile interfaces, ensuring users can access services from any device.
+                SmartPRO serves as a centralized hub for managing administrative tasks, booking services, and facilitating communication between clients and service providers. The platform is designed with a clean, intuitive interface that works seamlessly in both Arabic and English.
               </p>
             </div>
 
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Key Features & Benefits</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Key Features</h3>
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border-2 border-blue-200 p-6">
-                  <h4 className="font-bold text-blue-900 mb-4 flex items-center gap-2 text-lg">
-                    <Users className="w-6 h-6" />
-                    For Clients (Companies & Individuals)
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <Users className="w-5 h-5 text-blue-600" />
+                    For Clients
                   </h4>
-                  <ul className="space-y-3 text-sm text-gray-700">
+                  <ul className="space-y-2 text-sm text-gray-700">
                     <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Centralized Service Booking:</strong> Access to a wide range of administrative and business services through a single platform
-                      </div>
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Centralized service booking</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Provider Selection:</strong> Choose service providers based on ratings, availability, and pricing
-                      </div>
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Provider selection based on ratings</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Booking Management:</strong> Easy scheduling, rescheduling, and cancellation of service appointments
-                      </div>
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Real-time service tracking</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Communication Tools:</strong> Direct messaging with service providers for clarifications and updates
-                      </div>
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Secure payment processing</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Service Tracking:</strong> Real-time tracking of service progress and completion status
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Review System:</strong> Rate and review service providers after service completion
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Payment Integration:</strong> Secure payment processing for services
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Document Management:</strong> Storage and sharing of relevant documents for service requests
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Government Service Integration:</strong> Access to government-related services and documentation
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>AI-Powered Assistance:</strong> Automated support and recommendations based on user needs
-                      </div>
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>AI-powered assistance</span>
                     </li>
                   </ul>
                 </div>
 
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border-2 border-purple-200 p-6">
-                  <h4 className="font-bold text-purple-900 mb-4 flex items-center gap-2 text-lg">
-                    <Award className="w-6 h-6" />
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <Award className="w-5 h-5 text-purple-600" />
                     For Service Providers
                   </h4>
-                  <ul className="space-y-3 text-sm text-gray-700">
+                  <ul className="space-y-2 text-sm text-gray-700">
                     <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Business Profile:</strong> Customizable profile showcasing services, expertise, and availability
-                      </div>
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Customizable business profile</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Booking Management:</strong> Tools to manage service requests, schedules, and client information
-                      </div>
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Booking management tools</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Client Communication:</strong> Direct messaging with clients to clarify requirements
-                      </div>
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Performance analytics</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Payment Processing:</strong> Secure and timely payment collection for services rendered
-                      </div>
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Secure payment collection</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Performance Analytics:</strong> Insights into service ratings, client satisfaction, and business growth
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Featured Listings:</strong> Opportunity for premium visibility within the platform
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Document Exchange:</strong> Secure sharing of service-related documentation with clients
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong>Automated Notifications:</strong> Alerts for new booking requests and client messages
-                      </div>
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Featured listing opportunities</span>
                     </li>
                   </ul>
                 </div>
               </div>
-
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border-2 border-gray-200 p-6 mt-6">
-                <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2 text-lg">
-                  <Zap className="w-6 h-6 text-orange-600" />
-                  Platform-Wide Features
-                </h4>
-                <div className="grid md:grid-cols-3 gap-4">
-                  {[
-                    { icon: <Globe className="w-5 h-5" />, title: 'Bilingual Interface', desc: 'Complete functionality in both Arabic and English' },
-                    { icon: <Zap className="w-5 h-5" />, title: 'AI-Driven Automation', desc: 'Intelligent features including auto-replies, analytics, and personalization' },
-                    { icon: <Users className="w-5 h-5" />, title: 'Mobile Responsiveness', desc: 'Full functionality across desktop and mobile devices' },
-                    { icon: <Shield className="w-5 h-5" />, title: 'Data Security', desc: 'Robust protection of user data and transactions' },
-                    { icon: <BarChart3 className="w-5 h-5" />, title: 'Reporting Tools', desc: 'Comprehensive reporting on service usage and performance' },
-                    { icon: <FileText className="w-5 h-5" />, title: 'Government Integration', desc: 'Connections with relevant government systems for permits and licenses' },
-                  ].map((feature, index) => (
-                    <div key={index} className="bg-white rounded-lg border border-gray-200 p-4">
-                      <div className="text-blue-600 mb-2">{feature.icon}</div>
-                      <h5 className="font-bold text-gray-900 text-sm mb-1">{feature.title}</h5>
-                      <p className="text-xs text-gray-600">{feature.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
 
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Service Workflow (10 Steps)</h3>
-              <p className="text-gray-700 mb-6">
-                The SmartPRO platform follows a streamlined workflow ensuring transparency and ease of communication:
-              </p>
-              <div className="grid md:grid-cols-2 gap-4">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Unique Selling Proposition</h3>
+              <div className="grid md:grid-cols-3 gap-4">
                 {[
-                  { step: 1, title: 'User Login', desc: 'The client logs into the platform using secure credentials', icon: '🔐' },
-                  { step: 2, title: 'Service Selection', desc: 'The client browses and selects the desired service from available categories', icon: '🔍' },
-                  { step: 3, title: 'Provider Selection', desc: 'The client reviews available service providers and selects based on ratings, availability, and pricing', icon: '👥' },
-                  { step: 4, title: 'Booking', desc: 'The client makes a booking, specifying requirements and preferred timing', icon: '📅' },
-                  { step: 5, title: 'Confirmation', desc: 'The service provider confirms the booking and may request additional information', icon: '✅' },
-                  { step: 6, title: 'Service Delivery', desc: 'The service is delivered according to the agreed terms', icon: '🚀' },
-                  { step: 7, title: 'Follow-up', desc: 'Both parties can communicate regarding service progress', icon: '💬' },
-                  { step: 8, title: 'Completion', desc: 'The service is marked as complete once fulfilled', icon: '✔️' },
-                  { step: 9, title: 'Review', desc: 'The client provides a rating and review of the service', icon: '⭐' },
-                  { step: 10, title: 'Payment Finalization', desc: 'Payment is processed and confirmed', icon: '💳' },
-                ].map((item) => (
-                  <div key={item.step} className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow">
-                    <div className="flex items-start gap-3">
-                      <div className="text-3xl">{item.icon}</div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded">Step {item.step}</span>
-                          <h4 className="font-bold text-gray-900">{item.title}</h4>
-                        </div>
-                        <p className="text-sm text-gray-600">{item.desc}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Unique Selling Proposition</h3>
-              <div className="grid md:grid-cols-3 gap-6">
-                {[
-                  { icon: <Globe className="w-8 h-8" />, title: 'Localized Solution', desc: 'Specifically designed for the Omani and GCC markets, with full Arabic language support', color: 'blue' },
-                  { icon: <Zap className="w-8 h-8" />, title: 'Comprehensive Integration', desc: 'Connecting clients, service providers, and government services in one platform', color: 'purple' },
-                  { icon: <Award className="w-8 h-8" />, title: 'AI Enhancement', desc: 'Leveraging artificial intelligence for improved user experience and operational efficiency', color: 'orange' },
-                  { icon: <Shield className="w-8 h-8" />, title: 'Government Partnerships', desc: 'Strategic integration with government entities for official services', color: 'green' },
-                  { icon: <CheckCircle className="w-8 h-8" />, title: 'Quality Assurance', desc: 'Vetting and monitoring of service providers to ensure high-quality service delivery', color: 'red' },
-                  { icon: <Users className="w-8 h-8" />, title: 'Bilingual Support', desc: 'Complete functionality in both Arabic and English, addressing the region\'s linguistic diversity', color: 'indigo' },
+                  { title: 'Localized Solution', desc: 'Specifically designed for Omani and GCC markets with full Arabic support' },
+                  { title: 'Comprehensive Integration', desc: 'Connecting clients, providers, and government services in one platform' },
+                  { title: 'AI Enhancement', desc: 'Leveraging artificial intelligence for improved user experience' },
                 ].map((usp, index) => (
-                  <div key={index} className={`bg-gradient-to-br from-${usp.color}-50 to-${usp.color}-100 rounded-lg border-2 border-${usp.color}-200 p-6 text-center hover:shadow-lg transition-shadow`}>
-                    <div className={`text-${usp.color}-600 mb-3 flex justify-center`}>{usp.icon}</div>
-                    <h4 className="font-bold text-gray-900 mb-2">{usp.title}</h4>
+                  <div key={index} className="text-center">
+                    <h4 className="font-bold text-blue-600 mb-2">{usp.title}</h4>
                     <p className="text-sm text-gray-700">{usp.desc}</p>
                   </div>
                 ))}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Future Development Plans</h3>
-              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg border border-indigo-200 p-6">
-                <p className="text-gray-700 mb-6">
-                  SmartPRO has a comprehensive roadmap for continuous improvement and expansion:
-                </p>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {[
-                    { icon: <Globe className="w-6 h-6" />, title: 'Geographic Expansion', desc: 'Phased rollout to other GCC countries including Saudi Arabia, Kuwait, Qatar, and the UAE' },
-                    { icon: <Zap className="w-6 h-6" />, title: 'Enhanced AI Capabilities', desc: 'Development of more sophisticated AI tools for business intelligence and automation' },
-                    { icon: <BarChart3 className="w-6 h-6" />, title: 'SmartPRO Marketplace', desc: 'Launch of a competitive marketplace where services are categorized and rated' },
-                    { icon: <Shield className="w-6 h-6" />, title: 'SaaS Transformation', desc: 'Evolution into a Software as a Service (SaaS) platform that can be licensed to other companies' },
-                    { icon: <Users className="w-6 h-6" />, title: 'Mobile App Enhancement', desc: 'Continuous improvement of mobile applications for iOS and Android' },
-                    { icon: <FileText className="w-6 h-6" />, title: 'Additional Service Categories', desc: 'Expansion into new service verticals based on market demand' },
-                    { icon: <TrendingUp className="w-6 h-6" />, title: 'Advanced Analytics', desc: 'Development of more sophisticated reporting and analytics tools for business insights' },
-                  ].map((plan, index) => (
-                    <div key={index} className="bg-white rounded-lg border border-indigo-200 p-4 hover:shadow-md transition-shadow">
-                      <div className="flex items-start gap-3">
-                        <div className="text-indigo-600">{plan.icon}</div>
-                        <div>
-                          <h4 className="font-bold text-gray-900 mb-1">{plan.title}</h4>
-                          <p className="text-sm text-gray-600">{plan.desc}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
