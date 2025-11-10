@@ -1289,45 +1289,345 @@ export default function BusinessPlanFull() {
           </div>
         </section>
 
-        {/* Organization & Management */}
+        {/* Organization & Management - COMPREHENSIVE */}
         <section id="organization">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">7. Organization & Management</h2>
           
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Organizational Structure</h3>
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Executive Leadership Team</h3>
+              <p className="text-gray-700 mb-6">
+                SmartPRO is led by an experienced team of professionals with deep expertise in technology, business operations, and regional markets.
+              </p>
+              <div className="grid md:grid-cols-2 gap-6">
+                {[
+                  {
+                    role: 'Chief Executive Officer (CEO)',
+                    name: 'Leadership Position',
+                    background: '15+ years in technology and business development',
+                    expertise: ['Strategic planning & vision', 'Business development', 'Stakeholder management', 'Regional market expertise', 'Government relations'],
+                    icon: <Users className="w-8 h-8" />,
+                    color: 'blue'
+                  },
+                  {
+                    role: 'Chief Technology Officer (CTO)',
+                    name: 'Technology Leadership',
+                    background: '12+ years in software engineering and architecture',
+                    expertise: ['Platform architecture', 'AI/ML implementation', 'Cloud infrastructure', 'Security & compliance', 'Technical team leadership'],
+                    icon: <Zap className="w-8 h-8" />,
+                    color: 'purple'
+                  },
+                  {
+                    role: 'Chief Operating Officer (COO)',
+                    name: 'Operations Leadership',
+                    background: '10+ years in operations and process optimization',
+                    expertise: ['Operational excellence', 'Process automation', 'Quality assurance', 'Vendor management', 'Scalability planning'],
+                    icon: <CheckCircle className="w-8 h-8" />,
+                    color: 'green'
+                  },
+                  {
+                    role: 'Chief Financial Officer (CFO)',
+                    name: 'Financial Leadership',
+                    background: '12+ years in finance and accounting',
+                    expertise: ['Financial planning', 'Investor relations', 'Budget management', 'Compliance & reporting', 'Risk management'],
+                    icon: <DollarSign className="w-8 h-8" />,
+                    color: 'orange'
+                  },
+                  {
+                    role: 'Chief Marketing Officer (CMO)',
+                    name: 'Marketing Leadership',
+                    background: '10+ years in digital marketing and brand building',
+                    expertise: ['Brand strategy', 'Digital marketing', 'Customer acquisition', 'Content strategy', 'Market research'],
+                    icon: <TrendingUp className="w-8 h-8" />,
+                    color: 'red'
+                  },
+                ].map((exec, index) => (
+                  <div key={index} className={`bg-gradient-to-br from-${exec.color}-50 to-${exec.color}-100 rounded-lg border-2 border-${exec.color}-200 p-6`}>
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className={`text-${exec.color}-600`}>{exec.icon}</div>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-gray-900 text-lg mb-1">{exec.role}</h4>
+                        <p className="text-sm text-gray-600 mb-2">{exec.background}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <h5 className="font-semibold text-gray-900 mb-2 text-sm">Key Expertise:</h5>
+                      <ul className="space-y-1">
+                        {exec.expertise.map((skill, idx) => (
+                          <li key={idx} className="text-xs text-gray-700 flex items-start gap-2">
+                            <CheckCircle className={`w-3 h-3 text-${exec.color}-600 flex-shrink-0 mt-0.5`} />
+                            <span>{skill}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Advisory Board</h3>
+              <p className="text-gray-700 mb-6">
+                SmartPRO benefits from guidance by experienced advisors with expertise across technology, business, government, and regional markets.
+              </p>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  {
+                    title: 'Technology Advisor',
+                    expertise: 'AI & Platform Architecture',
+                    background: 'Former CTO at regional tech unicorn',
+                    value: ['Technical strategy guidance', 'AI/ML implementation', 'Scalability planning', 'Technology partnerships'],
+                    icon: <Zap className="w-6 h-6" />,
+                    color: 'blue'
+                  },
+                  {
+                    title: 'Business Strategy Advisor',
+                    expertise: 'Market Expansion & Growth',
+                    background: '20+ years in GCC business development',
+                    value: ['Market entry strategy', 'Partnership development', 'Growth planning', 'Competitive positioning'],
+                    icon: <TrendingUp className="w-6 h-6" />,
+                    color: 'green'
+                  },
+                  {
+                    title: 'Government Relations Advisor',
+                    expertise: 'Public Sector & Compliance',
+                    background: 'Former government official',
+                    value: ['Regulatory navigation', 'Government partnerships', 'Policy compliance', 'Public sector sales'],
+                    icon: <Shield className="w-6 h-6" />,
+                    color: 'purple'
+                  },
+                  {
+                    title: 'Financial Advisor',
+                    expertise: 'Investment & Fundraising',
+                    background: 'Venture capital partner',
+                    value: ['Fundraising strategy', 'Investor relations', 'Financial modeling', 'Exit planning'],
+                    icon: <DollarSign className="w-6 h-6" />,
+                    color: 'orange'
+                  },
+                  {
+                    title: 'Regional Market Advisor',
+                    expertise: 'GCC Market Dynamics',
+                    background: 'Serial entrepreneur in MENA',
+                    value: ['Market insights', 'Cultural adaptation', 'Local partnerships', 'Regional expansion'],
+                    icon: <Globe className="w-6 h-6" />,
+                    color: 'red'
+                  },
+                ].map((advisor, index) => (
+                  <div key={index} className={`bg-white rounded-lg border-2 border-${advisor.color}-200 p-6 hover:shadow-lg transition-shadow`}>
+                    <div className={`text-${advisor.color}-600 mb-3`}>{advisor.icon}</div>
+                    <h4 className="font-bold text-gray-900 mb-1">{advisor.title}</h4>
+                    <p className="text-sm font-semibold text-gray-700 mb-2">{advisor.expertise}</p>
+                    <p className="text-xs text-gray-600 mb-4">{advisor.background}</p>
+                    <div>
+                      <h5 className="font-semibold text-gray-900 mb-2 text-xs">Advisory Value:</h5>
+                      <ul className="space-y-1">
+                        {advisor.value.map((item, idx) => (
+                          <li key={idx} className="text-xs text-gray-700 flex items-start gap-1">
+                            <span className={`text-${advisor.color}-600`}>•</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Organizational Structure & Departments</h3>
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border-2 border-gray-200 p-6">
                 <div className="grid md:grid-cols-5 gap-4 mb-6">
                   {[
-                    { title: 'CEO', desc: 'Strategic direction' },
-                    { title: 'CTO', desc: 'Technology strategy' },
-                    { title: 'COO', desc: 'Operations management' },
-                    { title: 'CFO', desc: 'Financial planning' },
-                    { title: 'CMO', desc: 'Marketing strategy' },
-                  ].map((role, index) => (
-                    <div key={index} className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
-                      <div className="font-bold text-blue-900 mb-1">{role.title}</div>
-                      <div className="text-xs text-gray-600">{role.desc}</div>
+                    { dept: 'Product Development', team: '15-20', focus: 'Platform & features', color: 'blue' },
+                    { dept: 'Operations', team: '12-15', focus: 'Service delivery', color: 'green' },
+                    { dept: 'Marketing & Sales', team: '10-12', focus: 'Growth & revenue', color: 'purple' },
+                    { dept: 'Customer Support', team: '10-12', focus: 'User satisfaction', color: 'orange' },
+                    { dept: 'Finance & Admin', team: '5-8', focus: 'Financial & legal', color: 'red' },
+                  ].map((dept, index) => (
+                    <div key={index} className={`bg-gradient-to-br from-${dept.color}-50 to-${dept.color}-100 rounded-lg border-2 border-${dept.color}-200 p-4 text-center`}>
+                      <h4 className="font-bold text-gray-900 text-sm mb-2">{dept.dept}</h4>
+                      <div className={`text-3xl font-bold text-${dept.color}-600 mb-1`}>{dept.team}</div>
+                      <p className="text-xs text-gray-600">{dept.focus}</p>
                     </div>
                   ))}
+                </div>
+                <div className="bg-white rounded-lg border border-gray-200 p-4">
+                  <h4 className="font-bold text-gray-900 mb-3">Staffing Growth Plan</h4>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    {[
+                      { phase: 'Year 1-2 (Launch)', team: '15-20 members', focus: 'Core platform development and initial operations' },
+                      { phase: 'Year 3-4 (Growth)', team: '30-40 members', focus: 'Expansion to new markets and feature development' },
+                      { phase: 'Year 5+ (Scale)', team: '50-70 members', focus: 'Full GCC coverage and regional dominance' },
+                    ].map((phase, index) => (
+                      <div key={index} className="text-center">
+                        <h5 className="font-semibold text-gray-900 mb-1 text-sm">{phase.phase}</h5>
+                        <div className="text-2xl font-bold text-blue-600 mb-2">{phase.team}</div>
+                        <p className="text-xs text-gray-600">{phase.focus}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Staffing Plan</h3>
-              <div className="grid md:grid-cols-3 gap-6">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Human Resources Plan</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4 text-lg">Recruitment Strategy</h4>
+                  <ul className="space-y-3">
+                    {[
+                      { title: 'Local Talent Priority', desc: 'Focus on hiring Omani nationals to support local economy and ensure cultural fit' },
+                      { title: 'Technical Expertise', desc: 'Recruit experienced developers, designers, and data scientists from regional tech hubs' },
+                      { title: 'Industry Experience', desc: 'Prioritize candidates with background in SaaS, marketplaces, or administrative services' },
+                      { title: 'Cultural Fit', desc: 'Assess alignment with company values: integrity, innovation, user-centricity' },
+                      { title: 'Growth Potential', desc: 'Hire for potential and provide career development opportunities' },
+                    ].map((item, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <span className="font-semibold text-gray-900">{item.title}:</span>
+                          <span className="text-sm text-gray-700"> {item.desc}</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border-2 border-green-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4 text-lg">Training & Development</h4>
+                  <ul className="space-y-3">
+                    {[
+                      { title: 'Comprehensive Onboarding', desc: '2-week program covering platform, processes, and company culture' },
+                      { title: 'Technical Training', desc: 'Ongoing education on latest technologies, tools, and best practices' },
+                      { title: 'Leadership Development', desc: 'Management training for high-potential employees' },
+                      { title: 'Cross-functional Exposure', desc: 'Rotation programs to build understanding across departments' },
+                      { title: 'Continuous Learning', desc: 'Budget for courses, conferences, and certifications' },
+                    ].map((item, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <span className="font-semibold text-gray-900">{item.title}:</span>
+                          <span className="text-sm text-gray-700"> {item.desc}</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border-2 border-purple-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4 text-lg">Compensation & Benefits</h4>
+                  <ul className="space-y-3">
+                    {[
+                      { title: 'Competitive Salaries', desc: 'Market-rate compensation benchmarked against regional tech companies' },
+                      { title: 'Performance Bonuses', desc: 'Quarterly and annual bonuses tied to individual and company performance' },
+                      { title: 'Equity Options', desc: 'Stock options for key employees to align incentives with company success' },
+                      { title: 'Health Insurance', desc: 'Comprehensive medical coverage for employees and dependents' },
+                      { title: 'Flexible Work', desc: 'Hybrid work model with remote options and flexible hours' },
+                    ].map((item, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <span className="font-semibold text-gray-900">{item.title}:</span>
+                          <span className="text-sm text-gray-700"> {item.desc}</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-lg border-2 border-orange-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4 text-lg">Performance Management</h4>
+                  <ul className="space-y-3">
+                    {[
+                      { title: 'Clear Objectives', desc: 'OKRs (Objectives and Key Results) set quarterly for alignment' },
+                      { title: 'Regular Check-ins', desc: 'Weekly 1-on-1s and monthly team reviews' },
+                      { title: 'Annual Reviews', desc: 'Comprehensive performance evaluations with career planning' },
+                      { title: 'Feedback Culture', desc: '360-degree feedback and continuous improvement mindset' },
+                      { title: 'Recognition Programs', desc: 'Employee of the month, spot bonuses, and public acknowledgment' },
+                    ].map((item, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <span className="font-semibold text-gray-900">{item.title}:</span>
+                          <span className="text-sm text-gray-700"> {item.desc}</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Professional Support Services</h3>
+              <div className="grid md:grid-cols-4 gap-4">
                 {[
-                  { phase: 'Phase 1 (Launch)', team: '15-20 members', focus: 'Core development & operations' },
-                  { phase: 'Phase 2 (Growth)', team: '30-40 members', focus: 'Expansion & scaling' },
-                  { phase: 'Phase 3 (Regional)', team: '50-70 members', focus: 'GCC market coverage' },
-                ].map((phase, index) => (
-                  <div key={index} className="bg-white rounded-lg border border-gray-200 p-6">
-                    <h4 className="font-bold text-gray-900 mb-2">{phase.phase}</h4>
-                    <div className="text-2xl font-bold text-blue-600 mb-2">{phase.team}</div>
-                    <p className="text-sm text-gray-600">{phase.focus}</p>
+                  { service: 'Legal Counsel', provider: 'Regional law firm', focus: ['Corporate law', 'Contracts', 'IP protection', 'Compliance'], icon: <Shield className="w-6 h-6" /> },
+                  { service: 'Accounting', provider: 'Big 4 accounting firm', focus: ['Financial audits', 'Tax planning', 'Reporting', 'Compliance'], icon: <DollarSign className="w-6 h-6" /> },
+                  { service: 'IT Security', provider: 'Cybersecurity consultants', focus: ['Security audits', 'Penetration testing', 'Compliance', 'Training'], icon: <Shield className="w-6 h-6" /> },
+                  { service: 'HR Consulting', provider: 'HR advisory firm', focus: ['Recruitment', 'Policies', 'Compliance', 'Training'], icon: <Users className="w-6 h-6" /> },
+                ].map((item, index) => (
+                  <div key={index} className="bg-white rounded-lg border-2 border-gray-200 p-4 hover:shadow-md transition-shadow">
+                    <div className="text-blue-600 mb-3">{item.icon}</div>
+                    <h4 className="font-bold text-gray-900 mb-1 text-sm">{item.service}</h4>
+                    <p className="text-xs text-gray-600 mb-3">{item.provider}</p>
+                    <ul className="space-y-1">
+                      {item.focus.map((f, idx) => (
+                        <li key={idx} className="text-xs text-gray-700 flex items-start gap-1">
+                          <span className="text-blue-600">•</span>
+                          <span>{f}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Company Culture & Communication</h3>
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg border-2 border-indigo-200 p-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-bold text-gray-900 mb-3">Core Values in Action</h4>
+                    <ul className="space-y-2">
+                      {[
+                        'Integrity: Transparent communication and ethical decision-making',
+                        'Innovation: Encouraging experimentation and creative problem-solving',
+                        'User-Centricity: Every decision evaluated through user impact lens',
+                        'Collaboration: Cross-functional teamwork and knowledge sharing',
+                        'Excellence: High standards and continuous improvement mindset',
+                        'Regional Pride: Building solutions that serve and empower the region',
+                      ].map((value, index) => (
+                        <li key={index} className="text-sm text-gray-700 flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-indigo-600 flex-shrink-0 mt-0.5" />
+                          <span>{value}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 mb-3">Communication Protocols</h4>
+                    <ul className="space-y-2">
+                      {[
+                        'Weekly all-hands meetings for company updates and alignment',
+                        'Monthly town halls with Q&A sessions for transparency',
+                        'Quarterly planning sessions with cross-functional collaboration',
+                        'Daily standups within teams for coordination',
+                        'Slack/Teams for real-time communication and collaboration',
+                        'Open-door policy encouraging direct access to leadership',
+                      ].map((protocol, index) => (
+                        <li key={index} className="text-sm text-gray-700 flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                          <span>{protocol}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
