@@ -91,8 +91,8 @@ export default function DocsIndex() {
             <p className="mb-6 text-blue-100">
               Start with our getting started guide to learn the basics and get your account set up in minutes.
             </p>
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
-              Get Started
+            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50" asChild>
+              <Link href="/docs/getting-started">Get Started</Link>
             </Button>
           </div>
         </section>

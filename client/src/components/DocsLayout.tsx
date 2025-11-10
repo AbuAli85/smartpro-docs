@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Menu, X, ChevronRight } from 'lucide-react';
+import { Menu, X, ChevronRight, Search } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
+import { Input } from '@/components/ui/input';
 
 interface NavItem {
   title: string;
@@ -12,7 +13,7 @@ interface NavItem {
 const navigationItems: NavItem[] = [
   {
     title: 'Getting Started',
-    href: '/docs',
+    href: '/docs/getting-started',
     icon: '🚀',
   },
   {
@@ -80,9 +81,23 @@ interface DocsLayoutProps {
 
 export default function DocsLayout({ children, pageTitle, breadcrumbs }: DocsLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [location] = useLocation();
 
   const isActive = (href: string) => location === href;
+
+  // Filter navigation items based on search query
+  const filteredItems = searchQuery
+    ? navigationItems.map(item => {
+        if (item.children) {
+          const filteredChildren = item.children.filter(child =>
+            child.title.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+          return filteredChildren.length > 0 ? { ...item, children: filteredChildren } : null;
+        }
+        return item.title.toLowerCase().includes(searchQuery.toLowerCase()) ? item : null;
+      }).filter(Boolean) as NavItem[]
+    : navigationItems;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -114,8 +129,22 @@ export default function DocsLayout({ children, pageTitle, breadcrumbs }: DocsLay
             sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
           }`}
         >
-          <nav className="p-6 space-y-2">
-            {navigationItems.map((item) => (
+          <div className="p-6">
+            {/* Search Bar */}
+            <div className="mb-6 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Input
+                type="text"
+                placeholder="Search docs..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 w-full"
+              />
+            </div>
+
+            {/* Navigation */}
+            <nav className="space-y-2">
+              {filteredItems.map((item) => (
               <div key={item.title}>
                 {item.children ? (
                   <details className="group">
@@ -155,8 +184,9 @@ export default function DocsLayout({ children, pageTitle, breadcrumbs }: DocsLay
                   </Link>
                 )}
               </div>
-            ))}
-          </nav>
+              ))}
+            </nav>
+          </div>
         </aside>
 
         {/* Main Content */}
