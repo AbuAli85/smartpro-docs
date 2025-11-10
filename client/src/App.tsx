@@ -36,6 +36,7 @@ const GettingStarted = lazy(() => import("./pages/docs/GettingStarted"));
 const API = lazy(() => import("./pages/docs/API"));
 const FAQ = lazy(() => import("./pages/docs/FAQ"));
 const Support = lazy(() => import("./pages/docs/Support"));
+const BusinessPlanFull = lazy(() => import("./pages/docs/BusinessPlanFull"));
 
 import { ToastContainer } from "./components/ToastContainer";
 import LiveChat from "./components/LiveChat";
@@ -75,6 +76,7 @@ function Router() {
         <Route path={"/docs/api"} component={API} />
         <Route path={"/docs/faq"} component={FAQ} />
         <Route path={"/docs/support"} component={Support} />
+        <Route path={"/docs/business-plan-full"} component={BusinessPlanFull} />
         <Route path={"/how-it-works"} component={HowItWorks} />
         <Route path={"/comparison"} component={Comparison} />
         <Route path={"/roi-calculator"} component={ROICalculator} />

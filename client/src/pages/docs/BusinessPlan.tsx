@@ -21,6 +21,22 @@ export default function BusinessPlan() {
   return (
     <DocsLayout pageTitle="Business Plan & Strategy" breadcrumbs={breadcrumbs}>
       <div className="space-y-12">
+        {/* Quick Link to Full Plan */}
+        <section>
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-6 text-white">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-bold mb-2">Complete Business Plan Available</h3>
+                <p className="text-blue-100">
+                  View the comprehensive 10-section business plan with detailed financial projections, market analysis, and implementation timeline.
+                </p>
+              </div>
+              <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 ml-4" asChild>
+                <Link href="/docs/business-plan-full">View Full Plan</Link>
+              </Button>
+            </div>
+          </div>
+        </section>
         {/* Executive Summary */}
         <section>
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Executive Summary</h2>
