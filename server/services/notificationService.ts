@@ -3,10 +3,6 @@
  * Handles notification creation, delivery, and management
  */
 
-// Prisma client type
-type PrismaClient = any;
-import type { NotificationWebSocketServer } from "../websocket";
-
 // Initialize Prisma client
 let prisma: any;
 try {
@@ -30,10 +26,17 @@ export interface CreateNotificationInput {
   data?: Record<string, any>;
 }
 
-export class NotificationService {
-  private wsServer: any | null = null;
+export interface NotificationWebSocketServer {
+  sendNotificationToProvider(
+    userId: string,
+    notification: any
+  ): Promise<boolean> | boolean;
+}
 
-  constructor(wsServer?: any) {
+export class NotificationService {
+  private wsServer: NotificationWebSocketServer | null = null;
+
+  constructor(wsServer?: NotificationWebSocketServer | null) {
     this.wsServer = wsServer || null;
   }
 

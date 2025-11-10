@@ -5,7 +5,6 @@
 
 import express, { Request, Response, NextFunction } from "express";
 import NotificationService from "../services/notificationService";
-import AnalyticsService from "../services/analyticsService";
 
 // Initialize Prisma client
 let prisma: any;
@@ -18,7 +17,6 @@ try {
 
 const router = express.Router();
 const notificationService = new NotificationService();
-const analyticsService = new AnalyticsService();
 
 // Middleware to verify JWT token
 const authenticateToken = (req: any, res: Response, next: NextFunction) => {
