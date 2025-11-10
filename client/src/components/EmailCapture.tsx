@@ -5,6 +5,16 @@ import { useNotifications } from "@/hooks/useNotifications";
 
 const DISMISSED_KEY = "emailCaptureDismissed";
 const SUBSCRIBED_KEY = "emailCaptureSubscribed";
+const LAST_SHOWN_KEY = "emailCaptureLastShown";
+
+// Configuration - make it much less intrusive
+const CONFIG = {
+  ENABLED: true, // Set to false to completely disable the modal
+  DELAY_BEFORE_SHOW: 60000, // Wait 60 seconds (1 minute) before showing
+  MIN_TIME_BETWEEN_SHOWS: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+  SCROLL_THRESHOLD: 60, // Show after 60% scroll (user is engaged)
+  ENABLE_EXIT_INTENT: false, // Disable exit intent trigger (too disruptive)
+};
 
 export default function EmailCapture() {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,13 +23,29 @@ export default function EmailCapture() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasDismissed, setHasDismissed] = useState(false);
   const [hasSubscribed, setHasSubscribed] = useState(false);
+  const [hasScrolledEnough, setHasScrolledEnough] = useState(false);
   const notifications = useNotifications();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    
+    // Check if modal is completely disabled
+    if (!CONFIG.ENABLED) {
+      setHasDismissed(true);
+      return;
+    }
 
     setHasDismissed(sessionStorage.getItem(DISMISSED_KEY) === "true");
     setHasSubscribed(sessionStorage.getItem(SUBSCRIBED_KEY) === "true");
+    
+    // Check if we've shown it recently
+    const lastShown = localStorage.getItem(LAST_SHOWN_KEY);
+    if (lastShown) {
+      const timeSinceLastShow = Date.now() - parseInt(lastShown);
+      if (timeSinceLastShow < CONFIG.MIN_TIME_BETWEEN_SHOWS) {
+        setHasDismissed(true); // Don't show if shown within last 7 days
+      }
+    }
   }, []);
 
   const handleClose = () => {
@@ -28,23 +54,65 @@ export default function EmailCapture() {
 
     if (typeof window !== "undefined") {
       sessionStorage.setItem(DISMISSED_KEY, "true");
+      localStorage.setItem(LAST_SHOWN_KEY, Date.now().toString());
     }
   };
 
-  // Detect exit intent once per session
+  // Track scroll depth
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (hasDismissed || hasSubscribed) return;
 
-    const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0 && !isOpen && !isSubmitted) {
+    const handleScroll = () => {
+      const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      if (scrollPercent >= CONFIG.SCROLL_THRESHOLD) {
+        setHasScrolledEnough(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasDismissed, hasSubscribed]);
+
+  // Show modal after delay + scroll (much less intrusive)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (hasDismissed || hasSubscribed || isOpen) return;
+
+    // Wait for both conditions: time delay AND scroll
+    const timer = setTimeout(() => {
+      if (hasScrolledEnough) {
         setIsOpen(true);
+        if (typeof window !== "undefined") {
+          localStorage.setItem(LAST_SHOWN_KEY, Date.now().toString());
+        }
+      }
+    }, CONFIG.DELAY_BEFORE_SHOW);
+
+    return () => clearTimeout(timer);
+  }, [hasDismissed, hasSubscribed, isOpen, hasScrolledEnough]);
+
+  // Optional: Exit intent (disabled by default)
+  useEffect(() => {
+    if (!CONFIG.ENABLE_EXIT_INTENT) return;
+    if (typeof window === "undefined") return;
+    if (hasDismissed || hasSubscribed) return;
+
+    let exitIntentShown = false;
+
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (e.clientY <= 0 && !isOpen && !isSubmitted && !exitIntentShown && hasScrolledEnough) {
+        setIsOpen(true);
+        exitIntentShown = true;
+        if (typeof window !== "undefined") {
+          localStorage.setItem(LAST_SHOWN_KEY, Date.now().toString());
+        }
       }
     };
 
     document.addEventListener("mouseleave", handleMouseLeave);
     return () => document.removeEventListener("mouseleave", handleMouseLeave);
-  }, [hasDismissed, hasSubscribed, isOpen, isSubmitted]);
+  }, [hasDismissed, hasSubscribed, isOpen, isSubmitted, hasScrolledEnough]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,8 +147,14 @@ export default function EmailCapture() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-lg shadow-2xl max-w-md w-full mx-4 overflow-hidden">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm animate-in fade-in duration-300"
+      onClick={handleClose}
+    >
+      <div 
+        className="bg-white rounded-lg shadow-2xl max-w-md w-full mx-4 overflow-hidden animate-in slide-in-from-bottom-4 duration-500"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Close Button */}
         <button
           onClick={handleClose}
