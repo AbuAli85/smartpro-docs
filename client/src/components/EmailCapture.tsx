@@ -7,9 +7,9 @@ const DISMISSED_KEY = "emailCaptureDismissed";
 const SUBSCRIBED_KEY = "emailCaptureSubscribed";
 const LAST_SHOWN_KEY = "emailCaptureLastShown";
 
-// Configuration - make it much less intrusive
+// Configuration - DISABLED to prevent interruptions
 const CONFIG = {
-  ENABLED: true, // Set to false to completely disable the modal
+  ENABLED: false, // DISABLED - Set to true to re-enable the modal
   DELAY_BEFORE_SHOW: 60000, // Wait 60 seconds (1 minute) before showing
   MIN_TIME_BETWEEN_SHOWS: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
   SCROLL_THRESHOLD: 60, // Show after 60% scroll (user is engaged)
