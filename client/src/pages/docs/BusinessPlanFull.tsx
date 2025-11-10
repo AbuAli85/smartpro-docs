@@ -634,21 +634,21 @@ export default function BusinessPlanFull() {
           </div>
         </section>
 
-        {/* Marketing & Sales Strategy */}
+        {/* Marketing & Sales Strategy - COMPREHENSIVE */}
         <section id="marketing-sales">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">5. Marketing & Sales Strategy</h2>
           
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Marketing Objectives</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Marketing Objectives</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 {[
-                  'Establish brand awareness in the Omani market',
-                  'Attract critical mass of service providers',
-                  'Drive user adoption among target segments',
-                  'Position as leading digital platform',
-                  'Support phased GCC expansion',
-                  'Build strategic partnerships',
+                  'Establish brand awareness and recognition in the Omani market',
+                  'Attract and onboard a critical mass of service providers',
+                  'Drive user adoption among target customer segments',
+                  'Position SmartPRO as the leading digital platform',
+                  'Support phased expansion to other GCC markets',
+                  'Build strategic partnerships with government entities and large enterprises',
                 ].map((objective, index) => (
                   <div key={index} className="flex items-start gap-2">
                     <Target className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
@@ -659,19 +659,189 @@ export default function BusinessPlanFull() {
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Marketing Channels</h3>
-              <div className="grid md:grid-cols-3 gap-4">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Positioning Strategy</h3>
+              <div className="grid md:grid-cols-2 gap-6">
                 {[
-                  { icon: <Globe className="w-6 h-6" />, title: 'Digital Channels', items: ['Google Ads', 'LinkedIn', 'Social Media', 'Email Marketing'] },
-                  { icon: <Users className="w-6 h-6" />, title: 'Traditional', items: ['Business Expos', 'Industry Events', 'Print Media', 'Partnerships'] },
-                  { icon: <Award className="w-6 h-6" />, title: 'Influencer', items: ['Business Leaders', 'Industry Experts', 'Early Adopters', 'Case Studies'] },
+                  { icon: <Globe className="w-8 h-8" />, title: 'The Local Expert', desc: 'Specifically designed for Oman and GCC markets with deep understanding of regional business culture, language, and regulatory requirements', color: 'blue' },
+                  { icon: <Zap className="w-8 h-8" />, title: 'The Digital Innovator', desc: 'Leveraging cutting-edge AI and automation to transform traditional administrative processes into seamless digital experiences', color: 'purple' },
+                  { icon: <Shield className="w-8 h-8" />, title: 'The Trusted Connector', desc: 'Building a reliable ecosystem connecting businesses, service providers, and government entities with verified quality assurance', color: 'green' },
+                  { icon: <TrendingUp className="w-8 h-8" />, title: 'The Efficiency Enabler', desc: 'Reducing administrative burden by up to 70% through streamlined processes and integrated service delivery', color: 'orange' },
+                ].map((position, index) => (
+                  <div key={index} className={`bg-gradient-to-br from-${position.color}-50 to-${position.color}-100 rounded-lg border-2 border-${position.color}-200 p-6 hover:shadow-lg transition-shadow`}>
+                    <div className={`text-${position.color}-600 mb-3`}>{position.icon}</div>
+                    <h4 className="font-bold text-gray-900 mb-2 text-lg">{position.title}</h4>
+                    <p className="text-sm text-gray-700">{position.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Pricing Strategy & Tiers</h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  {
+                    tier: 'Free',
+                    price: '$0',
+                    period: '/month',
+                    desc: 'Perfect for getting started',
+                    features: ['Up to 5 bookings/month', 'Basic profile', 'Standard support', 'Mobile access', 'Email notifications'],
+                    color: 'gray',
+                    cta: 'Start Free',
+                  },
+                  {
+                    tier: 'Pro',
+                    price: '$49',
+                    period: '/month',
+                    desc: 'For growing businesses',
+                    features: ['Unlimited bookings', 'Enhanced profile', 'Priority support', 'Advanced analytics', 'AI features', 'Featured listings', 'Custom branding'],
+                    color: 'blue',
+                    cta: 'Go Pro',
+                    popular: true,
+                  },
+                  {
+                    tier: 'Enterprise',
+                    price: 'Custom',
+                    period: '',
+                    desc: 'For large organizations',
+                    features: ['Everything in Pro', 'Dedicated account manager', 'Custom integrations', 'API access', 'White-label options', 'SLA guarantee', 'Training sessions'],
+                    color: 'purple',
+                    cta: 'Contact Sales',
+                  },
+                ].map((plan, index) => (
+                  <div key={index} className={`bg-white rounded-lg border-2 ${plan.popular ? 'border-blue-500 shadow-xl scale-105' : 'border-gray-200'} p-6 relative`}>
+                    {plan.popular && (
+                      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <span className="bg-blue-600 text-white text-xs font-bold px-4 py-1 rounded-full">MOST POPULAR</span>
+                      </div>
+                    )}
+                    <div className="text-center mb-6">
+                      <h4 className="text-2xl font-bold text-gray-900 mb-2">{plan.tier}</h4>
+                      <div className="flex items-baseline justify-center gap-1">
+                        <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
+                        <span className="text-gray-600">{plan.period}</span>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-2">{plan.desc}</p>
+                    </div>
+                    <ul className="space-y-3 mb-6">
+                      {plan.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-2 text-sm">
+                          <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                          <span className="text-gray-700">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button className={`w-full ${plan.popular ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-600 hover:bg-gray-700'} text-white`}>
+                      {plan.cta}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Customer Acquisition Economics</h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border-2 border-green-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <DollarSign className="w-6 h-6 text-green-600" />
+                    Customer Acquisition Cost (CAC)
+                  </h4>
+                  <div className="text-4xl font-bold text-green-600 mb-4">$50</div>
+                  <div className="space-y-2 text-sm text-gray-700">
+                    <div className="flex justify-between">
+                      <span>Digital Marketing:</span>
+                      <span className="font-semibold">$30</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Sales & Support:</span>
+                      <span className="font-semibold">$15</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Tools & Software:</span>
+                      <span className="font-semibold">$5</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <TrendingUp className="w-6 h-6 text-blue-600" />
+                    Lifetime Value (LTV)
+                  </h4>
+                  <div className="text-4xl font-bold text-blue-600 mb-4">$500</div>
+                  <div className="space-y-2 text-sm text-gray-700">
+                    <div className="flex justify-between">
+                      <span>Avg Monthly Revenue:</span>
+                      <span className="font-semibold">$49</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Avg Customer Life:</span>
+                      <span className="font-semibold">24 months</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Gross Margin:</span>
+                      <span className="font-semibold">70%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border-2 border-purple-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <BarChart3 className="w-6 h-6 text-purple-600" />
+                    LTV:CAC Ratio
+                  </h4>
+                  <div className="text-4xl font-bold text-purple-600 mb-4">10:1</div>
+                  <div className="space-y-2 text-sm text-gray-700">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span>Excellent unit economics</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span>Sustainable growth model</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span>Strong market fit</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Marketing Channels</h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  { 
+                    icon: <Globe className="w-8 h-8" />, 
+                    title: 'Digital Channels', 
+                    items: ['Google Ads (Search & Display)', 'LinkedIn Advertising', 'Social Media (Facebook, Instagram, Twitter)', 'Email Marketing Campaigns', 'Content Marketing & SEO', 'Webinars & Online Events'],
+                    color: 'blue'
+                  },
+                  { 
+                    icon: <Users className="w-8 h-8" />, 
+                    title: 'Traditional Channels', 
+                    items: ['Business Expos & Trade Shows', 'Industry Conferences', 'Print Media (Business Magazines)', 'Strategic Partnerships', 'Direct Mail Campaigns', 'Networking Events'],
+                    color: 'green'
+                  },
+                  { 
+                    icon: <Award className="w-8 h-8" />, 
+                    title: 'Influencer & Referral', 
+                    items: ['Business Influencers', 'Industry Thought Leaders', 'Early Adopter Program', 'Customer Case Studies', 'Referral Incentive Program', 'Ambassador Program'],
+                    color: 'purple'
+                  },
                 ].map((channel, index) => (
-                  <div key={index} className="bg-white rounded-lg border border-gray-200 p-6">
-                    <div className="text-blue-600 mb-3">{channel.icon}</div>
-                    <h4 className="font-bold text-gray-900 mb-3">{channel.title}</h4>
-                    <ul className="space-y-1">
+                  <div key={index} className={`bg-gradient-to-br from-${channel.color}-50 to-${channel.color}-100 rounded-lg border-2 border-${channel.color}-200 p-6`}>
+                    <div className={`text-${channel.color}-600 mb-4`}>{channel.icon}</div>
+                    <h4 className="font-bold text-gray-900 mb-4 text-lg">{channel.title}</h4>
+                    <ul className="space-y-2">
                       {channel.items.map((item, idx) => (
-                        <li key={idx} className="text-sm text-gray-600">• {item}</li>
+                        <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+                          <span className={`text-${channel.color}-600`}>•</span>
+                          <span>{item}</span>
+                        </li>
                       ))}
                     </ul>
                   </div>
@@ -680,35 +850,115 @@ export default function BusinessPlanFull() {
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Sales Strategy</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Sales Strategy</h3>
               <div className="grid md:grid-cols-3 gap-6">
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 border border-blue-200">
-                  <h4 className="font-bold text-blue-900 mb-3">Direct Sales</h4>
-                  <ul className="space-y-2 text-sm text-gray-700">
-                    <li>• Dedicated sales team</li>
-                    <li>• Consultative selling</li>
-                    <li>• Live demonstrations</li>
-                    <li>• Free trials</li>
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border-2 border-blue-200 p-6">
+                  <h4 className="font-bold text-blue-900 mb-4 text-lg">Direct Sales</h4>
+                  <ul className="space-y-3 text-sm text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>Dedicated Sales Team:</strong> Focused on enterprise and government clients</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>Consultative Selling:</strong> Understanding client needs and tailoring solutions</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>Live Demonstrations:</strong> Showcasing platform capabilities</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>Free Trials:</strong> 30-day trial for Pro features</span>
+                    </li>
                   </ul>
                 </div>
-                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 border border-green-200">
-                  <h4 className="font-bold text-green-900 mb-3">Indirect Sales</h4>
-                  <ul className="space-y-2 text-sm text-gray-700">
-                    <li>• Referral program</li>
-                    <li>• Partner network</li>
-                    <li>• Integration partners</li>
-                    <li>• Co-marketing</li>
+                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg border-2 border-green-200 p-6">
+                  <h4 className="font-bold text-green-900 mb-4 text-lg">Indirect Sales</h4>
+                  <ul className="space-y-3 text-sm text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>Referral Program:</strong> 20% commission for successful referrals</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>Partner Network:</strong> Collaboration with business consultants</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>Integration Partners:</strong> Co-selling with complementary platforms</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>Co-Marketing:</strong> Joint campaigns with strategic partners</span>
+                    </li>
                   </ul>
                 </div>
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
-                  <h4 className="font-bold text-purple-900 mb-3">Self-Service</h4>
-                  <ul className="space-y-2 text-sm text-gray-700">
-                    <li>• Freemium model</li>
-                    <li>• In-app upgrades</li>
-                    <li>• Automated onboarding</li>
-                    <li>• Self-guided setup</li>
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border-2 border-purple-200 p-6">
+                  <h4 className="font-bold text-purple-900 mb-4 text-lg">Self-Service</h4>
+                  <ul className="space-y-3 text-sm text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>Freemium Model:</strong> Free tier to drive adoption</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>In-App Upgrades:</strong> Seamless upgrade path to paid tiers</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>Automated Onboarding:</strong> Self-guided setup process</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>Self-Guided Setup:</strong> Interactive tutorials and documentation</span>
+                    </li>
                   </ul>
                 </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Content Strategy</h3>
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg border border-indigo-200 p-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  {[
+                    { title: 'Educational Content', items: ['How-to guides for administrative processes', 'Video tutorials on platform features', 'Webinars on business efficiency', 'Blog posts on industry trends'] },
+                    { title: 'Social Proof', items: ['Customer success stories', 'Case studies with ROI metrics', 'Video testimonials', 'Provider spotlight features'] },
+                    { title: 'Thought Leadership', items: ['Industry reports and whitepapers', 'Expert interviews', 'Market analysis', 'Best practices guides'] },
+                    { title: 'Engagement Content', items: ['Interactive tools (ROI calculator)', 'Infographics', 'Social media campaigns', 'Email newsletters'] },
+                  ].map((category, index) => (
+                    <div key={index} className="bg-white rounded-lg border border-indigo-200 p-4">
+                      <h4 className="font-bold text-gray-900 mb-3">{category.title}</h4>
+                      <ul className="space-y-2">
+                        {category.items.map((item, idx) => (
+                          <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+                            <span className="text-indigo-600">→</span>
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Promotional Pricing & Campaigns</h3>
+              <div className="grid md:grid-cols-4 gap-4">
+                {[
+                  { title: 'Launch Discount', desc: '50% off Pro for first 3 months', period: 'First 100 customers', color: 'blue' },
+                  { title: 'Annual Savings', desc: '2 months free with annual plan', period: 'Ongoing', color: 'green' },
+                  { title: 'Referral Bonus', desc: '1 month free for each referral', period: 'Ongoing', color: 'purple' },
+                  { title: 'Volume Discount', desc: 'Up to 30% off for 10+ users', period: 'Enterprise only', color: 'orange' },
+                ].map((promo, index) => (
+                  <div key={index} className={`bg-gradient-to-br from-${promo.color}-50 to-${promo.color}-100 rounded-lg border-2 border-${promo.color}-200 p-4 text-center`}>
+                    <h4 className="font-bold text-gray-900 mb-2">{promo.title}</h4>
+                    <p className="text-sm text-gray-700 mb-2">{promo.desc}</p>
+                    <span className={`text-xs bg-${promo.color}-200 text-${promo.color}-800 px-2 py-1 rounded-full`}>{promo.period}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
