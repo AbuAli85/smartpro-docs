@@ -1,5 +1,5 @@
 import DocsLayout from '@/components/DocsLayout';
-import { TrendingUp, Target, Users, DollarSign, Calendar, CheckCircle, ArrowRight } from 'lucide-react';
+import { TrendingUp, Target, Users, DollarSign, Calendar, CheckCircle, ArrowRight, Globe, Zap, Shield, Award, BarChart3, FileText, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
 import { useEffect } from 'react';
@@ -89,6 +89,45 @@ export default function BusinessPlanFull() {
           </div>
         </section>
 
+        {/* Key Metrics Dashboard */}
+        <section>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Key Business Metrics</h2>
+          <div className="grid md:grid-cols-4 gap-4">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 border border-blue-200">
+              <div className="flex items-center gap-2 mb-2">
+                <DollarSign className="w-5 h-5 text-blue-600" />
+                <div className="text-sm font-semibold text-blue-900">Initial Investment</div>
+              </div>
+              <div className="text-3xl font-bold text-blue-600">$455K</div>
+              <div className="text-xs text-blue-700 mt-1">Platform & Launch</div>
+            </div>
+            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 border border-green-200">
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingUp className="w-5 h-5 text-green-600" />
+                <div className="text-sm font-semibold text-green-900">5-Year ROI</div>
+              </div>
+              <div className="text-3xl font-bold text-green-600">230%</div>
+              <div className="text-xs text-green-700 mt-1">Projected Returns</div>
+            </div>
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="w-5 h-5 text-purple-600" />
+                <div className="text-sm font-semibold text-purple-900">Target Users</div>
+              </div>
+              <div className="text-3xl font-bold text-purple-600">20K</div>
+              <div className="text-xs text-purple-700 mt-1">By Year 5</div>
+            </div>
+            <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-6 border border-orange-200">
+              <div className="flex items-center gap-2 mb-2">
+                <Globe className="w-5 h-5 text-orange-600" />
+                <div className="text-sm font-semibold text-orange-900">Market Coverage</div>
+              </div>
+              <div className="text-3xl font-bold text-orange-600">6 GCC</div>
+              <div className="text-xs text-orange-700 mt-1">Countries</div>
+            </div>
+          </div>
+        </section>
+
         {/* Executive Summary */}
         <section id="executive-summary">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">1. Executive Summary</h2>
@@ -96,7 +135,7 @@ export default function BusinessPlanFull() {
           <div className="space-y-6">
             <div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Company Overview</h3>
-              <p className="text-gray-700">
+              <p className="text-gray-700 leading-relaxed">
                 SmartPRO is a smart bilingual (Arabic/English) platform designed to connect companies, service providers, and Omani individuals with fully integrated digital business and administrative services. The platform serves as a professional connection point between companies and institutions on one side, and service providers and technicians on the other, through a direct booking system, instant messaging, automated reports, and an AI-powered assistant.
               </p>
             </div>
@@ -221,41 +260,121 @@ export default function BusinessPlanFull() {
           </div>
         </section>
 
+        {/* Market Opportunity */}
+        <section id="market-analysis">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">3. Market Analysis</h2>
+          
+          <div className="space-y-6">
+            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-8 border border-indigo-200">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Market Opportunity</h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div>
+                  <div className="text-4xl font-bold text-indigo-600 mb-2">$600B+</div>
+                  <div className="text-sm text-gray-700">Global Administrative Services Market</div>
+                </div>
+                <div>
+                  <div className="text-4xl font-bold text-purple-600 mb-2">25K+</div>
+                  <div className="text-sm text-gray-700">SMEs in Oman Alone</div>
+                </div>
+                <div>
+                  <div className="text-4xl font-bold text-pink-600 mb-2">90%+</div>
+                  <div className="text-sm text-gray-700">Internet Penetration in GCC</div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Target Market Segments</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                {[
+                  { icon: <Users className="w-6 h-6" />, title: 'SMEs', desc: '25,000+ businesses in Oman needing administrative support', color: 'blue' },
+                  { icon: <Award className="w-6 h-6" />, title: 'Service Providers', desc: 'Growing freelance and professional service sector', color: 'green' },
+                  { icon: <Shield className="w-6 h-6" />, title: 'Large Enterprises', desc: '200+ major corporations seeking optimization', color: 'purple' },
+                  { icon: <Globe className="w-6 h-6" />, title: 'Government Entities', desc: 'Multiple ministries undergoing digital transformation', color: 'orange' },
+                ].map((segment, index) => (
+                  <div key={index} className={`bg-white rounded-lg border-2 border-${segment.color}-200 p-6 hover:shadow-lg transition-shadow`}>
+                    <div className={`text-${segment.color}-600 mb-3`}>{segment.icon}</div>
+                    <h4 className="font-bold text-gray-900 mb-2">{segment.title}</h4>
+                    <p className="text-sm text-gray-600">{segment.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Competitive Advantages</h3>
+              <div className="grid md:grid-cols-3 gap-4">
+                {[
+                  { icon: <Globe className="w-5 h-5" />, title: 'Localization', desc: 'Bilingual Arabic/English platform tailored for GCC' },
+                  { icon: <Zap className="w-5 h-5" />, title: 'AI-Powered', desc: 'Advanced automation and intelligent features' },
+                  { icon: <Shield className="w-5 h-5" />, title: 'Government Integration', desc: 'Strategic partnerships with public sector' },
+                ].map((advantage, index) => (
+                  <div key={index} className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 border border-gray-200">
+                    <div className="text-blue-600 mb-3">{advantage.icon}</div>
+                    <h4 className="font-bold text-gray-900 mb-2">{advantage.title}</h4>
+                    <p className="text-sm text-gray-600">{advantage.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Revenue Streams */}
         <section>
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Revenue Streams</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">Revenue Model & Streams</h2>
           <div className="grid md:grid-cols-2 gap-6">
             {[
               {
                 title: 'Subscriptions',
                 desc: 'Tiered plans (Free, Pro, Enterprise) for providers and businesses',
                 year5: '$750,000',
+                percentage: '30%',
+                icon: <Users className="w-6 h-6" />,
               },
               {
                 title: 'Booking Commissions',
                 desc: '10-20% commission on each transaction',
                 year5: '$900,000',
+                percentage: '36%',
+                icon: <DollarSign className="w-6 h-6" />,
               },
               {
                 title: 'AI Features',
                 desc: 'Usage fees for advanced automation and analytics',
                 year5: '$350,000',
+                percentage: '14%',
+                icon: <Zap className="w-6 h-6" />,
               },
               {
                 title: 'Featured Listings',
                 desc: 'Premium visibility for service providers',
                 year5: '$200,000',
+                percentage: '8%',
+                icon: <Award className="w-6 h-6" />,
               },
               {
                 title: 'Custom Integrations',
                 desc: 'Tailored solutions for enterprise and government',
                 year5: '$300,000',
+                percentage: '12%',
+                icon: <Shield className="w-6 h-6" />,
               },
             ].map((stream, index) => (
-              <div key={index} className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
+              <div key={index} className="bg-white rounded-lg border-2 border-gray-200 p-6 hover:shadow-lg transition-shadow hover:border-blue-300">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="text-blue-600">{stream.icon}</div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-gray-900">{stream.percentage}</div>
+                    <div className="text-xs text-gray-500">of revenue</div>
+                  </div>
+                </div>
                 <h3 className="font-bold text-gray-900 mb-2">{stream.title}</h3>
-                <p className="text-sm text-gray-600 mb-3">{stream.desc}</p>
-                <div className="text-lg font-bold text-blue-600">Year 5: {stream.year5}</div>
+                <p className="text-sm text-gray-600 mb-4">{stream.desc}</p>
+                <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                  <span className="text-sm text-gray-600">Year 5 Target:</span>
+                  <span className="text-lg font-bold text-blue-600">{stream.year5}</span>
+                </div>
               </div>
             ))}
           </div>
@@ -320,20 +439,160 @@ export default function BusinessPlanFull() {
           </div>
         </section>
 
+        {/* Risk Management */}
+        <section>
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">Risk Analysis & Mitigation</h2>
+          <div className="space-y-4">
+            {[
+              {
+                risk: 'Market Adoption',
+                mitigation: 'Freemium model, targeted marketing, and strategic partnerships to drive user acquisition',
+                severity: 'Medium',
+                color: 'yellow',
+              },
+              {
+                risk: 'Technical Scalability',
+                mitigation: 'Cloud infrastructure, load testing, and modular architecture for growth',
+                severity: 'Low',
+                color: 'green',
+              },
+              {
+                risk: 'Competitive Pressure',
+                mitigation: 'Rapid feature development, strong localization, and government partnerships',
+                severity: 'Medium',
+                color: 'yellow',
+              },
+              {
+                risk: 'Regulatory Compliance',
+                mitigation: 'Legal counsel, government relations, and proactive compliance monitoring',
+                severity: 'Low',
+                color: 'green',
+              },
+            ].map((item, index) => (
+              <div key={index} className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="font-bold text-gray-900">{item.risk}</h3>
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold bg-${item.color}-100 text-${item.color}-800`}>
+                    {item.severity} Risk
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600">{item.mitigation}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Success Metrics */}
+        <section>
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">Key Success Metrics</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <Users className="w-5 h-5 text-blue-600" />
+                User Growth
+              </h3>
+              <ul className="space-y-2 text-sm">
+                <li className="flex justify-between">
+                  <span className="text-gray-600">Year 1:</span>
+                  <span className="font-semibold text-gray-900">500 users</span>
+                </li>
+                <li className="flex justify-between">
+                  <span className="text-gray-600">Year 2:</span>
+                  <span className="font-semibold text-gray-900">1,000 users</span>
+                </li>
+                <li className="flex justify-between">
+                  <span className="text-gray-600">Year 3:</span>
+                  <span className="font-semibold text-gray-900">5,000 users</span>
+                </li>
+                <li className="flex justify-between">
+                  <span className="text-gray-600">Year 5:</span>
+                  <span className="font-semibold text-blue-600">20,000 users</span>
+                </li>
+              </ul>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-green-600" />
+                Financial Targets
+              </h3>
+              <ul className="space-y-2 text-sm">
+                <li className="flex justify-between">
+                  <span className="text-gray-600">Gross Margin:</span>
+                  <span className="font-semibold text-gray-900">70%</span>
+                </li>
+                <li className="flex justify-between">
+                  <span className="text-gray-600">CAC:</span>
+                  <span className="font-semibold text-gray-900">$50/user</span>
+                </li>
+                <li className="flex justify-between">
+                  <span className="text-gray-600">LTV:</span>
+                  <span className="font-semibold text-gray-900">$500/user</span>
+                </li>
+                <li className="flex justify-between">
+                  <span className="text-gray-600">LTV:CAC:</span>
+                  <span className="font-semibold text-green-600">10:1</span>
+                </li>
+              </ul>
+            </div>
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <CheckCircle className="w-5 h-5 text-purple-600" />
+                Operational KPIs
+              </h3>
+              <ul className="space-y-2 text-sm">
+                <li className="flex justify-between">
+                  <span className="text-gray-600">Platform Uptime:</span>
+                  <span className="font-semibold text-gray-900">99.9%</span>
+                </li>
+                <li className="flex justify-between">
+                  <span className="text-gray-600">Support Satisfaction:</span>
+                  <span className="font-semibold text-gray-900">&gt;90%</span>
+                </li>
+                <li className="flex justify-between">
+                  <span className="text-gray-600">Service Completion:</span>
+                  <span className="font-semibold text-gray-900">&gt;95%</span>
+                </li>
+                <li className="flex justify-between">
+                  <span className="text-gray-600">Market Share (Oman):</span>
+                  <span className="font-semibold text-purple-600">30%</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
         {/* Download & Contact */}
         <section className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-8 text-white">
-          <h2 className="text-2xl font-bold mb-4">Ready to Learn More?</h2>
-          <p className="mb-6 text-blue-100">
-            Download the complete business plan PDF or contact us to discuss investment opportunities and partnerships.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
-              <DollarSign className="w-4 h-4 mr-2" />
-              Download Full PDF
-            </Button>
-            <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-blue-700" asChild>
-              <Link href="/contact">Contact Us</Link>
-            </Button>
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-4">Ready to Learn More?</h2>
+            <p className="text-xl mb-8 text-blue-100">
+              Download the complete business plan PDF or contact us to discuss investment opportunities and partnerships.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
+                <Download className="w-5 h-5 mr-2" />
+                Download Full PDF
+              </Button>
+              <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-blue-700" asChild>
+                <Link href="/contact">
+                  <FileText className="w-5 h-5 mr-2" />
+                  Request Pitch Deck
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-blue-700" asChild>
+                <Link href="/contact">Contact Us</Link>
+              </Button>
+            </div>
+            <div className="mt-8 pt-8 border-t border-white/20">
+              <p className="text-sm text-blue-100 mb-4">For investment inquiries:</p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center text-sm">
+                <a href="mailto:invest@thesmartpro.io" className="text-white hover:text-blue-200 transition-colors">
+                  invest@thesmartpro.io
+                </a>
+                <span className="hidden sm:inline text-blue-300">|</span>
+                <span className="text-blue-100">Sultanate of Oman</span>
+              </div>
+            </div>
           </div>
         </section>
       </div>
