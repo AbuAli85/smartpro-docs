@@ -2252,62 +2252,263 @@ export default function BusinessPlanFull() {
           </div>
         </section>
 
-        {/* Implementation Timeline */}
+        {/* Implementation Timeline - COMPREHENSIVE */}
         <section id="implementation">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">9. Implementation Timeline</h2>
-          <div className="space-y-4">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">9. Implementation Plan & Timeline</h2>
+          
+          <div className="space-y-8">
+            {/* Implementation Overview */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200 p-6">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">36-Month Implementation Roadmap</h3>
+              <p className="text-gray-700 mb-6">
+                SmartPRO's implementation follows a phased approach over 36 months, from initial development to full GCC market coverage. Each phase includes specific milestones, resource allocation, and budget requirements.
+              </p>
+              <div className="grid md:grid-cols-5 gap-4">
+                {[
+                  { phase: 'Phase 1', duration: '6 months', focus: 'Development', budget: '$180K', team: '8-10' },
+                  { phase: 'Phase 2', duration: '6 months', focus: 'MVP Launch', budget: '$140K', team: '12-15' },
+                  { phase: 'Phase 3', duration: '6 months', focus: 'Enhancement', budget: '$160K', team: '18-20' },
+                  { phase: 'Phase 4', duration: '6 months', focus: 'Expansion Prep', budget: '$180K', team: '25-30' },
+                  { phase: 'Phase 5', duration: '12 months', focus: 'GCC Expansion', budget: '$400K', team: '40-50' },
+                ].map((item, index) => (
+                  <div key={index} className="bg-white rounded-lg border border-blue-200 p-4 text-center">
+                    <div className="font-bold text-blue-900 mb-2">{item.phase}</div>
+                    <div className="text-xs text-gray-600 mb-1">{item.duration}</div>
+                    <div className="text-sm font-semibold text-gray-900 mb-2">{item.focus}</div>
+                    <div className="text-xs text-gray-600 mb-1">Budget: {item.budget}</div>
+                    <div className="text-xs text-gray-600">Team: {item.team}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Detailed Phase Breakdown */}
             {[
               {
                 phase: 'Phase 1',
-                title: 'Platform Development',
+                title: 'Platform Development & Foundation',
                 timeline: 'Months 1-6',
-                milestones: ['Requirements gathering', 'Architecture design', 'Core development', 'Internal testing'],
+                budget: '$180,000',
+                team: '8-10 members',
+                objectives: ['Build MVP platform', 'Establish technical foundation', 'Create core features', 'Prepare for beta launch'],
+                milestones: [
+                  { month: 'Month 1', task: 'Requirements gathering & planning', owner: 'Product Team', status: 'Planning' },
+                  { month: 'Month 2', task: 'Architecture design & tech stack finalization', owner: 'CTO', status: 'Planning' },
+                  { month: 'Month 3-4', task: 'Core platform development (frontend/backend)', owner: 'Dev Team', status: 'Development' },
+                  { month: 'Month 5', task: 'Internal testing & QA', owner: 'QA Team', status: 'Testing' },
+                  { month: 'Month 6', task: 'Security audit & performance optimization', owner: 'Security Team', status: 'Review' },
+                ],
+                resources: [
+                  { role: 'Full-stack Developers', count: '4', cost: '$80K' },
+                  { role: 'UI/UX Designer', count: '1', cost: '$15K' },
+                  { role: 'Product Manager', count: '1', cost: '$18K' },
+                  { role: 'QA Engineer', count: '1', cost: '$12K' },
+                  { role: 'DevOps Engineer', count: '1', cost: '$15K' },
+                  { role: 'Infrastructure & Tools', count: '-', cost: '$40K' },
+                ],
+                color: 'blue'
               },
               {
                 phase: 'Phase 2',
-                title: 'MVP Launch',
+                title: 'MVP Launch & Market Entry',
                 timeline: 'Months 7-12',
-                milestones: ['Beta testing', 'Official launch in Oman', 'Initial marketing', 'Provider onboarding'],
+                budget: '$140,000',
+                team: '12-15 members',
+                objectives: ['Launch beta in Oman', 'Onboard initial providers', 'Acquire first 500 users', 'Validate product-market fit'],
+                milestones: [
+                  { month: 'Month 7', task: 'Beta launch with 50 early adopters', owner: 'Product Team', status: 'Launch' },
+                  { month: 'Month 8', task: 'Provider onboarding (target: 100 providers)', owner: 'Operations', status: 'Execution' },
+                  { month: 'Month 9', task: 'Marketing campaign launch', owner: 'Marketing', status: 'Execution' },
+                  { month: 'Month 10', task: 'Official public launch in Oman', owner: 'CEO', status: 'Launch' },
+                  { month: 'Month 11', task: 'Feature iteration based on feedback', owner: 'Product Team', status: 'Development' },
+                  { month: 'Month 12', task: 'Achieve 500 active users milestone', owner: 'Growth Team', status: 'Target' },
+                ],
+                resources: [
+                  { role: 'Development Team', count: '5', cost: '$50K' },
+                  { role: 'Marketing Team', count: '3', cost: '$30K' },
+                  { role: 'Operations Team', count: '2', cost: '$18K' },
+                  { role: 'Customer Support', count: '2', cost: '$12K' },
+                  { role: 'Marketing Budget', count: '-', cost: '$30K' },
+                ],
+                color: 'green'
               },
               {
                 phase: 'Phase 3',
-                title: 'Feature Enhancement',
+                title: 'Feature Enhancement & Growth',
                 timeline: 'Months 13-18',
-                milestones: ['Advanced AI features', 'Service expansion', 'Mobile apps', 'Performance optimization'],
+                budget: '$160,000',
+                team: '18-20 members',
+                objectives: ['Develop advanced features', 'Launch mobile apps', 'Scale to 2,000 users', 'Achieve break-even'],
+                milestones: [
+                  { month: 'Month 13-14', task: 'AI features development (chatbot, matching)', owner: 'AI Team', status: 'Development' },
+                  { month: 'Month 15', task: 'Mobile apps launch (iOS/Android)', owner: 'Mobile Team', status: 'Launch' },
+                  { month: 'Month 16', task: 'Service category expansion', owner: 'Operations', status: 'Expansion' },
+                  { month: 'Month 17', task: 'Performance optimization & scaling', owner: 'DevOps', status: 'Optimization' },
+                  { month: 'Month 18', task: 'Reach 2,000 active users', owner: 'Growth Team', status: 'Target' },
+                ],
+                resources: [
+                  { role: 'Development Team', count: '8', cost: '$80K' },
+                  { role: 'AI/ML Engineers', count: '2', cost: '$25K' },
+                  { role: 'Mobile Developers', count: '2', cost: '$20K' },
+                  { role: 'Marketing & Sales', count: '4', cost: '$25K' },
+                  { role: 'Infrastructure & Tools', count: '-', cost: '$10K' },
+                ],
+                color: 'purple'
               },
               {
                 phase: 'Phase 4',
-                title: 'Regional Expansion Prep',
+                title: 'Regional Expansion Preparation',
                 timeline: 'Months 19-24',
-                milestones: ['UAE/Qatar research', 'Localization', 'Regulatory compliance', 'Team expansion'],
+                budget: '$180,000',
+                team: '25-30 members',
+                objectives: ['Prepare for UAE/Qatar entry', 'Establish partnerships', 'Achieve profitability', 'Raise Series A'],
+                milestones: [
+                  { month: 'Month 19', task: 'Market research for UAE/Qatar', owner: 'Strategy Team', status: 'Research' },
+                  { month: 'Month 20', task: 'Regulatory compliance & licensing', owner: 'Legal Team', status: 'Compliance' },
+                  { month: 'Month 21', task: 'Platform localization for new markets', owner: 'Product Team', status: 'Development' },
+                  { month: 'Month 22', task: 'Team expansion & hiring', owner: 'HR', status: 'Hiring' },
+                  { month: 'Month 23', task: 'Series A fundraising ($2-3M)', owner: 'CEO/CFO', status: 'Fundraising' },
+                  { month: 'Month 24', task: 'Achieve profitability milestone', owner: 'CFO', status: 'Target' },
+                ],
+                resources: [
+                  { role: 'Development Team', count: '10', cost: '$100K' },
+                  { role: 'Regional Managers', count: '3', cost: '$30K' },
+                  { role: 'Legal & Compliance', count: '2', cost: '$15K' },
+                  { role: 'Sales Team', count: '4', cost: '$25K' },
+                  { role: 'Expansion Budget', count: '-', cost: '$10K' },
+                ],
+                color: 'orange'
               },
               {
                 phase: 'Phase 5',
-                title: 'GCC Expansion',
+                title: 'GCC Market Expansion',
                 timeline: 'Months 25-36',
-                milestones: ['UAE/Qatar launch', 'Saudi Arabia entry', 'Regional offices', 'Network expansion'],
+                budget: '$400,000',
+                team: '40-50 members',
+                objectives: ['Launch in UAE & Qatar', 'Enter Saudi Arabia', 'Achieve regional leadership', 'Prepare for Series B'],
+                milestones: [
+                  { month: 'Month 25-26', task: 'UAE market launch', owner: 'UAE Team', status: 'Launch' },
+                  { month: 'Month 27-28', task: 'Qatar market launch', owner: 'Qatar Team', status: 'Launch' },
+                  { month: 'Month 29-30', task: 'Saudi Arabia market entry', owner: 'Saudi Team', status: 'Launch' },
+                  { month: 'Month 31-32', task: 'Regional office establishment', owner: 'Operations', status: 'Expansion' },
+                  { month: 'Month 33-34', task: 'Provider network expansion (2,000+)', owner: 'Operations', status: 'Growth' },
+                  { month: 'Month 35-36', task: 'Series B preparation & regional leadership', owner: 'CEO/CFO', status: 'Strategy' },
+                ],
+                resources: [
+                  { role: 'Development Team', count: '15', cost: '$150K' },
+                  { role: 'Regional Teams (3 markets)', count: '12', cost: '$120K' },
+                  { role: 'Marketing & Sales', count: '10', cost: '$80K' },
+                  { role: 'Operations & Support', count: '8', cost: '$40K' },
+                  { role: 'Infrastructure & Expansion', count: '-', cost: '$10K' },
+                ],
+                color: 'red'
               },
             ].map((phase, index) => (
-              <div key={index} className="bg-white rounded-lg border-l-4 border-blue-600 p-6 shadow-sm">
-                <div className="flex items-start justify-between mb-3">
+              <div key={index} className={`bg-gradient-to-br from-${phase.color}-50 to-${phase.color}-100 rounded-lg border-2 border-${phase.color}-200 p-6`}>
+                <div className="flex items-start justify-between mb-6">
                   <div>
-                    <div className="text-sm font-bold text-blue-600 mb-1">{phase.phase}</div>
-                    <h3 className="text-xl font-bold text-gray-900">{phase.title}</h3>
-                  </div>
-                  <div className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                    {phase.timeline}
+                    <div className={`text-sm font-bold text-${phase.color}-600 mb-1`}>{phase.phase}</div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{phase.title}</h3>
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <span className="flex items-center gap-1">
+                        <CheckCircle className="w-4 h-4" />
+                        {phase.timeline}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <DollarSign className="w-4 h-4" />
+                        Budget: {phase.budget}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Users className="w-4 h-4" />
+                        Team: {phase.team}
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <ul className="grid md:grid-cols-2 gap-2">
-                  {phase.milestones.map((milestone, idx) => (
-                    <li key={idx} className="flex items-center gap-2 text-sm text-gray-700">
-                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0" />
-                      {milestone}
-                    </li>
-                  ))}
-                </ul>
+
+                {/* Objectives */}
+                <div className="mb-6">
+                  <h4 className="font-bold text-gray-900 mb-3">Phase Objectives</h4>
+                  <div className="grid md:grid-cols-2 gap-2">
+                    {phase.objectives.map((objective, idx) => (
+                      <div key={idx} className="flex items-start gap-2 text-sm text-gray-700">
+                        <Target className={`w-4 h-4 text-${phase.color}-600 flex-shrink-0 mt-0.5`} />
+                        <span>{objective}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Detailed Milestones */}
+                <div className="mb-6">
+                  <h4 className="font-bold text-gray-900 mb-3">Detailed Milestones</h4>
+                  <div className="space-y-2">
+                    {phase.milestones.map((milestone, idx) => (
+                      <div key={idx} className="bg-white rounded-lg border border-gray-200 p-3 flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3">
+                            <span className={`text-xs font-bold text-${phase.color}-600 bg-${phase.color}-100 px-2 py-1 rounded`}>
+                              {milestone.month}
+                            </span>
+                            <span className="text-sm font-semibold text-gray-900">{milestone.task}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs text-gray-600">{milestone.owner}</span>
+                          <span className={`text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded`}>
+                            {milestone.status}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Resource Allocation */}
+                <div>
+                  <h4 className="font-bold text-gray-900 mb-3">Resource Allocation</h4>
+                  <div className="bg-white rounded-lg border border-gray-200 p-4">
+                    <div className="grid md:grid-cols-2 gap-3">
+                      {phase.resources.map((resource, idx) => (
+                        <div key={idx} className="flex items-center justify-between text-sm">
+                          <span className="text-gray-700">{resource.role} {resource.count !== '-' && `(${resource.count})`}</span>
+                          <span className="font-semibold text-gray-900">{resource.cost}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-3 pt-3 border-t border-gray-200 flex justify-between items-center">
+                      <span className="font-bold text-gray-900">Phase Total:</span>
+                      <span className={`text-xl font-bold text-${phase.color}-600`}>{phase.budget}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             ))}
+
+            {/* Critical Success Factors */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Critical Success Factors</h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  { title: 'Technical Excellence', factors: ['Robust architecture', 'Scalable infrastructure', 'Security & compliance', 'Performance optimization'], icon: <Zap className="w-6 h-6" />, color: 'blue' },
+                  { title: 'Market Execution', factors: ['Provider network growth', 'User acquisition & retention', 'Brand awareness', 'Strategic partnerships'], icon: <TrendingUp className="w-6 h-6" />, color: 'green' },
+                  { title: 'Financial Management', factors: ['Budget discipline', 'Fundraising success', 'Cash flow management', 'Path to profitability'], icon: <DollarSign className="w-6 h-6" />, color: 'purple' },
+                ].map((factor, index) => (
+                  <div key={index} className={`bg-gradient-to-br from-${factor.color}-50 to-${factor.color}-100 rounded-lg border-2 border-${factor.color}-200 p-6`}>
+                    <div className={`text-${factor.color}-600 mb-3`}>{factor.icon}</div>
+                    <h4 className="font-bold text-gray-900 mb-3">{factor.title}</h4>
+                    <ul className="space-y-2">
+                      {factor.factors.map((item, idx) => (
+                        <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+                          <CheckCircle className={`w-4 h-4 text-${factor.color}-600 flex-shrink-0 mt-0.5`} />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
@@ -2433,123 +2634,309 @@ export default function BusinessPlanFull() {
           </div>
         </section>
 
-        {/* Appendices */}
+        {/* Appendices - COMPREHENSIVE */}
         <section id="appendices">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">10. Appendices</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">10. Appendices & Supporting Documents</h2>
           
-          <div className="space-y-6">
+          <div className="space-y-8">
+            {/* Market Research Data */}
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Market Research Data</h3>
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
-                <h4 className="font-bold text-gray-900 mb-3">Oman Digital Transformation Overview</h4>
-                <ul className="space-y-2 text-sm text-gray-700">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>Growing internet penetration rate (over 90% of the population)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>Increasing smartphone adoption (estimated at 85% of the population)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>Government investment in digital infrastructure</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>Rising adoption of digital services across public and private sectors</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>Supportive policies for entrepreneurship and digital platforms</span>
-                  </li>
-                </ul>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">A. Market Research & Data</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-lg border-2 border-blue-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <Globe className="w-5 h-5 text-blue-600" />
+                    Oman Digital Transformation Overview
+                  </h4>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Internet penetration: 90%+ of population</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Smartphone adoption: 85%+ of population</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Government digital investment: $2B+ (2020-2025)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>E-commerce growth: 25% CAGR</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Digital payment adoption: 60%+ of transactions</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="bg-white rounded-lg border-2 border-green-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-green-600" />
+                    GCC Market Statistics
+                  </h4>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Total SMEs in GCC: 150,000+</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Digital services market: $15B+ (2024)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Market growth rate: 15% annually</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Freelance workforce: 500,000+ professionals</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Government digital initiatives: Active in all 6 countries</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
 
+            {/* Technical Documentation */}
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Technical Specifications</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">B. Technical Specifications</h3>
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
-                  <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border-2 border-blue-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
                     <FileText className="w-5 h-5 text-blue-600" />
                     Platform Architecture
                   </h4>
-                  <ul className="space-y-1 text-sm text-gray-700">
-                    <li>• Frontend: Next.js-based responsive web application</li>
-                    <li>• Backend: Node.js with Express.js API framework</li>
-                    <li>• Database: MongoDB for flexible data storage</li>
-                    <li>• Authentication: JWT-based secure authentication</li>
-                    <li>• Cloud Infrastructure: AWS/Azure with auto-scaling</li>
-                  </ul>
+                  <div className="space-y-3 text-sm text-gray-700">
+                    <div>
+                      <strong>Frontend Stack:</strong>
+                      <ul className="ml-4 mt-1 space-y-1">
+                        <li>• Next.js 14+ (React 18+, TypeScript)</li>
+                        <li>• Tailwind CSS for styling</li>
+                        <li>• Progressive Web App (PWA) support</li>
+                        <li>• Mobile-responsive design</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <strong>Backend Stack:</strong>
+                      <ul className="ml-4 mt-1 space-y-1">
+                        <li>• Node.js with Express.js</li>
+                        <li>• MongoDB (NoSQL database)</li>
+                        <li>• RESTful APIs + GraphQL</li>
+                        <li>• WebSocket for real-time features</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <strong>Infrastructure:</strong>
+                      <ul className="ml-4 mt-1 space-y-1">
+                        <li>• AWS/Azure cloud hosting</li>
+                        <li>• Auto-scaling & load balancing</li>
+                        <li>• CDN (CloudFront/Azure CDN)</li>
+                        <li>• 99.9% uptime SLA</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
-                  <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-green-600" />
-                    Security Measures
+                <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg border-2 border-red-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-red-600" />
+                    Security & Compliance
                   </h4>
-                  <ul className="space-y-1 text-sm text-gray-700">
-                    <li>• End-to-end encryption for sensitive data</li>
-                    <li>• Regular penetration testing and security audits</li>
-                    <li>• GDPR and local data protection compliance</li>
-                    <li>• Multi-factor authentication options</li>
-                    <li>• Regular security patches and updates</li>
-                  </ul>
+                  <div className="space-y-3 text-sm text-gray-700">
+                    <div>
+                      <strong>Data Protection:</strong>
+                      <ul className="ml-4 mt-1 space-y-1">
+                        <li>• AES-256 encryption at rest</li>
+                        <li>• TLS 1.3 for data in transit</li>
+                        <li>• GDPR compliance</li>
+                        <li>• Regular data backups</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <strong>Access Control:</strong>
+                      <ul className="ml-4 mt-1 space-y-1">
+                        <li>• Multi-factor authentication (MFA)</li>
+                        <li>• Role-based access control (RBAC)</li>
+                        <li>• JWT token authentication</li>
+                        <li>• OAuth 2.0 integration</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <strong>Monitoring:</strong>
+                      <ul className="ml-4 mt-1 space-y-1">
+                        <li>• 24/7 security monitoring</li>
+                        <li>• Intrusion detection system</li>
+                        <li>• Regular penetration testing</li>
+                        <li>• Incident response plan</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
+            {/* Legal & Regulatory */}
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Legal & Regulatory</h3>
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 border border-gray-200">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">C. Legal & Regulatory Framework</h3>
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border-2 border-gray-200 p-6">
                 <div className="grid md:grid-cols-3 gap-6">
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-2">Corporate Structure</h4>
-                    <ul className="space-y-1 text-xs text-gray-700">
-                      <li>• LLC registered in Oman</li>
-                      <li>• Articles of Incorporation</li>
-                      <li>• Operating Agreement</li>
-                      <li>• Shareholder Agreement</li>
+                    <h4 className="font-bold text-gray-900 mb-3">Corporate Structure</h4>
+                    <ul className="space-y-2 text-sm text-gray-700">
+                      <li className="flex items-start gap-2">
+                        <FileText className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                        <span>LLC registered in Oman</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <FileText className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                        <span>Articles of Incorporation</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <FileText className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                        <span>Operating Agreement</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <FileText className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                        <span>Shareholder Agreement</span>
+                      </li>
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-2">Compliance</h4>
-                    <ul className="space-y-1 text-xs text-gray-700">
-                      <li>• IT Activities License</li>
-                      <li>• Data Protection Compliance</li>
-                      <li>• Terms of Service</li>
-                      <li>• Privacy Policy</li>
+                    <h4 className="font-bold text-gray-900 mb-3">Licenses & Compliance</h4>
+                    <ul className="space-y-2 text-sm text-gray-700">
+                      <li className="flex items-start gap-2">
+                        <Shield className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span>IT Activities License</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Shield className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span>Data Protection Compliance</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Shield className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span>Terms of Service</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Shield className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span>Privacy Policy</span>
+                      </li>
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-2">Intellectual Property</h4>
-                    <ul className="space-y-1 text-xs text-gray-700">
-                      <li>• Trademark Registration</li>
-                      <li>• Copyright Protection</li>
-                      <li>• Software Licensing</li>
-                      <li>• Non-Disclosure Agreements</li>
+                    <h4 className="font-bold text-gray-900 mb-3">Intellectual Property</h4>
+                    <ul className="space-y-2 text-sm text-gray-700">
+                      <li className="flex items-start gap-2">
+                        <Award className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                        <span>Trademark Registration</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Award className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                        <span>Copyright Protection</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Award className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                        <span>Software Licensing</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Award className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                        <span>Non-Disclosure Agreements</span>
+                      </li>
                     </ul>
                   </div>
                 </div>
               </div>
             </div>
 
+            {/* Sample Documents */}
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Supporting Materials</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">D. Sample Agreements & Templates</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-lg border-2 border-blue-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4">Service Provider Agreement (Sample)</h4>
+                  <div className="bg-gray-50 rounded p-4 text-xs text-gray-700 font-mono">
+                    <p className="font-bold mb-2">SERVICE PROVIDER AGREEMENT</p>
+                    <p className="mb-2">This Agreement is entered into between SmartPRO LLC ("Platform") and the Service Provider ("Provider").</p>
+                    <p className="mb-2">1. SERVICES: Provider agrees to offer professional services through the SmartPRO platform.</p>
+                    <p className="mb-2">2. COMMISSION: Platform charges 15% commission on completed bookings.</p>
+                    <p className="mb-2">3. QUALITY STANDARDS: Provider maintains minimum 4.0/5.0 rating.</p>
+                    <p className="mb-2">4. COMPLIANCE: Provider complies with all local regulations and licensing requirements.</p>
+                    <p className="text-gray-500">[Full agreement available upon request]</p>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg border-2 border-green-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4">Client Terms of Service (Sample)</h4>
+                  <div className="bg-gray-50 rounded p-4 text-xs text-gray-700 font-mono">
+                    <p className="font-bold mb-2">CLIENT TERMS OF SERVICE</p>
+                    <p className="mb-2">By using SmartPRO, you agree to the following terms:</p>
+                    <p className="mb-2">1. ACCOUNT: You are responsible for maintaining account security.</p>
+                    <p className="mb-2">2. BOOKINGS: All bookings are subject to provider availability and acceptance.</p>
+                    <p className="mb-2">3. PAYMENTS: Payments are processed securely through our payment partners.</p>
+                    <p className="mb-2">4. DISPUTES: Any disputes are resolved through our mediation process.</p>
+                    <p className="text-gray-500">[Full terms available on platform]</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Supporting Materials */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">E. Supporting Materials & Resources</h3>
               <div className="grid md:grid-cols-4 gap-4">
                 {[
-                  { icon: <FileText className="w-6 h-6" />, title: 'UI/UX Mockups', desc: 'Platform designs' },
-                  { icon: <BarChart3 className="w-6 h-6" />, title: 'Market Research', desc: 'Detailed analysis' },
-                  { icon: <Users className="w-6 h-6" />, title: 'Team Bios', desc: 'Leadership profiles' },
-                  { icon: <Globe className="w-6 h-6" />, title: 'Partnership Docs', desc: 'Agreement templates' },
+                  { icon: <FileText className="w-8 h-8" />, title: 'UI/UX Mockups', desc: 'Complete platform designs', status: 'Available', color: 'blue' },
+                  { icon: <BarChart3 className="w-8 h-8" />, title: 'Market Research', desc: 'Detailed market analysis reports', status: 'Available', color: 'green' },
+                  { icon: <Users className="w-8 h-8" />, title: 'Team Bios', desc: 'Leadership profiles & CVs', status: 'Available', color: 'purple' },
+                  { icon: <Globe className="w-8 h-8" />, title: 'Partnership Docs', desc: 'Agreement templates & LOIs', status: 'Available', color: 'orange' },
+                  { icon: <Shield className="w-8 h-8" />, title: 'Security Audit', desc: 'Third-party security assessment', status: 'Pending', color: 'red' },
+                  { icon: <Award className="w-8 h-8" />, title: 'Certifications', desc: 'ISO & compliance certificates', status: 'In Progress', color: 'indigo' },
+                  { icon: <TrendingUp className="w-8 h-8" />, title: 'Financial Models', desc: 'Detailed Excel projections', status: 'Available', color: 'pink' },
+                  { icon: <FileText className="w-8 h-8" />, title: 'Pitch Deck', desc: 'Investor presentation slides', status: 'Available', color: 'teal' },
                 ].map((material, index) => (
-                  <div key={index} className="bg-white rounded-lg border border-gray-200 p-4 text-center hover:shadow-md transition-shadow">
-                    <div className="text-blue-600 mb-2 flex justify-center">{material.icon}</div>
+                  <div key={index} className={`bg-gradient-to-br from-${material.color}-50 to-${material.color}-100 rounded-lg border-2 border-${material.color}-200 p-4 text-center hover:shadow-lg transition-shadow`}>
+                    <div className={`text-${material.color}-600 mb-3 flex justify-center`}>{material.icon}</div>
                     <h4 className="font-bold text-gray-900 text-sm mb-1">{material.title}</h4>
-                    <p className="text-xs text-gray-600">{material.desc}</p>
+                    <p className="text-xs text-gray-600 mb-2">{material.desc}</p>
+                    <span className={`text-xs bg-${material.color}-200 text-${material.color}-800 px-2 py-1 rounded-full`}>
+                      {material.status}
+                    </span>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* References & Citations */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">F. References & Citations</h3>
+              <div className="bg-white rounded-lg border-2 border-gray-200 p-6">
+                <ul className="space-y-3 text-sm text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <span className="font-bold text-gray-900">1.</span>
+                    <span>Oman Vision 2040 - Digital Transformation Strategy. Ministry of Technology and Communications, Sultanate of Oman.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-bold text-gray-900">2.</span>
+                    <span>GCC Digital Economy Report 2024. McKinsey & Company.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-bold text-gray-900">3.</span>
+                    <span>SME Market Analysis - Middle East. World Bank Group, 2023.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-bold text-gray-900">4.</span>
+                    <span>Digital Services Platform Market Size & Growth. Statista Research Department, 2024.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-bold text-gray-900">5.</span>
+                    <span>Freelance Economy in GCC Countries. Oxford Business Group, 2023.</span>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
