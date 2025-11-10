@@ -63,15 +63,15 @@ export default function Support() {
     },
     {
       icon: <Video className="w-8 h-8 text-red-600" />,
-      title: 'Video Tutorials',
-      description: 'Step-by-step video guides for common tasks.',
-      link: '/docs/tutorials',
+      title: 'API Documentation',
+      description: 'REST API reference and integration guides.',
+      link: '/docs/api',
     },
     {
       icon: <Users className="w-8 h-8 text-green-600" />,
-      title: 'Community Forum',
-      description: 'Connect with other users and share knowledge.',
-      link: '#',
+      title: 'Business Plan',
+      description: 'Strategic planning and business insights.',
+      link: '/docs/business-plan-full',
     },
     {
       icon: <MessageCircle className="w-8 h-8 text-purple-600" />,

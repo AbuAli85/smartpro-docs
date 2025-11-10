@@ -50,30 +50,41 @@ export default function ProductOverview() {
                 icon: <Zap className="w-6 h-6" />,
                 title: 'Employee Management',
                 description: 'Comprehensive workforce management from recruitment through separation. Includes payroll integration, leave management, performance tracking, and organizational hierarchy management.',
+                features: ['Recruitment & Onboarding', 'Payroll Integration', 'Leave Management', 'Performance Reviews'],
               },
               {
                 icon: <TrendingUp className="w-6 h-6" />,
                 title: 'CRM & Client Management',
                 description: 'Complete customer relationship management with contact management, sales pipeline tracking, email integration, and activity management.',
+                features: ['Contact Management', 'Sales Pipeline', 'Email Integration', 'Deal Forecasting'],
               },
               {
                 icon: <CheckCircle className="w-6 h-6" />,
                 title: 'Project Management',
                 description: 'Comprehensive project planning and execution with support for Waterfall, Agile, and hybrid methodologies. Includes task management, resource allocation, and collaboration tools.',
+                features: ['Task Management', 'Gantt Charts', 'Kanban Boards', 'Time Tracking'],
               },
               {
                 icon: <Shield className="w-6 h-6" />,
                 title: 'Contract Management',
                 description: 'Complete contract lifecycle management with centralized repository, automated renewal management, obligation tracking, and e-signature integration.',
+                features: ['Contract Repository', 'Renewal Alerts', 'E-Signatures', 'Compliance Tracking'],
               },
             ].map((feature, index) => (
               <div key={index} className="flex gap-4 p-6 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
                 <div className="w-12 h-12 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
                   {feature.icon}
                 </div>
-                <div>
+                <div className="flex-1">
                   <h3 className="font-bold text-gray-900 mb-2">{feature.title}</h3>
-                  <p className="text-gray-600">{feature.description}</p>
+                  <p className="text-gray-600 mb-3">{feature.description}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {feature.features.map((item, i) => (
+                      <span key={i} className="text-xs bg-white px-3 py-1 rounded-full border border-gray-300 text-gray-700">
+                        {item}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             ))}

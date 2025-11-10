@@ -190,13 +190,13 @@ export default function GettingStarted() {
                 </span>
               </div>
             </Link>
-            <Link href="/docs/tutorials">
+            <Link href="/docs/api">
               <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow cursor-pointer">
                 <Play className="w-8 h-8 text-green-600 mb-4" />
-                <h3 className="font-bold text-gray-900 mb-2">Video Tutorials</h3>
-                <p className="text-sm text-gray-600 mb-4">Watch step-by-step video guides for common tasks.</p>
+                <h3 className="font-bold text-gray-900 mb-2">API Documentation</h3>
+                <p className="text-sm text-gray-600 mb-4">Integrate with our REST API for custom solutions.</p>
                 <span className="text-green-600 text-sm font-medium flex items-center gap-1">
-                  Watch Now <ArrowRight className="w-4 h-4" />
+                  View API Docs <ArrowRight className="w-4 h-4" />
                 </span>
               </div>
             </Link>
