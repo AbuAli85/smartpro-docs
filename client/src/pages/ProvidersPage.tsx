@@ -3,10 +3,25 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { CheckCircle2, TrendingUp, Shield, Users, BarChart3, Clock, DollarSign, Lock } from "lucide-react";
 import { Link } from "wouter";
 import Breadcrumb from "@/components/Breadcrumb";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { useEffect } from "react";
+import { setSEOTags } from "@/lib/seoUtils";
 
 export default function ProvidersPage() {
+  useEffect(() => {
+    setSEOTags({
+      title: "For Service Providers | TheSmartPro.io - Grow Your Professional Services Business",
+      description: "Join 10,000+ service providers earning on TheSmartPro.io. Keep 80% of fees, work with verified clients, secure Stripe payments. Start earning today.",
+      keywords: "service providers, consultants, freelance professionals, earn money, professional services marketplace, verified clients",
+      type: "website",
+      url: "https://thesmartpro.io/providers",
+    });
+  }, []);
+  
   return (
     <>
+      <Header />
       <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "For Providers" }, { label: "Earn More" }]} />
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       {/* Hero Section */}
@@ -327,6 +342,7 @@ export default function ProvidersPage() {
         </div>
       </section>
     </div>
+    <Footer />
     </>
   );
 }

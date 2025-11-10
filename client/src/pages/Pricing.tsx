@@ -1,13 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CheckCircle2, ArrowRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Breadcrumb from "@/components/Breadcrumb";
 import RelatedPages from "@/components/RelatedPages";
+import { setSEOTags } from "@/lib/seoUtils";
 
 export default function Pricing() {
+  useEffect(() => {
+    setSEOTags({
+      title: "Pricing Plans | TheSmartPro.io - Transparent Enterprise Pricing",
+      description: "Explore TheSmartPro.io pricing plans. Starter from $99/mo, Professional $299/mo, Enterprise $999/mo. 14-day free trial. No setup fees.",
+      keywords: "pricing, plans, enterprise pricing, professional services pricing, subscription plans, free trial",
+      type: "website",
+      url: "https://thesmartpro.io/pricing",
+    });
+  }, []);
   const relatedPages = [
     {
       title: "Features",

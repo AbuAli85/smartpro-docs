@@ -49,13 +49,13 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
+    <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm" role="banner">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/">
-            <div className="flex items-center gap-2 font-bold text-2xl text-blue-600 hover:text-blue-700 cursor-pointer">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">
+            <div className="flex items-center gap-2 font-bold text-2xl text-blue-600 hover:text-blue-700 cursor-pointer" aria-label="TheSmartPro.io Home">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold" aria-hidden="true">
                 SP
               </div>
               <span className="hidden sm:inline">TheSmartPro.io</span>
@@ -63,20 +63,24 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1" role="navigation" aria-label="Main navigation">
             {navItems.map((item) => (
               <div key={item.label} className="relative group">
-                <button className="px-3 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors flex items-center gap-1">
+                <button 
+                  className="px-3 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors flex items-center gap-1"
+                  aria-haspopup={item.submenu ? "true" : "false"}
+                  aria-expanded={item.submenu ? "false" : undefined}
+                >
                   {item.label}
-                  {item.submenu && <ChevronDown className="w-4 h-4" />}
+                  {item.submenu && <ChevronDown className="w-4 h-4" aria-hidden="true" />}
                 </button>
 
                 {/* Dropdown Menu */}
                 {item.submenu && (
-                  <div className="absolute left-0 mt-0 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2">
+                  <div className="absolute left-0 mt-0 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2" role="menu">
                     {item.submenu.map((subitem) => (
                       <Link key={subitem.label} href={subitem.href}>
-                        <div className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer">
+                        <div className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer" role="menuitem">
                           {subitem.label}
                         </div>
                       </Link>

@@ -4,8 +4,19 @@ import { ArrowRight, CheckCircle2, Users, Target, Zap } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useEffect } from "react";
+import { setSEOTags } from "@/lib/seoUtils";
 
 export default function About() {
+  useEffect(() => {
+    setSEOTags({
+      title: "About Us | TheSmartPro.io - Enterprise Professional Services Platform",
+      description: "Learn about TheSmartPro.io's mission to transform professional services with enterprise-grade tools. Meet our leadership team and discover our journey.",
+      keywords: "about thesmartpro, professional services platform, enterprise software, company mission, leadership team",
+      type: "website",
+      url: "https://thesmartpro.io/about",
+    });
+  }, []);
   const breadcrumbItems = [{ label: "About Us" }];
   const values = [
     {
@@ -29,26 +40,26 @@ export default function About() {
     {
       name: "John Smith",
       role: "Founder & CEO",
-      bio: "15+ years in enterprise software. Previously VP Product at leading SaaS company.",
-      image: "👨‍💼"
+      bio: "15+ years in enterprise software. Previously VP Product at leading SaaS company. Led digital transformation initiatives for Fortune 500 companies.",
+      image: "https://placehold.co/120x120/3B82F6/FFFFFF?text=JS"
     },
     {
       name: "Sarah Johnson",
       role: "VP Product",
-      bio: "Product leader with 12 years experience. Built products used by 500K+ users.",
-      image: "👩‍💼"
+      bio: "Product leader with 12 years experience. Built products used by 500K+ users. Former Product Director at Microsoft.",
+      image: "https://placehold.co/120x120/8B5CF6/FFFFFF?text=SJ"
     },
     {
       name: "Michael Chen",
       role: "VP Engineering",
-      bio: "Full-stack engineer with 10 years experience. Built scalable systems at scale.",
-      image: "👨‍💻"
+      bio: "Full-stack engineer with 10 years experience. Built scalable systems serving millions. Previously Tech Lead at Google.",
+      image: "https://placehold.co/120x120/10B981/FFFFFF?text=MC"
     },
     {
       name: "Emily Rodriguez",
       role: "VP Sales",
-      bio: "Sales leader with 8 years experience. Built sales teams from 0 to 50+ people.",
-      image: "👩‍💼"
+      bio: "Sales leader with 8 years experience. Built sales teams from 0 to 50+ people. Former Regional Director at Salesforce.",
+      image: "https://placehold.co/120x120/F59E0B/FFFFFF?text=ER"
     }
   ];
 
@@ -164,11 +175,17 @@ export default function About() {
           <h2 className="text-3xl font-bold text-slate-900 mb-12 text-center">Leadership Team</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {team.map((member, index) => (
-              <Card key={index} className="p-8">
-                <div className="text-5xl mb-4">{member.image}</div>
-                <h3 className="text-xl font-bold text-slate-900 mb-1">{member.name}</h3>
-                <p className="text-blue-600 font-semibold mb-3">{member.role}</p>
-                <p className="text-slate-600">{member.bio}</p>
+              <Card key={index} className="p-8 hover:shadow-lg transition-shadow">
+                <div className="mb-4">
+                  <img 
+                    src={member.image} 
+                    alt={member.name}
+                    className="w-20 h-20 rounded-full mx-auto"
+                  />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-1 text-center">{member.name}</h3>
+                <p className="text-blue-600 font-semibold mb-3 text-center">{member.role}</p>
+                <p className="text-slate-600 text-sm">{member.bio}</p>
               </Card>
             ))}
           </div>
@@ -201,18 +218,18 @@ export default function About() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-purple-600">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-slate-900 mb-6">Join Our Mission</h2>
-          <p className="text-xl text-slate-600 mb-8">
+          <h2 className="text-3xl font-bold text-white mb-6">Join Our Mission</h2>
+          <p className="text-xl text-blue-100 mb-8">
             We're hiring talented people who are passionate about solving real customer problems. If you're interested in joining our team, we'd love to hear from you.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
               View Open Positions
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
-            <Button size="lg" variant="outline">
+            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
               Contact Us
             </Button>
           </div>

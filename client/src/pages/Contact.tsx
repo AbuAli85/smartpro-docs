@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -7,8 +7,18 @@ import { Mail, Phone, MapPin, CheckCircle, Loader2 } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { setSEOTags } from "@/lib/seoUtils";
 
 export default function Contact() {
+  useEffect(() => {
+    setSEOTags({
+      title: "Contact Us | TheSmartPro.io - Get in Touch with Our Team",
+      description: "Contact TheSmartPro.io for demos, pricing, support, or partnerships. Email: support@thesmartpro.io. Phone: +1 (234) 567-890. Response within 24 hours.",
+      keywords: "contact, support, demo, sales, partnership, customer service, get in touch",
+      type: "website",
+      url: "https://thesmartpro.io/contact",
+    });
+  }, []);
   const breadcrumbItems = [{ label: "Contact" }];
   const [formData, setFormData] = useState({
     name: "",

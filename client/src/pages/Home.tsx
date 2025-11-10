@@ -3,8 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useEffect } from "react";
+import { setSEOTags } from "@/lib/seoUtils";
 
 export default function HomeNew() {
+  useEffect(() => {
+    setSEOTags({
+      title: "TheSmartPro.io - Enterprise Professional Services Marketplace",
+      description: "Connect with verified professionals, manage contracts, and scale your business. Enterprise-grade marketplace for service providers and organizations. 10K+ professionals, $50M+ processed.",
+      keywords: "professional services, marketplace, enterprise software, service providers, contract management, verified professionals, business platform",
+      type: "website",
+      url: "https://thesmartpro.io",
+    });
+  }, []);
+
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
