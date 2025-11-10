@@ -3,15 +3,39 @@ import { X, Mail, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNotifications } from "@/hooks/useNotifications";
 
+const DISMISSED_KEY = "emailCaptureDismissed";
+const SUBSCRIBED_KEY = "emailCaptureSubscribed";
+
 export default function EmailCapture() {
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasDismissed, setHasDismissed] = useState(false);
+  const [hasSubscribed, setHasSubscribed] = useState(false);
   const notifications = useNotifications();
 
-  // Detect exit intent
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    setHasDismissed(sessionStorage.getItem(DISMISSED_KEY) === "true");
+    setHasSubscribed(sessionStorage.getItem(SUBSCRIBED_KEY) === "true");
+  }, []);
+
+  const handleClose = () => {
+    setIsOpen(false);
+    setHasDismissed(true);
+
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(DISMISSED_KEY, "true");
+    }
+  };
+
+  // Detect exit intent once per session
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (hasDismissed || hasSubscribed) return;
+
     const handleMouseLeave = (e: MouseEvent) => {
       if (e.clientY <= 0 && !isOpen && !isSubmitted) {
         setIsOpen(true);
@@ -20,7 +44,7 @@ export default function EmailCapture() {
 
     document.addEventListener("mouseleave", handleMouseLeave);
     return () => document.removeEventListener("mouseleave", handleMouseLeave);
-  }, [isOpen, isSubmitted]);
+  }, [hasDismissed, hasSubscribed, isOpen, isSubmitted]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,15 +60,20 @@ export default function EmailCapture() {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     setIsSubmitted(true);
+    setHasSubscribed(true);
     notifications.success("Success!", "Check your email for exclusive offers");
+
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(SUBSCRIBED_KEY, "true");
+    }
 
     // Close popup after 3 seconds
     setTimeout(() => {
-      setIsOpen(false);
+      handleClose();
       setIsSubmitted(false);
       setEmail("");
-      setIsLoading(false);
     }, 3000);
+    setIsLoading(false);
   };
 
   if (!isOpen) return null;
@@ -54,7 +83,7 @@ export default function EmailCapture() {
       <div className="bg-white rounded-lg shadow-2xl max-w-md w-full mx-4 overflow-hidden">
         {/* Close Button */}
         <button
-          onClick={() => setIsOpen(false)}
+          onClick={handleClose}
           className="absolute top-4 right-4 p-1 hover:bg-gray-100 rounded-full transition-colors z-10"
           aria-label="Close"
         >
