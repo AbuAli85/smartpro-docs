@@ -254,59 +254,422 @@ export default function BusinessPlanFull() {
           </div>
         </section>
 
-        {/* Market Opportunity */}
+        {/* Market Analysis - COMPREHENSIVE */}
         <section id="market-analysis">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">3. Market Analysis</h2>
           
-          <div className="space-y-6">
-            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-8 border border-indigo-200">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Market Opportunity</h3>
+          <div className="space-y-8">
+            {/* Market Sizing: TAM/SAM/SOM */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Market Sizing: TAM / SAM / SOM</h3>
               <div className="grid md:grid-cols-3 gap-6">
-                <div>
-                  <div className="text-4xl font-bold text-indigo-600 mb-2">$600B+</div>
-                  <div className="text-sm text-gray-700">Global Administrative Services Market</div>
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border-2 border-blue-200 p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Globe className="w-8 h-8 text-blue-600" />
+                    <h4 className="font-bold text-gray-900 text-lg">TAM</h4>
+                  </div>
+                  <div className="text-4xl font-bold text-blue-600 mb-2">$15B</div>
+                  <p className="text-sm text-gray-700 mb-4">Total Addressable Market</p>
+                  <ul className="space-y-2 text-xs text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-3 h-3 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <span>GCC administrative services market</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-3 h-3 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <span>All businesses & service providers</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-3 h-3 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <span>6 GCC countries, 150K+ SMEs</span>
+                    </li>
+                  </ul>
                 </div>
-                <div>
-                  <div className="text-4xl font-bold text-purple-600 mb-2">25K+</div>
-                  <div className="text-sm text-gray-700">SMEs in Oman Alone</div>
+
+                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg border-2 border-green-200 p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Target className="w-8 h-8 text-green-600" />
+                    <h4 className="font-bold text-gray-900 text-lg">SAM</h4>
+                  </div>
+                  <div className="text-4xl font-bold text-green-600 mb-2">$3B</div>
+                  <p className="text-sm text-gray-700 mb-4">Serviceable Available Market</p>
+                  <ul className="space-y-2 text-xs text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-3 h-3 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Oman, UAE, Qatar initial markets</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-3 h-3 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Digital-ready businesses</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-3 h-3 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>~50K SMEs in target regions</span>
+                    </li>
+                  </ul>
                 </div>
-                <div>
-                  <div className="text-4xl font-bold text-pink-600 mb-2">90%+</div>
-                  <div className="text-sm text-gray-700">Internet Penetration in GCC</div>
+
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border-2 border-purple-200 p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Award className="w-8 h-8 text-purple-600" />
+                    <h4 className="font-bold text-gray-900 text-lg">SOM</h4>
+                  </div>
+                  <div className="text-4xl font-bold text-purple-600 mb-2">$150M</div>
+                  <p className="text-sm text-gray-700 mb-4">Serviceable Obtainable Market</p>
+                  <ul className="space-y-2 text-xs text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-3 h-3 text-purple-600 flex-shrink-0 mt-0.5" />
+                      <span>5% market share target (Year 5)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-3 h-3 text-purple-600 flex-shrink-0 mt-0.5" />
+                      <span>Oman market leadership</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-3 h-3 text-purple-600 flex-shrink-0 mt-0.5" />
+                      <span>~2,500 active business clients</span>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
 
+            {/* Market Opportunity Details */}
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Target Market Segments</h3>
-              <div className="grid md:grid-cols-2 gap-4">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Market Opportunity & Trends</h3>
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-6 border-2 border-indigo-200">
+                <div className="grid md:grid-cols-4 gap-6 mb-6">
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-indigo-600 mb-2">$600B+</div>
+                    <div className="text-sm text-gray-700">Global Admin Services Market</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-purple-600 mb-2">25K+</div>
+                    <div className="text-sm text-gray-700">SMEs in Oman</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-pink-600 mb-2">90%+</div>
+                    <div className="text-sm text-gray-700">GCC Internet Penetration</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-4xl font-bold text-blue-600 mb-2">15%</div>
+                    <div className="text-sm text-gray-700">Annual Market Growth</div>
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-bold text-gray-900 mb-3">Market Drivers</h4>
+                    <ul className="space-y-2 text-sm text-gray-700">
+                      {[
+                        'Oman Vision 2040 digital transformation initiative',
+                        'Growing SME sector and entrepreneurship',
+                        'Government push for e-services and digital economy',
+                        'Rising labor costs driving automation demand',
+                        'COVID-19 accelerated digital adoption',
+                      ].map((driver, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <TrendingUp className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                          <span>{driver}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 mb-3">Market Trends</h4>
+                    <ul className="space-y-2 text-sm text-gray-700">
+                      {[
+                        'Shift from traditional to digital service delivery',
+                        'Platform economy growth in GCC region',
+                        'Increasing demand for bilingual solutions',
+                        'AI and automation adoption in business processes',
+                        'Mobile-first approach for business services',
+                      ].map((trend, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <Zap className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <span>{trend}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Target Market Segments - Detailed */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Target Market Segments</h3>
+              <div className="grid md:grid-cols-2 gap-6">
                 {[
-                  { icon: <Users className="w-6 h-6" />, title: 'SMEs', desc: '25,000+ businesses in Oman needing administrative support', color: 'blue' },
-                  { icon: <Award className="w-6 h-6" />, title: 'Service Providers', desc: 'Growing freelance and professional service sector', color: 'green' },
-                  { icon: <Shield className="w-6 h-6" />, title: 'Large Enterprises', desc: '200+ major corporations seeking optimization', color: 'purple' },
-                  { icon: <Globe className="w-6 h-6" />, title: 'Government Entities', desc: 'Multiple ministries undergoing digital transformation', color: 'orange' },
+                  { 
+                    icon: <Users className="w-8 h-8" />, 
+                    title: 'Small & Medium Enterprises (SMEs)', 
+                    size: '25,000+ in Oman',
+                    revenue: '$50-100/month ARPU',
+                    desc: 'Primary target: businesses lacking dedicated admin departments',
+                    needs: ['Administrative support', 'Document processing', 'Government services', 'Compliance management'],
+                    color: 'blue' 
+                  },
+                  { 
+                    icon: <Award className="w-8 h-8" />, 
+                    title: 'Service Providers & Freelancers', 
+                    size: '10,000+ professionals',
+                    revenue: '$30-60/month ARPU',
+                    desc: 'Supply side: professionals offering administrative services',
+                    needs: ['Client acquisition', 'Booking management', 'Payment processing', 'Professional visibility'],
+                    color: 'green' 
+                  },
+                  { 
+                    icon: <Shield className="w-8 h-8" />, 
+                    title: 'Large Enterprises', 
+                    size: '200+ corporations',
+                    revenue: '$500-2000/month ARPU',
+                    desc: 'Secondary target: corporations seeking process optimization',
+                    needs: ['Vendor management', 'Process automation', 'Compliance tracking', 'Cost optimization'],
+                    color: 'purple' 
+                  },
+                  { 
+                    icon: <Globe className="w-8 h-8" />, 
+                    title: 'Government Entities', 
+                    size: '50+ ministries/agencies',
+                    revenue: 'Custom enterprise pricing',
+                    desc: 'Strategic partnerships for digital transformation',
+                    needs: ['Service digitization', 'Citizen services', 'Process efficiency', 'Data management'],
+                    color: 'orange' 
+                  },
                 ].map((segment, index) => (
-                  <div key={index} className={`bg-white rounded-lg border-2 border-${segment.color}-200 p-6 hover:shadow-lg transition-shadow`}>
-                    <div className={`text-${segment.color}-600 mb-3`}>{segment.icon}</div>
-                    <h4 className="font-bold text-gray-900 mb-2">{segment.title}</h4>
-                    <p className="text-sm text-gray-600">{segment.desc}</p>
+                  <div key={index} className={`bg-gradient-to-br from-${segment.color}-50 to-${segment.color}-100 rounded-lg border-2 border-${segment.color}-200 p-6`}>
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className={`text-${segment.color}-600`}>{segment.icon}</div>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-gray-900 mb-1">{segment.title}</h4>
+                        <div className="text-sm text-gray-600 mb-1">{segment.size}</div>
+                        <div className="text-xs font-semibold text-gray-700 mb-2">{segment.revenue}</div>
+                        <p className="text-sm text-gray-700 mb-3">{segment.desc}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <h5 className="font-semibold text-gray-900 mb-2 text-sm">Key Needs:</h5>
+                      <ul className="space-y-1">
+                        {segment.needs.map((need, idx) => (
+                          <li key={idx} className="text-xs text-gray-700 flex items-start gap-2">
+                            <CheckCircle className={`w-3 h-3 text-${segment.color}-600 flex-shrink-0 mt-0.5`} />
+                            <span>{need}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
+            {/* Competitive Landscape */}
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Competitive Advantages</h3>
-              <div className="grid md:grid-cols-3 gap-4">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Competitive Landscape</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+                  <thead>
+                    <tr className="bg-gradient-to-r from-gray-700 to-gray-800 text-white">
+                      <th className="text-left px-4 py-3 font-bold">Competitor</th>
+                      <th className="text-left px-4 py-3 font-bold">Type</th>
+                      <th className="text-left px-4 py-3 font-bold">Strengths</th>
+                      <th className="text-left px-4 py-3 font-bold">Weaknesses</th>
+                      <th className="text-center px-4 py-3 font-bold">Threat Level</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      {
+                        name: 'Traditional PRO Services',
+                        type: 'Offline',
+                        strengths: 'Established relationships, local knowledge',
+                        weaknesses: 'No digital platform, manual processes, limited scalability',
+                        threat: 'Low',
+                        color: 'green'
+                      },
+                      {
+                        name: 'General Freelance Platforms',
+                        type: 'Global Digital',
+                        strengths: 'Large user base, established brand',
+                        weaknesses: 'Not localized, no Arabic support, no government integration',
+                        threat: 'Medium',
+                        color: 'yellow'
+                      },
+                      {
+                        name: 'Regional Service Marketplaces',
+                        type: 'Regional Digital',
+                        strengths: 'Regional presence, some localization',
+                        weaknesses: 'Limited to specific services, no AI features, weak government ties',
+                        threat: 'Medium',
+                        color: 'yellow'
+                      },
+                      {
+                        name: 'Enterprise Software Vendors',
+                        type: 'B2B Software',
+                        strengths: 'Comprehensive features, enterprise focus',
+                        weaknesses: 'Expensive, complex, not marketplace model, no SME focus',
+                        threat: 'Low',
+                        color: 'green'
+                      },
+                    ].map((competitor, index) => (
+                      <tr key={index} className={`border-b border-gray-200 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
+                        <td className="px-4 py-3 font-semibold text-gray-900">{competitor.name}</td>
+                        <td className="px-4 py-3 text-sm text-gray-700">{competitor.type}</td>
+                        <td className="px-4 py-3 text-sm text-gray-700">{competitor.strengths}</td>
+                        <td className="px-4 py-3 text-sm text-gray-700">{competitor.weaknesses}</td>
+                        <td className="px-4 py-3 text-center">
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold bg-${competitor.color}-100 text-${competitor.color}-800`}>
+                            {competitor.threat}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* SWOT Analysis */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">SWOT Analysis</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Strengths */}
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border-2 border-green-200 p-6">
+                  <h4 className="font-bold text-green-900 mb-4 text-lg flex items-center gap-2">
+                    <CheckCircle className="w-6 h-6" />
+                    Strengths
+                  </h4>
+                  <ul className="space-y-2">
+                    {[
+                      'First-mover advantage in Omani market',
+                      'Bilingual platform (Arabic/English) tailored for GCC',
+                      'AI-powered automation and intelligent features',
+                      'Government integration and strategic partnerships',
+                      'Strong technical foundation and scalable architecture',
+                      'Experienced leadership team with regional expertise',
+                      'Comprehensive service ecosystem (clients + providers)',
+                    ].map((strength, index) => (
+                      <li key={index} className="text-sm text-gray-700 flex items-start gap-2">
+                        <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span>{strength}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Weaknesses */}
+                <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg border-2 border-red-200 p-6">
+                  <h4 className="font-bold text-red-900 mb-4 text-lg flex items-center gap-2">
+                    <Target className="w-6 h-6" />
+                    Weaknesses
+                  </h4>
+                  <ul className="space-y-2">
+                    {[
+                      'New brand requiring market awareness building',
+                      'Limited initial resources compared to global players',
+                      'Dependency on service provider network growth',
+                      'Initial geographic limitation (Oman focus)',
+                      'Need to establish trust in digital platform',
+                      'Requires continuous technology investment',
+                      'Regulatory compliance across multiple markets',
+                    ].map((weakness, index) => (
+                      <li key={index} className="text-sm text-gray-700 flex items-start gap-2">
+                        <span className="text-red-600 font-bold">•</span>
+                        <span>{weakness}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Opportunities */}
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200 p-6">
+                  <h4 className="font-bold text-blue-900 mb-4 text-lg flex items-center gap-2">
+                    <TrendingUp className="w-6 h-6" />
+                    Opportunities
+                  </h4>
+                  <ul className="space-y-2">
+                    {[
+                      'Oman Vision 2040 digital transformation initiative',
+                      'Growing SME sector and entrepreneurship ecosystem',
+                      'Expansion to other GCC countries (UAE, Qatar, Saudi)',
+                      'Government partnerships for official services',
+                      'Integration with emerging fintech and e-commerce',
+                      'White-label SaaS offering for other markets',
+                      'AI and automation creating new service categories',
+                    ].map((opportunity, index) => (
+                      <li key={index} className="text-sm text-gray-700 flex items-start gap-2">
+                        <TrendingUp className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                        <span>{opportunity}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Threats */}
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border-2 border-purple-200 p-6">
+                  <h4 className="font-bold text-purple-900 mb-4 text-lg flex items-center gap-2">
+                    <Shield className="w-6 h-6" />
+                    Threats
+                  </h4>
+                  <ul className="space-y-2">
+                    {[
+                      'Entry of global platforms with significant resources',
+                      'Economic fluctuations affecting business spending',
+                      'Regulatory changes or policy shifts',
+                      'Cybersecurity risks and data privacy concerns',
+                      'Resistance to digital transformation from traditional sector',
+                      'Competition from well-funded regional startups',
+                      'Technology disruption requiring continuous adaptation',
+                    ].map((threat, index) => (
+                      <li key={index} className="text-sm text-gray-700 flex items-start gap-2">
+                        <span className="text-purple-600 font-bold">▲</span>
+                        <span>{threat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Competitive Advantages */}
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">SmartPRO Competitive Advantages</h3>
+              <div className="grid md:grid-cols-3 gap-6">
                 {[
-                  { icon: <Globe className="w-5 h-5" />, title: 'Localization', desc: 'Bilingual Arabic/English platform tailored for GCC' },
-                  { icon: <Zap className="w-5 h-5" />, title: 'AI-Powered', desc: 'Advanced automation and intelligent features' },
-                  { icon: <Shield className="w-5 h-5" />, title: 'Government Integration', desc: 'Strategic partnerships with public sector' },
+                  { 
+                    icon: <Globe className="w-8 h-8" />, 
+                    title: 'Localization Excellence', 
+                    desc: 'Bilingual Arabic/English platform specifically designed for GCC business culture and practices',
+                    details: ['Native Arabic support', 'Regional payment methods', 'Local compliance built-in', 'Cultural adaptation'],
+                    color: 'blue'
+                  },
+                  { 
+                    icon: <Zap className="w-8 h-8" />, 
+                    title: 'AI-Powered Innovation', 
+                    desc: 'Advanced automation and intelligent features that competitors lack',
+                    details: ['Smart matching algorithms', 'Automated workflows', 'Predictive analytics', 'AI chatbot support'],
+                    color: 'purple'
+                  },
+                  { 
+                    icon: <Shield className="w-8 h-8" />, 
+                    title: 'Government Integration', 
+                    desc: 'Strategic partnerships with public sector for seamless official services',
+                    details: ['Direct API integration', 'Official service access', 'Compliance automation', 'Verified credentials'],
+                    color: 'green'
+                  },
                 ].map((advantage, index) => (
-                  <div key={index} className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 border border-gray-200">
-                    <div className="text-blue-600 mb-3">{advantage.icon}</div>
-                    <h4 className="font-bold text-gray-900 mb-2">{advantage.title}</h4>
-                    <p className="text-sm text-gray-600">{advantage.desc}</p>
+                  <div key={index} className={`bg-gradient-to-br from-${advantage.color}-50 to-${advantage.color}-100 rounded-lg border-2 border-${advantage.color}-200 p-6 hover:shadow-lg transition-shadow`}>
+                    <div className={`text-${advantage.color}-600 mb-4`}>{advantage.icon}</div>
+                    <h4 className="font-bold text-gray-900 mb-2 text-lg">{advantage.title}</h4>
+                    <p className="text-sm text-gray-700 mb-4">{advantage.desc}</p>
+                    <ul className="space-y-1">
+                      {advantage.details.map((detail, idx) => (
+                        <li key={idx} className="text-xs text-gray-700 flex items-start gap-2">
+                          <CheckCircle className={`w-3 h-3 text-${advantage.color}-600 flex-shrink-0 mt-0.5`} />
+                          <span>{detail}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 ))}
               </div>
