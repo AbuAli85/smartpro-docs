@@ -77,7 +77,7 @@ export default function CaseStudyDetail() {
           <div className="text-center">
             <p className="text-lg text-muted-foreground mb-4">Case study not found</p>
             <Button asChild>
-              <a href="/case-studies">Back to Case Studies</a>
+              <Link href="/case-studies">Back to Case Studies</Link>
             </Button>
           </div>
         </div>
@@ -96,10 +96,10 @@ export default function CaseStudyDetail() {
         
         <div className="container relative z-10">
           <Button variant="ghost" className="text-white hover:bg-white/10 mb-6" asChild>
-            <a href="/case-studies">
+            <Link href="/case-studies">
               <ArrowLeft className="mr-2 w-4 h-4" />
               Back to Case Studies
-            </a>
+            </Link>
           </Button>
 
           <div className="max-w-3xl">

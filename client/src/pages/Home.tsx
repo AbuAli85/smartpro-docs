@@ -381,14 +381,14 @@ export default function HomeNew() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" variant="secondary" className="text-lg h-12 px-8" asChild>
-              <a href="/get-started-providers" >
+              <Link href="/get-started-providers">
                 For Service Providers
-              </a>
+              </Link>
             </Button>
             <Button size="lg" variant="secondary" className="text-lg h-12 px-8" asChild>
-              <a href="/clients" >
+              <Link href="/clients">
                 For Organizations
-              </a>
+              </Link>
             </Button>
           </div>
         </div>
