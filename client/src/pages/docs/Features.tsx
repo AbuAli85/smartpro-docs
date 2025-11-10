@@ -1,7 +1,18 @@
 import DocsLayout from '@/components/DocsLayout';
 import { Users, BarChart3, Briefcase, BookOpen, FileText, Zap } from 'lucide-react';
+import { useEffect } from 'react';
+import { setSEOTags } from '@/lib/seoUtils';
 
 export default function Features() {
+  useEffect(() => {
+    setSEOTags({
+      title: "Features Documentation | TheSmartPro.io - Complete Feature List",
+      description: "Comprehensive features: Employee Management, CRM, Project Management, E-Learning, Contract Management, Workflow Automation. Enterprise-grade with 99.9% uptime.",
+      keywords: "features, employee management, CRM, project management, e-learning, contract management, workflow automation",
+      type: "article",
+      url: "https://thesmartpro.io/docs/features",
+    });
+  }, []);
   const breadcrumbs = [
     { label: 'Documentation', href: '/docs' },
     { label: 'Features', href: '/docs/features' },

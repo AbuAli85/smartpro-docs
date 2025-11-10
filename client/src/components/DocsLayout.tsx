@@ -90,12 +90,12 @@ export default function DocsLayout({ children, pageTitle, breadcrumbs }: DocsLay
       <header className="sticky top-0 z-40 bg-white border-b border-gray-200">
         <div className="container flex items-center justify-between h-16">
           <Link href="/">
-            <a className="flex items-center gap-2">
+            <div className="flex items-center gap-2 cursor-pointer">
               <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">
                 SP
               </div>
               <span className="font-bold text-lg text-gray-900">SmartPro</span>
-            </a>
+            </div>
           </Link>
 
           <button
@@ -127,23 +127,23 @@ export default function DocsLayout({ children, pageTitle, breadcrumbs }: DocsLay
                     <div className="ml-4 mt-1 space-y-1 border-l border-gray-200 pl-4">
                       {item.children.map((child) => (
                         <Link key={child.href} href={child.href}>
-                          <a
-                            className={`block px-4 py-2 rounded-lg text-sm transition-colors ${
+                          <div
+                            className={`block px-4 py-2 rounded-lg text-sm transition-colors cursor-pointer ${
                               isActive(child.href)
                                 ? 'bg-blue-50 text-blue-600 font-medium'
                                 : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                             }`}
                           >
                             {child.title}
-                          </a>
+                          </div>
                         </Link>
                       ))}
                     </div>
                   </details>
                 ) : (
                   <Link href={item.href}>
-                    <a
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                    <div
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
                         isActive(item.href)
                           ? 'bg-blue-50 text-blue-600'
                           : 'text-gray-900 hover:bg-gray-100'
@@ -151,7 +151,7 @@ export default function DocsLayout({ children, pageTitle, breadcrumbs }: DocsLay
                     >
                       <span>{item.icon}</span>
                       <span>{item.title}</span>
-                    </a>
+                    </div>
                   </Link>
                 )}
               </div>
@@ -166,7 +166,7 @@ export default function DocsLayout({ children, pageTitle, breadcrumbs }: DocsLay
             <div className="bg-white border-b border-gray-200 px-6 py-4">
               <div className="container flex items-center gap-2 text-sm">
                 <Link href="/">
-                  <a className="text-blue-600 hover:text-blue-700">Home</a>
+                  <span className="text-blue-600 hover:text-blue-700 cursor-pointer">Home</span>
                 </Link>
                 {breadcrumbs.map((crumb, index) => (
                   <div key={index} className="flex items-center gap-2">
@@ -175,7 +175,7 @@ export default function DocsLayout({ children, pageTitle, breadcrumbs }: DocsLay
                       <span className="text-gray-900 font-medium">{crumb.label}</span>
                     ) : (
                       <Link href={crumb.href}>
-                        <a className="text-blue-600 hover:text-blue-700">{crumb.label}</a>
+                        <span className="text-blue-600 hover:text-blue-700 cursor-pointer">{crumb.label}</span>
                       </Link>
                     )}
                   </div>

@@ -1,7 +1,18 @@
 import DocsLayout from '@/components/DocsLayout';
 import { TrendingUp, Users, DollarSign, Target } from 'lucide-react';
+import { useEffect } from 'react';
+import { setSEOTags } from '@/lib/seoUtils';
 
 export default function BusinessPlan() {
+  useEffect(() => {
+    setSEOTags({
+      title: "Business Plan & Strategy | TheSmartPro.io - Market Opportunity & Growth",
+      description: "$600B+ market opportunity. 5-year projection: $2.4M to $108M revenue. 75-80% gross margin. Year 1 profitability. Enterprise software market leader.",
+      keywords: "business plan, market analysis, financial projections, go-to-market strategy, competitive advantage",
+      type: "article",
+      url: "https://thesmartpro.io/docs/business-plan",
+    });
+  }, []);
   const breadcrumbs = [
     { label: 'Documentation', href: '/docs' },
     { label: 'Business Plan', href: '/docs/business-plan' },

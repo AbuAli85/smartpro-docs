@@ -1,7 +1,18 @@
 import DocsLayout from '@/components/DocsLayout';
 import { Database, Cloud, Lock, Zap } from 'lucide-react';
+import { useEffect } from 'react';
+import { setSEOTags } from '@/lib/seoUtils';
 
 export default function Architecture() {
+  useEffect(() => {
+    setSEOTags({
+      title: "Technical Architecture | TheSmartPro.io - Cloud-Native Enterprise Platform",
+      description: "Modern cloud-native architecture: React, Node.js, PostgreSQL, AWS. Enterprise security with SOC 2, ISO 27001, GDPR compliance. 99.9% uptime SLA.",
+      keywords: "architecture, technical documentation, cloud-native, microservices, security, scalability, AWS",
+      type: "article",
+      url: "https://thesmartpro.io/docs/architecture",
+    });
+  }, []);
   const breadcrumbs = [
     { label: 'Documentation', href: '/docs' },
     { label: 'Architecture', href: '/docs/architecture' },

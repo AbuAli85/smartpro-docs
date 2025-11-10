@@ -1,8 +1,20 @@
 import DocsLayout from '@/components/DocsLayout';
 import { BookOpen, Zap, Code, TrendingUp, Users, Shield } from 'lucide-react';
 import { Link } from 'wouter';
+import { Button } from '@/components/ui/button';
+import { useEffect } from 'react';
+import { setSEOTags } from '@/lib/seoUtils';
 
 export default function DocsIndex() {
+  useEffect(() => {
+    setSEOTags({
+      title: "Documentation Hub | TheSmartPro.io - Comprehensive Guides & Resources",
+      description: "Explore TheSmartPro.io documentation: product guides, technical architecture, API reference, business resources, and support. Everything you need to succeed.",
+      keywords: "documentation, guides, API reference, technical docs, user guide, tutorials, support",
+      type: "website",
+      url: "https://thesmartpro.io/docs",
+    });
+  }, []);
   const sections = [
     {
       icon: <BookOpen className="w-8 h-8" />,
@@ -79,9 +91,9 @@ export default function DocsIndex() {
             <p className="mb-6 text-blue-100">
               Start with our getting started guide to learn the basics and get your account set up in minutes.
             </p>
-            <button className="px-6 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition-colors">
+            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
               Get Started
-            </button>
+            </Button>
           </div>
         </section>
 
@@ -99,9 +111,9 @@ export default function DocsIndex() {
                 <div className="space-y-2">
                   {section.links.map((link, i) => (
                     <Link key={i} href={link.href}>
-                      <a className="block text-blue-600 hover:text-blue-700 font-medium text-sm">
+                      <div className="block text-blue-600 hover:text-blue-700 font-medium text-sm cursor-pointer">
                         → {link.label}
-                      </a>
+                      </div>
                     </Link>
                   ))}
                 </div>
@@ -123,9 +135,9 @@ export default function DocsIndex() {
               { label: 'Changelog', href: '/docs/changelog' },
             ].map((link, index) => (
               <Link key={index} href={link.href}>
-                <a className="block p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors text-center">
+                <div className="block p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors text-center cursor-pointer">
                   <span className="text-gray-900 font-medium">{link.label}</span>
-                </a>
+                </div>
               </Link>
             ))}
           </div>
@@ -156,12 +168,12 @@ export default function DocsIndex() {
             Can't find what you're looking for? Our support team is here to help.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <button className="px-6 py-3 bg-white text-indigo-600 font-bold rounded-lg hover:bg-indigo-50 transition-colors">
-              Contact Support
-            </button>
-            <button className="px-6 py-3 border-2 border-white text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors">
-              Schedule Demo
-            </button>
+            <Button size="lg" className="bg-white text-indigo-600 hover:bg-indigo-50" asChild>
+              <Link href="/contact">Contact Support</Link>
+            </Button>
+            <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-indigo-700" asChild>
+              <Link href="/contact">Schedule Demo</Link>
+            </Button>
           </div>
         </section>
       </div>

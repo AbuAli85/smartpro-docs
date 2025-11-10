@@ -1,7 +1,20 @@
 import DocsLayout from '@/components/DocsLayout';
 import { CheckCircle, Zap, Shield, TrendingUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Link } from 'wouter';
+import { useEffect } from 'react';
+import { setSEOTags } from '@/lib/seoUtils';
 
 export default function ProductOverview() {
+  useEffect(() => {
+    setSEOTags({
+      title: "Product Overview | TheSmartPro.io - Enterprise Business Platform",
+      description: "TheSmartPro.io consolidates 5 critical business functions: Employee Management, CRM, Project Management, E-Learning, and Contract Management. 181+ enterprise clients.",
+      keywords: "product overview, enterprise platform, business management, CRM, project management, employee management",
+      type: "article",
+      url: "https://thesmartpro.io/docs/product-overview",
+    });
+  }, []);
   const breadcrumbs = [
     { label: 'Documentation', href: '/docs' },
     { label: 'Product Overview', href: '/docs/product-overview' },
@@ -152,12 +165,12 @@ export default function ProductOverview() {
             Explore our comprehensive documentation or start your free 14-day trial today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <button className="px-6 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition-colors">
-              Start Free Trial
-            </button>
-            <button className="px-6 py-3 border-2 border-white text-white font-bold rounded-lg hover:bg-blue-700 transition-colors">
-              Schedule Demo
-            </button>
+            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50" asChild>
+              <Link href="/get-started-providers">Start Free Trial</Link>
+            </Button>
+            <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-blue-700" asChild>
+              <Link href="/contact">Schedule Demo</Link>
+            </Button>
           </div>
         </section>
       </div>
