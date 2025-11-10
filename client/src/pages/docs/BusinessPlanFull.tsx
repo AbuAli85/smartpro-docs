@@ -964,52 +964,71 @@ export default function BusinessPlanFull() {
           </div>
         </section>
 
-        {/* Operational Plan */}
+        {/* Operational Plan - COMPREHENSIVE */}
         <section id="operations">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">6. Operational Plan</h2>
           
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Business Model</h3>
-              <p className="text-gray-700 leading-relaxed mb-4">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Business Model & Revenue Streams</h3>
+              <p className="text-gray-700 leading-relaxed mb-6">
                 SmartPRO operates on a platform business model that connects service providers with clients seeking administrative and business services. The system relies on multiple revenue streams to ensure sustainability and growth.
               </p>
+              <div className="grid md:grid-cols-5 gap-4">
+                {[
+                  { title: 'Subscriptions', desc: 'Free, Pro, Enterprise tiers', percentage: '30%', color: 'blue' },
+                  { title: 'Commissions', desc: '10-20% per booking', percentage: '36%', color: 'green' },
+                  { title: 'AI Features', desc: 'Usage-based pricing', percentage: '14%', color: 'purple' },
+                  { title: 'Featured Listings', desc: 'Premium visibility', percentage: '8%', color: 'orange' },
+                  { title: 'Integrations', desc: 'Custom enterprise solutions', percentage: '12%', color: 'red' },
+                ].map((stream, index) => (
+                  <div key={index} className={`bg-gradient-to-br from-${stream.color}-50 to-${stream.color}-100 rounded-lg border-2 border-${stream.color}-200 p-4 text-center`}>
+                    <div className={`text-3xl font-bold text-${stream.color}-600 mb-2`}>{stream.percentage}</div>
+                    <h4 className="font-bold text-gray-900 mb-1 text-sm">{stream.title}</h4>
+                    <p className="text-xs text-gray-600">{stream.desc}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Key Processes</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Key Operational Processes</h3>
               <div className="grid md:grid-cols-2 gap-6">
                 {[
                   {
                     title: 'User Onboarding',
-                    steps: ['Registration & verification', 'Profile creation', 'Service configuration', 'Platform training'],
+                    steps: ['Registration & identity verification', 'Profile creation & customization', 'Service configuration & preferences', 'Platform training & tutorials', 'First booking assistance'],
                     icon: <Users className="w-6 h-6" />,
+                    color: 'blue'
                   },
                   {
                     title: 'Service Delivery',
-                    steps: ['Service selection', 'Provider matching', 'Booking confirmation', 'Service completion'],
+                    steps: ['Service selection & browsing', 'Provider matching algorithm', 'Booking confirmation & scheduling', 'Service execution & tracking', 'Completion & feedback'],
                     icon: <CheckCircle className="w-6 h-6" />,
+                    color: 'green'
                   },
                   {
                     title: 'Quality Assurance',
-                    steps: ['Provider vetting', 'Performance monitoring', 'Review moderation', 'Continuous improvement'],
+                    steps: ['Provider background checks', 'Performance monitoring & KPIs', 'Review moderation & verification', 'Dispute resolution process', 'Continuous improvement cycles'],
                     icon: <Shield className="w-6 h-6" />,
+                    color: 'purple'
                   },
                   {
                     title: 'Customer Support',
-                    steps: ['Multi-channel support', 'AI-powered help', 'Knowledge base', 'Ticketing system'],
+                    steps: ['24/7 multi-channel support', 'AI-powered chatbot assistance', 'Comprehensive knowledge base', 'Ticketing system & escalation', 'Proactive outreach & follow-up'],
                     icon: <Award className="w-6 h-6" />,
+                    color: 'orange'
                   },
                 ].map((process, index) => (
-                  <div key={index} className="bg-white rounded-lg border border-gray-200 p-6">
+                  <div key={index} className={`bg-gradient-to-br from-${process.color}-50 to-${process.color}-100 rounded-lg border-2 border-${process.color}-200 p-6`}>
                     <div className="flex items-center gap-3 mb-4">
-                      <div className="text-blue-600">{process.icon}</div>
-                      <h4 className="font-bold text-gray-900">{process.title}</h4>
+                      <div className={`text-${process.color}-600`}>{process.icon}</div>
+                      <h4 className="font-bold text-gray-900 text-lg">{process.title}</h4>
                     </div>
                     <ul className="space-y-2">
                       {process.steps.map((step, idx) => (
                         <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
-                          <span className="text-blue-600">→</span>
+                          <CheckCircle className={`w-4 h-4 text-${process.color}-600 flex-shrink-0 mt-0.5`} />
                           <span>{step}</span>
                         </li>
                       ))}
@@ -1020,34 +1039,251 @@ export default function BusinessPlanFull() {
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Technology Infrastructure</h3>
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 border border-gray-200">
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-3">Frontend</h4>
-                    <ul className="space-y-1 text-sm text-gray-700">
-                      <li>• Next.js framework</li>
-                      <li>• Responsive design</li>
-                      <li>• Mobile apps (iOS/Android)</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-3">Backend</h4>
-                    <ul className="space-y-1 text-sm text-gray-700">
-                      <li>• Node.js/Express</li>
-                      <li>• MongoDB database</li>
-                      <li>• RESTful APIs</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900 mb-3">Infrastructure</h4>
-                    <ul className="space-y-1 text-sm text-gray-700">
-                      <li>• AWS cloud hosting</li>
-                      <li>• Auto-scaling</li>
-                      <li>• 99.9% uptime SLA</li>
-                    </ul>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Quality Assurance & Provider Vetting</h3>
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg border-2 border-indigo-200 p-6">
+                <div className="grid md:grid-cols-5 gap-4 mb-6">
+                  {[
+                    { step: '1', title: 'Application', desc: 'Submit credentials & documents', icon: '📝' },
+                    { step: '2', title: 'Verification', desc: 'Background & credential checks', icon: '🔍' },
+                    { step: '3', title: 'Interview', desc: 'Skills assessment & interview', icon: '💬' },
+                    { step: '4', title: 'Training', desc: 'Platform onboarding & training', icon: '🎓' },
+                    { step: '5', title: 'Monitoring', desc: 'Ongoing performance tracking', icon: '📊' },
+                  ].map((item, index) => (
+                    <div key={index} className="bg-white rounded-lg border border-indigo-200 p-4 text-center">
+                      <div className="text-3xl mb-2">{item.icon}</div>
+                      <div className="bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-full mb-2 inline-block">Step {item.step}</div>
+                      <h4 className="font-bold text-gray-900 text-sm mb-1">{item.title}</h4>
+                      <p className="text-xs text-gray-600">{item.desc}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="bg-white rounded-lg border border-indigo-200 p-4">
+                  <h4 className="font-bold text-gray-900 mb-3">Quality Metrics & Standards</h4>
+                  <div className="grid md:grid-cols-4 gap-4">
+                    {[
+                      { metric: 'Min Rating', value: '4.0/5.0', desc: 'Required average' },
+                      { metric: 'Response Time', value: '< 2 hours', desc: 'To client inquiries' },
+                      { metric: 'Completion Rate', value: '> 95%', desc: 'Successful deliveries' },
+                      { metric: 'Dispute Rate', value: '< 2%', desc: 'Maximum allowed' },
+                    ].map((item, index) => (
+                      <div key={index} className="text-center">
+                        <div className="text-2xl font-bold text-indigo-600 mb-1">{item.value}</div>
+                        <div className="font-semibold text-gray-900 text-sm">{item.metric}</div>
+                        <div className="text-xs text-gray-600">{item.desc}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Technology Infrastructure & Security</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border-2 border-gray-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4 text-lg">Platform Architecture</h4>
+                  <div className="space-y-4">
+                    {[
+                      { layer: 'Frontend', tech: ['Next.js 14+ framework', 'React 18+ with TypeScript', 'Tailwind CSS styling', 'Mobile apps (iOS/Android)', 'Progressive Web App (PWA)'] },
+                      { layer: 'Backend', tech: ['Node.js with Express.js', 'MongoDB database', 'RESTful APIs', 'GraphQL endpoints', 'WebSocket for real-time'] },
+                      { layer: 'Infrastructure', tech: ['AWS cloud hosting', 'Auto-scaling groups', 'Load balancing', 'CDN (CloudFront)', '99.9% uptime SLA'] },
+                    ].map((item, index) => (
+                      <div key={index} className="bg-white rounded-lg border border-gray-200 p-4">
+                        <h5 className="font-bold text-gray-900 mb-2">{item.layer}</h5>
+                        <ul className="space-y-1">
+                          {item.tech.map((t, idx) => (
+                            <li key={idx} className="text-xs text-gray-700 flex items-start gap-2">
+                              <span className="text-blue-600">•</span>
+                              <span>{t}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg border-2 border-red-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-4 text-lg flex items-center gap-2">
+                    <Shield className="w-6 h-6 text-red-600" />
+                    Security Measures
+                  </h4>
+                  <div className="space-y-4">
+                    {[
+                      { category: 'Data Protection', measures: ['End-to-end encryption (AES-256)', 'Encrypted data at rest & in transit', 'Regular security audits', 'GDPR & local compliance', 'Data backup & recovery'] },
+                      { category: 'Access Control', measures: ['Multi-factor authentication (MFA)', 'Role-based access control (RBAC)', 'Session management', 'API key authentication', 'OAuth 2.0 integration'] },
+                      { category: 'Monitoring', measures: ['24/7 security monitoring', 'Intrusion detection system', 'Regular penetration testing', 'Vulnerability scanning', 'Incident response plan'] },
+                    ].map((item, index) => (
+                      <div key={index} className="bg-white rounded-lg border border-red-200 p-4">
+                        <h5 className="font-bold text-gray-900 mb-2">{item.category}</h5>
+                        <ul className="space-y-1">
+                          {item.measures.map((m, idx) => (
+                            <li key={idx} className="text-xs text-gray-700 flex items-start gap-2">
+                              <CheckCircle className="w-3 h-3 text-red-600 flex-shrink-0 mt-0.5" />
+                              <span>{m}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Scalability Planning</h3>
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border-2 border-blue-200 p-6">
+                <div className="grid md:grid-cols-4 gap-6">
+                  {[
+                    { icon: <TrendingUp className="w-8 h-8" />, title: 'Horizontal Scaling', desc: 'Add more servers as demand grows', items: ['Auto-scaling groups', 'Container orchestration', 'Microservices architecture'] },
+                    { icon: <Zap className="w-8 h-8" />, title: 'Load Balancing', desc: 'Distribute traffic efficiently', items: ['Application load balancers', 'Geographic distribution', 'Health checks & failover'] },
+                    { icon: <BarChart3 className="w-8 h-8" />, title: 'Caching Strategy', desc: 'Optimize performance', items: ['Redis caching layer', 'CDN for static assets', 'Database query caching'] },
+                    { icon: <Shield className="w-8 h-8" />, title: 'Database Sharding', desc: 'Handle massive data growth', items: ['Horizontal partitioning', 'Read replicas', 'Data archiving strategy'] },
+                  ].map((item, index) => (
+                    <div key={index} className="bg-white rounded-lg border border-blue-200 p-4">
+                      <div className="text-blue-600 mb-3">{item.icon}</div>
+                      <h4 className="font-bold text-gray-900 mb-2 text-sm">{item.title}</h4>
+                      <p className="text-xs text-gray-600 mb-3">{item.desc}</p>
+                      <ul className="space-y-1">
+                        {item.items.map((i, idx) => (
+                          <li key={idx} className="text-xs text-gray-700 flex items-start gap-1">
+                            <span className="text-blue-600">→</span>
+                            <span>{i}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Regional Expansion Roadmap (5 Phases)</h3>
+              <div className="space-y-4">
+                {[
+                  {
+                    phase: 'Phase 1',
+                    region: 'Oman (MVP)',
+                    timeline: 'Months 1-12',
+                    goals: ['Launch MVP platform', 'Onboard 100+ service providers', 'Acquire 500+ users', 'Establish brand presence'],
+                    milestones: ['Platform launch', 'First 1,000 bookings', 'Government integration', 'Break-even operations'],
+                    color: 'blue'
+                  },
+                  {
+                    phase: 'Phase 2',
+                    region: 'UAE & Qatar',
+                    timeline: 'Months 13-24',
+                    goals: ['Enter UAE & Qatar markets', 'Localize for each market', 'Build provider network', 'Establish partnerships'],
+                    milestones: ['2 new market launches', '500+ providers', '2,000+ users', 'Regional brand recognition'],
+                    color: 'green'
+                  },
+                  {
+                    phase: 'Phase 3',
+                    region: 'Saudi Arabia',
+                    timeline: 'Months 25-36',
+                    goals: ['Enter Saudi market', 'Comply with local regulations', 'Scale operations', 'Enterprise focus'],
+                    milestones: ['Saudi launch', '1,000+ providers', '5,000+ users', 'Enterprise contracts'],
+                    color: 'purple'
+                  },
+                  {
+                    phase: 'Phase 4',
+                    region: 'Kuwait & Bahrain',
+                    timeline: 'Months 37-48',
+                    goals: ['Complete GCC coverage', 'Standardize operations', 'Optimize processes', 'Market leadership'],
+                    milestones: ['Full GCC presence', '2,000+ providers', '10,000+ users', 'Market leader status'],
+                    color: 'orange'
+                  },
+                  {
+                    phase: 'Phase 5',
+                    region: 'MENA Expansion',
+                    timeline: 'Months 49-60',
+                    goals: ['Expand to Egypt, Jordan', 'Regional dominance', 'Strategic partnerships', 'Potential acquisition'],
+                    milestones: ['MENA presence', '5,000+ providers', '20,000+ users', 'Exit opportunity'],
+                    color: 'red'
+                  },
+                ].map((phase, index) => (
+                  <div key={index} className={`bg-gradient-to-r from-${phase.color}-50 to-${phase.color}-100 rounded-lg border-2 border-${phase.color}-200 p-6`}>
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <div className={`bg-${phase.color}-600 text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-2`}>
+                          {phase.phase}
+                        </div>
+                        <h4 className="text-xl font-bold text-gray-900">{phase.region}</h4>
+                        <p className="text-sm text-gray-600">{phase.timeline}</p>
+                      </div>
+                      <div className={`text-4xl font-bold text-${phase.color}-600`}>{index + 1}</div>
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <h5 className="font-bold text-gray-900 mb-2 text-sm">Strategic Goals</h5>
+                        <ul className="space-y-1">
+                          {phase.goals.map((goal, idx) => (
+                            <li key={idx} className="text-xs text-gray-700 flex items-start gap-2">
+                              <Target className={`w-3 h-3 text-${phase.color}-600 flex-shrink-0 mt-0.5`} />
+                              <span>{goal}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <h5 className="font-bold text-gray-900 mb-2 text-sm">Key Milestones</h5>
+                        <ul className="space-y-1">
+                          {phase.milestones.map((milestone, idx) => (
+                            <li key={idx} className="text-xs text-gray-700 flex items-start gap-2">
+                              <CheckCircle className={`w-3 h-3 text-${phase.color}-600 flex-shrink-0 mt-0.5`} />
+                              <span>{milestone}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Partnerships & API Ecosystem</h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  {
+                    title: 'Government Integrations',
+                    desc: 'Strategic partnerships with public sector',
+                    items: ['Ministry of Commerce', 'Tax Authority', 'Labor Ministry', 'Business Registration', 'Permit Systems'],
+                    icon: <Shield className="w-6 h-6" />,
+                    color: 'blue'
+                  },
+                  {
+                    title: 'Technology Partners',
+                    desc: 'Integration with complementary platforms',
+                    items: ['Payment gateways', 'Accounting software', 'CRM systems', 'Communication tools', 'Analytics platforms'],
+                    icon: <Zap className="w-6 h-6" />,
+                    color: 'green'
+                  },
+                  {
+                    title: 'API Ecosystem',
+                    desc: 'Developer-friendly integration options',
+                    items: ['Public REST APIs', 'Webhook support', 'OAuth authentication', 'Developer portal', 'API documentation'],
+                    icon: <FileText className="w-6 h-6" />,
+                    color: 'purple'
+                  },
+                ].map((partner, index) => (
+                  <div key={index} className={`bg-gradient-to-br from-${partner.color}-50 to-${partner.color}-100 rounded-lg border-2 border-${partner.color}-200 p-6`}>
+                    <div className={`text-${partner.color}-600 mb-3`}>{partner.icon}</div>
+                    <h4 className="font-bold text-gray-900 mb-2">{partner.title}</h4>
+                    <p className="text-sm text-gray-600 mb-4">{partner.desc}</p>
+                    <ul className="space-y-2">
+                      {partner.items.map((item, idx) => (
+                        <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+                          <CheckCircle className={`w-4 h-4 text-${partner.color}-600 flex-shrink-0 mt-0.5`} />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
