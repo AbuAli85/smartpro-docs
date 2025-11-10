@@ -87,6 +87,113 @@ export default function DocsIndex() {
           </div>
         </section>
 
+        {/* Documentation Structure Overview */}
+        <section className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-8 border-2 border-blue-200 mb-12">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+            <BookOpen className="w-6 h-6 text-blue-600" />
+            Complete Documentation Structure
+          </h2>
+          <div className="bg-white rounded-lg p-6 font-mono text-sm space-y-3 overflow-x-auto">
+            <div className="text-gray-900">
+              <div className="flex items-center gap-2 font-bold text-blue-600 mb-2">
+                🚀 <Link href="/docs/getting-started" className="hover:underline">Getting Started</Link>
+              </div>
+              <div className="ml-6 space-y-1 text-gray-600">
+                <div>└─ 5 steps (37 min total)</div>
+                <div>└─ 6 quick tips</div>
+                <div>└─ 3 resource links (all working)</div>
+              </div>
+            </div>
+
+            <div className="text-gray-900 pt-3">
+              <div className="flex items-center gap-2 font-bold text-purple-600 mb-2">
+                📦 Product
+              </div>
+              <div className="ml-6 space-y-1 text-gray-600">
+                <div>├─ <Link href="/docs/product-overview" className="text-blue-600 hover:underline">Product Overview</Link></div>
+                <div className="ml-6 space-y-1">
+                  <div>└─ 4 core features with tags</div>
+                  <div>└─ 3 key metrics</div>
+                  <div>└─ 3 pricing tiers</div>
+                </div>
+                <div>├─ <Link href="/docs/features" className="text-blue-600 hover:underline">Features</Link></div>
+                <div className="ml-6 space-y-1">
+                  <div>└─ 6 feature modules</div>
+                  <div>└─ 6 advanced features</div>
+                  <div>└─ Feature comparison table</div>
+                </div>
+                <div>└─ <Link href="/pricing" className="text-blue-600 hover:underline">Pricing</Link> → /pricing</div>
+              </div>
+            </div>
+
+            <div className="text-gray-900 pt-3">
+              <div className="flex items-center gap-2 font-bold text-indigo-600 mb-2">
+                🔧 Technical
+              </div>
+              <div className="ml-6 space-y-1 text-gray-600">
+                <div>├─ <Link href="/docs/architecture" className="text-blue-600 hover:underline">Architecture</Link></div>
+                <div className="ml-6 space-y-1">
+                  <div>└─ 3-layer architecture</div>
+                  <div>└─ Technology stack</div>
+                  <div>└─ Security & compliance</div>
+                </div>
+                <div>└─ <Link href="/docs/api" className="text-blue-600 hover:underline">API Documentation</Link></div>
+                <div className="ml-6 space-y-1">
+                  <div>└─ Authentication guide</div>
+                  <div>└─ 8 common endpoints</div>
+                  <div>└─ Request/response examples</div>
+                  <div>└─ Rate limits & error codes</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-gray-900 pt-3">
+              <div className="flex items-center gap-2 font-bold text-green-600 mb-2">
+                💼 Business
+              </div>
+              <div className="ml-6 space-y-1 text-gray-600">
+                <div>├─ <Link href="/docs/business-plan" className="text-blue-600 hover:underline">Business Plan Summary</Link></div>
+                <div className="ml-6 space-y-1">
+                  <div>└─ Executive summary</div>
+                  <div>└─ 5-year projections</div>
+                  <div>└─ Market analysis</div>
+                  <div>└─ Go-to-market strategy</div>
+                </div>
+                <div>└─ <Link href="/docs/business-plan-full" className="text-blue-600 hover:underline">Complete Business Plan</Link></div>
+                <div className="ml-6 space-y-1">
+                  <div>└─ 2,984 lines of content</div>
+                  <div>└─ 10 comprehensive sections</div>
+                  <div>└─ Investor-grade document</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-gray-900 pt-3">
+              <div className="flex items-center gap-2 font-bold text-orange-600 mb-2">
+                📚 Support
+              </div>
+              <div className="ml-6 space-y-1 text-gray-600">
+                <div>├─ <Link href="/docs/faq" className="text-blue-600 hover:underline">FAQ</Link></div>
+                <div className="ml-6 space-y-1">
+                  <div>└─ 6 categories</div>
+                  <div>└─ 24 questions</div>
+                  <div>└─ Searchable interface</div>
+                </div>
+                <div>├─ <Link href="/docs/support" className="text-blue-600 hover:underline">Support</Link></div>
+                <div className="ml-6 space-y-1">
+                  <div>└─ 3 contact channels</div>
+                  <div>└─ 4 self-service resources</div>
+                  <div>└─ Support tier comparison</div>
+                </div>
+                <div>└─ <Link href="/contact" className="text-blue-600 hover:underline">Contact Us</Link> → /contact</div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 text-sm text-gray-600 bg-blue-50 rounded p-3 border border-blue-200">
+            <strong>💡 Tip:</strong> Click any blue link above to jump directly to that section. All links are functional and tested.
+          </div>
+        </section>
+
         {/* Documentation Sections */}
         <section>
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Documentation Sections</h2>
