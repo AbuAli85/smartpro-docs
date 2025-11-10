@@ -260,6 +260,65 @@ export default function BusinessPlanFull() {
           </div>
         </section>
 
+        {/* Company Description */}
+        <section id="company-description">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">2. Company Description</h2>
+          
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Company Background</h3>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                SmartPRO was developed to address the critical market problem of scattered services, traditional procedures, manual dependencies, and the lack of a reliable platform connecting companies with local and international providers, especially for administrative and executive tasks.
+              </p>
+              <p className="text-gray-700 leading-relaxed">
+                The platform provides an integrated digital solution that combines booking, management, communication, and billing in one place. It also integrates with government systems to facilitate licenses, official procedures, and request tracking.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
+                <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
+                  <Shield className="w-6 h-6 text-blue-600" />
+                  Legal Structure
+                </h3>
+                <p className="text-gray-700 text-sm">
+                  SmartPRO is established as a <strong>Limited Liability Company (LLC)</strong> registered in Oman. The company operates under IT activities licensing and complies with national eCommerce laws and data protection regulations.
+                </p>
+              </div>
+
+              <div className="bg-green-50 rounded-lg p-6 border border-green-200">
+                <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
+                  <Globe className="w-6 h-6 text-green-600" />
+                  Location & Expansion
+                </h3>
+                <p className="text-gray-700 text-sm">
+                  Headquartered in <strong>Oman</strong>, with plans for phased expansion to other GCC countries including Saudi Arabia, Qatar, and the UAE.
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Company Values</h3>
+              <div className="grid md:grid-cols-3 gap-4">
+                {[
+                  { icon: <Shield className="w-5 h-5" />, title: 'Integrity & Transparency', desc: 'Building trust through honest communication' },
+                  { icon: <Zap className="w-5 h-5" />, title: 'Innovation & Efficiency', desc: 'Cutting-edge technology for streamlined processes' },
+                  { icon: <Users className="w-5 h-5" />, title: 'User-Centric Approach', desc: 'Designing with end-user experience first' },
+                  { icon: <Globe className="w-5 h-5" />, title: 'Regional Relevance', desc: 'Solutions tailored for Omani and GCC markets' },
+                  { icon: <Award className="w-5 h-5" />, title: 'Quality Assurance', desc: 'High standards for providers and functionality' },
+                  { icon: <CheckCircle className="w-5 h-5" />, title: 'Collaborative Growth', desc: 'Working with all stakeholders for success' },
+                ].map((value, index) => (
+                  <div key={index} className="bg-white rounded-lg border border-gray-200 p-4">
+                    <div className="text-blue-600 mb-2">{value.icon}</div>
+                    <h4 className="font-bold text-gray-900 text-sm mb-1">{value.title}</h4>
+                    <p className="text-xs text-gray-600">{value.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Market Opportunity */}
         <section id="market-analysis">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">3. Market Analysis</h2>
@@ -313,6 +372,312 @@ export default function BusinessPlanFull() {
                     <div className="text-blue-600 mb-3">{advantage.icon}</div>
                     <h4 className="font-bold text-gray-900 mb-2">{advantage.title}</h4>
                     <p className="text-sm text-gray-600">{advantage.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Products & Services */}
+        <section id="products-services">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">4. Products & Services</h2>
+          
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Platform Description</h3>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                SmartPRO serves as a centralized hub for managing administrative tasks, booking services, and facilitating communication between clients and service providers. The platform is designed with a clean, intuitive interface that works seamlessly in both Arabic and English.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Key Features</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <Users className="w-5 h-5 text-blue-600" />
+                    For Clients
+                  </h4>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Centralized service booking</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Provider selection based on ratings</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Real-time service tracking</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Secure payment processing</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>AI-powered assistance</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <Award className="w-5 h-5 text-purple-600" />
+                    For Service Providers
+                  </h4>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Customizable business profile</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Booking management tools</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Performance analytics</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Secure payment collection</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span>Featured listing opportunities</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Unique Selling Proposition</h3>
+              <div className="grid md:grid-cols-3 gap-4">
+                {[
+                  { title: 'Localized Solution', desc: 'Specifically designed for Omani and GCC markets with full Arabic support' },
+                  { title: 'Comprehensive Integration', desc: 'Connecting clients, providers, and government services in one platform' },
+                  { title: 'AI Enhancement', desc: 'Leveraging artificial intelligence for improved user experience' },
+                ].map((usp, index) => (
+                  <div key={index} className="text-center">
+                    <h4 className="font-bold text-blue-600 mb-2">{usp.title}</h4>
+                    <p className="text-sm text-gray-700">{usp.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Marketing & Sales Strategy */}
+        <section id="marketing-sales">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">5. Marketing & Sales Strategy</h2>
+          
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Marketing Objectives</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                {[
+                  'Establish brand awareness in the Omani market',
+                  'Attract critical mass of service providers',
+                  'Drive user adoption among target segments',
+                  'Position as leading digital platform',
+                  'Support phased GCC expansion',
+                  'Build strategic partnerships',
+                ].map((objective, index) => (
+                  <div key={index} className="flex items-start gap-2">
+                    <Target className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <span className="text-gray-700">{objective}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Marketing Channels</h3>
+              <div className="grid md:grid-cols-3 gap-4">
+                {[
+                  { icon: <Globe className="w-6 h-6" />, title: 'Digital Channels', items: ['Google Ads', 'LinkedIn', 'Social Media', 'Email Marketing'] },
+                  { icon: <Users className="w-6 h-6" />, title: 'Traditional', items: ['Business Expos', 'Industry Events', 'Print Media', 'Partnerships'] },
+                  { icon: <Award className="w-6 h-6" />, title: 'Influencer', items: ['Business Leaders', 'Industry Experts', 'Early Adopters', 'Case Studies'] },
+                ].map((channel, index) => (
+                  <div key={index} className="bg-white rounded-lg border border-gray-200 p-6">
+                    <div className="text-blue-600 mb-3">{channel.icon}</div>
+                    <h4 className="font-bold text-gray-900 mb-3">{channel.title}</h4>
+                    <ul className="space-y-1">
+                      {channel.items.map((item, idx) => (
+                        <li key={idx} className="text-sm text-gray-600">• {item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Sales Strategy</h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 border border-blue-200">
+                  <h4 className="font-bold text-blue-900 mb-3">Direct Sales</h4>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li>• Dedicated sales team</li>
+                    <li>• Consultative selling</li>
+                    <li>• Live demonstrations</li>
+                    <li>• Free trials</li>
+                  </ul>
+                </div>
+                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 border border-green-200">
+                  <h4 className="font-bold text-green-900 mb-3">Indirect Sales</h4>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li>• Referral program</li>
+                    <li>• Partner network</li>
+                    <li>• Integration partners</li>
+                    <li>• Co-marketing</li>
+                  </ul>
+                </div>
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 border border-purple-200">
+                  <h4 className="font-bold text-purple-900 mb-3">Self-Service</h4>
+                  <ul className="space-y-2 text-sm text-gray-700">
+                    <li>• Freemium model</li>
+                    <li>• In-app upgrades</li>
+                    <li>• Automated onboarding</li>
+                    <li>• Self-guided setup</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Operational Plan */}
+        <section id="operations">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">6. Operational Plan</h2>
+          
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Business Model</h3>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                SmartPRO operates on a platform business model that connects service providers with clients seeking administrative and business services. The system relies on multiple revenue streams to ensure sustainability and growth.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Key Processes</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                {[
+                  {
+                    title: 'User Onboarding',
+                    steps: ['Registration & verification', 'Profile creation', 'Service configuration', 'Platform training'],
+                    icon: <Users className="w-6 h-6" />,
+                  },
+                  {
+                    title: 'Service Delivery',
+                    steps: ['Service selection', 'Provider matching', 'Booking confirmation', 'Service completion'],
+                    icon: <CheckCircle className="w-6 h-6" />,
+                  },
+                  {
+                    title: 'Quality Assurance',
+                    steps: ['Provider vetting', 'Performance monitoring', 'Review moderation', 'Continuous improvement'],
+                    icon: <Shield className="w-6 h-6" />,
+                  },
+                  {
+                    title: 'Customer Support',
+                    steps: ['Multi-channel support', 'AI-powered help', 'Knowledge base', 'Ticketing system'],
+                    icon: <Award className="w-6 h-6" />,
+                  },
+                ].map((process, index) => (
+                  <div key={index} className="bg-white rounded-lg border border-gray-200 p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="text-blue-600">{process.icon}</div>
+                      <h4 className="font-bold text-gray-900">{process.title}</h4>
+                    </div>
+                    <ul className="space-y-2">
+                      {process.steps.map((step, idx) => (
+                        <li key={idx} className="text-sm text-gray-700 flex items-start gap-2">
+                          <span className="text-blue-600">→</span>
+                          <span>{step}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Technology Infrastructure</h3>
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 border border-gray-200">
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div>
+                    <h4 className="font-bold text-gray-900 mb-3">Frontend</h4>
+                    <ul className="space-y-1 text-sm text-gray-700">
+                      <li>• Next.js framework</li>
+                      <li>• Responsive design</li>
+                      <li>• Mobile apps (iOS/Android)</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 mb-3">Backend</h4>
+                    <ul className="space-y-1 text-sm text-gray-700">
+                      <li>• Node.js/Express</li>
+                      <li>• MongoDB database</li>
+                      <li>• RESTful APIs</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 mb-3">Infrastructure</h4>
+                    <ul className="space-y-1 text-sm text-gray-700">
+                      <li>• AWS cloud hosting</li>
+                      <li>• Auto-scaling</li>
+                      <li>• 99.9% uptime SLA</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Organization & Management */}
+        <section id="organization">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">7. Organization & Management</h2>
+          
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Organizational Structure</h3>
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <div className="grid md:grid-cols-5 gap-4 mb-6">
+                  {[
+                    { title: 'CEO', desc: 'Strategic direction' },
+                    { title: 'CTO', desc: 'Technology strategy' },
+                    { title: 'COO', desc: 'Operations management' },
+                    { title: 'CFO', desc: 'Financial planning' },
+                    { title: 'CMO', desc: 'Marketing strategy' },
+                  ].map((role, index) => (
+                    <div key={index} className="text-center p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <div className="font-bold text-blue-900 mb-1">{role.title}</div>
+                      <div className="text-xs text-gray-600">{role.desc}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Staffing Plan</h3>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  { phase: 'Phase 1 (Launch)', team: '15-20 members', focus: 'Core development & operations' },
+                  { phase: 'Phase 2 (Growth)', team: '30-40 members', focus: 'Expansion & scaling' },
+                  { phase: 'Phase 3 (Regional)', team: '50-70 members', focus: 'GCC market coverage' },
+                ].map((phase, index) => (
+                  <div key={index} className="bg-white rounded-lg border border-gray-200 p-6">
+                    <h4 className="font-bold text-gray-900 mb-2">{phase.phase}</h4>
+                    <div className="text-2xl font-bold text-blue-600 mb-2">{phase.team}</div>
+                    <p className="text-sm text-gray-600">{phase.focus}</p>
                   </div>
                 ))}
               </div>
@@ -557,6 +922,128 @@ export default function BusinessPlanFull() {
                   <span className="font-semibold text-purple-600">30%</span>
                 </li>
               </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* Appendices */}
+        <section id="appendices">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">10. Appendices</h2>
+          
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Market Research Data</h3>
+              <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <h4 className="font-bold text-gray-900 mb-3">Oman Digital Transformation Overview</h4>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>Growing internet penetration rate (over 90% of the population)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>Increasing smartphone adoption (estimated at 85% of the population)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>Government investment in digital infrastructure</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>Rising adoption of digital services across public and private sectors</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                    <span>Supportive policies for entrepreneurship and digital platforms</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Technical Specifications</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-blue-600" />
+                    Platform Architecture
+                  </h4>
+                  <ul className="space-y-1 text-sm text-gray-700">
+                    <li>• Frontend: Next.js-based responsive web application</li>
+                    <li>• Backend: Node.js with Express.js API framework</li>
+                    <li>• Database: MongoDB for flexible data storage</li>
+                    <li>• Authentication: JWT-based secure authentication</li>
+                    <li>• Cloud Infrastructure: AWS/Azure with auto-scaling</li>
+                  </ul>
+                </div>
+
+                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                  <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    <Shield className="w-5 h-5 text-green-600" />
+                    Security Measures
+                  </h4>
+                  <ul className="space-y-1 text-sm text-gray-700">
+                    <li>• End-to-end encryption for sensitive data</li>
+                    <li>• Regular penetration testing and security audits</li>
+                    <li>• GDPR and local data protection compliance</li>
+                    <li>• Multi-factor authentication options</li>
+                    <li>• Regular security patches and updates</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Legal & Regulatory</h3>
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-6 border border-gray-200">
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div>
+                    <h4 className="font-bold text-gray-900 mb-2">Corporate Structure</h4>
+                    <ul className="space-y-1 text-xs text-gray-700">
+                      <li>• LLC registered in Oman</li>
+                      <li>• Articles of Incorporation</li>
+                      <li>• Operating Agreement</li>
+                      <li>• Shareholder Agreement</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 mb-2">Compliance</h4>
+                    <ul className="space-y-1 text-xs text-gray-700">
+                      <li>• IT Activities License</li>
+                      <li>• Data Protection Compliance</li>
+                      <li>• Terms of Service</li>
+                      <li>• Privacy Policy</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 mb-2">Intellectual Property</h4>
+                    <ul className="space-y-1 text-xs text-gray-700">
+                      <li>• Trademark Registration</li>
+                      <li>• Copyright Protection</li>
+                      <li>• Software Licensing</li>
+                      <li>• Non-Disclosure Agreements</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Supporting Materials</h3>
+              <div className="grid md:grid-cols-4 gap-4">
+                {[
+                  { icon: <FileText className="w-6 h-6" />, title: 'UI/UX Mockups', desc: 'Platform designs' },
+                  { icon: <BarChart3 className="w-6 h-6" />, title: 'Market Research', desc: 'Detailed analysis' },
+                  { icon: <Users className="w-6 h-6" />, title: 'Team Bios', desc: 'Leadership profiles' },
+                  { icon: <Globe className="w-6 h-6" />, title: 'Partnership Docs', desc: 'Agreement templates' },
+                ].map((material, index) => (
+                  <div key={index} className="bg-white rounded-lg border border-gray-200 p-4 text-center hover:shadow-md transition-shadow">
+                    <div className="text-blue-600 mb-2 flex justify-center">{material.icon}</div>
+                    <h4 className="font-bold text-gray-900 text-sm mb-1">{material.title}</h4>
+                    <p className="text-xs text-gray-600">{material.desc}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
