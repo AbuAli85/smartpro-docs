@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,13 +7,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
+import {
   Copy, RefreshCw, AlertCircle, CheckCircle2, ArrowLeft, Download, 
   Save, FileText, Printer, Mail, Image, Upload, Clock, Star,
   Sparkles, ChevronRight, Settings, Eye, Send, History
 } from "lucide-react";
 import { Link } from "wouter";
 import { setSEOTags } from "@/lib/seoUtils";
+import {
+  getCategories,
+  getTemplateById,
+  getTemplatesByCategory,
+  CATEGORY_LABELS,
+  renderTemplate,
+  getDefaultClosing,
+  LetterTemplate,
+} from "@/config/letterTemplates";
+import { AILetterGenerator } from "@/components/AILetterGenerator";
 
 // ============================================================
 // PROFESSIONAL LETTER BUILDER - BUSINESS CLASS
@@ -31,28 +41,6 @@ import { setSEOTags } from "@/lib/seoUtils";
 // ✅ Field Validation
 // ✅ Smart Suggestions
 // ============================================================
-
-// ---------- Letter Templates ----------
-const LETTER_TEMPLATES = {
-  MOCI: {
-    NOC: { value: "NOC", label: "No-Objection Certificate", icon: "📄" },
-    Inquiry: { value: "Inquiry", label: "Regulatory Inquiry", icon: "❓" },
-    Update: { value: "Update", label: "Update Request", icon: "🔄" },
-    Registration: { value: "Registration", label: "Business Registration", icon: "🏢" },
-    License: { value: "License", label: "License Application", icon: "📋" },
-  },
-  ROP: {
-    Verification: { value: "Verification", label: "Employment Verification", icon: "✓" },
-    Clearance: { value: "Clearance", label: "Security Clearance", icon: "🛡️" },
-    Report: { value: "Report", label: "Incident Report", icon: "📊" },
-  },
-  MOL: {
-    LabourClearance: { value: "LabourClearance", label: "Labour Clearance", icon: "👔" },
-    EmploymentConfirmation: { value: "EmploymentConfirmation", label: "Employment Confirmation", icon: "✓" },
-    WorkPermit: { value: "WorkPermit", label: "Work Permit Request", icon: "🔑" },
-    Resignation: { value: "Resignation", label: "Resignation Acceptance", icon: "👋" },
-  },
-};
 
 type Lang = "ar" | "en";
 type RecipientRole = "general_manager" | "director" | "minister" | "department_head" | "custom";
@@ -135,6 +123,7 @@ export function renderProfessionalLetter({
   authorityLevel: string;
   values: Record<string, string>;
 }) {
+  const template: LetterTemplate | undefined = getTemplateById(letterType);
   const date = lang === "ar" ? `التاريخ: ${formatDate(values.date || "")}` : `Date: ${values.date || ""}`;
   const refNumber = values.reference_number || `REF/${entity}/${new Date().getFullYear()}/${Math.floor(Math.random() * 10000)}`;
 
@@ -162,50 +151,27 @@ export function renderProfessionalLetter({
   const toLine = lang === "ar"
     ? `إلى: ${roleText ? roleText + " – " : ""}${targetOrg}`
     : `To: ${roleText ? roleText + ", " : ""}${targetOrg}`;
-
   const subjectValue = values.subject || values.letter_title || "";
   const refLine = lang === "ar" ? `${headers.ar.ref}: ${refNumber}` : `${headers.en.ref}: ${refNumber}`;
+  const aiBody = (values.ai_body || "").trim();
 
-  // Enhanced letter templates with professional formatting
-  if (entity === "MOCI" && letterType === "NOC") {
-    if (lang === "ar") {
-      return [
-        headers.ar.company,
-        date,
-        refLine,
-        "",
-        toLine,
-        `الموضوع: ${subjectValue || "خطاب عدم ممانعة"}`,
-        "",
-        "تحية طيبة وبعد،",
-        "",
-        authorityLevel === "authorized_signatory"
-          ? `نحن، شركة ${values.company_name} (رقم السجل التجاري: ${values.company_cr})، نود إفادتكم بأنه لا مانع لدينا من ${values.noc_purpose || "الغرض المذكور"} للموظف ${values.employee_name} (رقم البطاقة المدنية: ${values.civil_id}).\n\nوذلك بناءً على طلبه الكريم، ودون أدنى مسؤولية على الشركة.`
-          : `نؤكد بأن السيد/السيدة ${values.employee_name} يعمل لدينا منذ ${values.employment_start_date} بقسم ${values.department}، ونصدر هذا الخطاب بناءً على طلبه للغرض المذكور أعلاه.`,
-        "",
-        `${headers.ar.sincerely}،`,
-        "",
-        `${values.signer_name}`,
-        `${values.signer_title}`,
-        "",
-        commonFooter,
-      ].join("\n");
-    }
+  if (aiBody) {
+    const salutation = lang === "ar" ? "تحية طيبة وبعد،" : "Dear Sir/Madam,";
+    const closing = lang === "ar" ? headers.ar.sincerely : headers.en.sincerely;
+
     return [
-      headers.en.company,
+      lang === "ar" ? headers.ar.company : headers.en.company,
       date,
       refLine,
       "",
       toLine,
-      `Subject: ${subjectValue || "No-Objection Certificate (NOC)"}`,
+      subjectValue ? (lang === "ar" ? `الموضوع: ${subjectValue}` : `Subject: ${subjectValue}`) : "",
       "",
-      "Dear Sir/Madam,",
+      salutation,
       "",
-      authorityLevel === "authorized_signatory"
-        ? `We, ${values.company_name} (CR: ${values.company_cr}), hereby certify that we have no objection for ${values.employee_name} (Civil ID: ${values.civil_id}) to ${values.noc_purpose || "proceed with the stated activity"}.\n\nThis certificate is issued upon the employee's request and without any liability on the company.`
-        : `This is to confirm that Mr./Ms. ${values.employee_name} has been employed with us since ${values.employment_start_date} in the ${values.department} department. This letter is issued upon their request for the purpose mentioned above.`,
+      aiBody,
       "",
-      `${headers.en.sincerely},`,
+      `${closing},`,
       "",
       `${values.signer_name}`,
       `${values.signer_title}`,
@@ -214,8 +180,42 @@ export function renderProfessionalLetter({
     ].join("\n");
   }
 
-  // Add more professional templates for other letter types...
-  // (Similar enhancement for Inquiry, Update, etc.)
+  if (template) {
+    const baseValues: Record<string, string> = {
+      company_name: values.company_name || headers.en.company,
+      company_address: values.company_address || "P.O. Box 123, Muscat 100, Sultanate of Oman",
+      company_address_ar: values.company_address_ar || "ص.ب 123، مسقط 100، سلطنة عمان",
+      company_phone: values.company_phone || "+968 2460 0000",
+      company_email: values.company_email || "info@smartprohub.com",
+      company_website: values.company_website || "www.smartprohub.com",
+      company_footer: lang === "ar" ? "" : commonFooter,
+      company_footer_ar: lang === "ar" ? commonFooter : "",
+      closing: values.closing || getDefaultClosing("en"),
+      closing_ar: values.closing_ar || getDefaultClosing("ar"),
+      reference_number: refNumber,
+      date: values.date || new Date().toISOString().slice(0, 10),
+      recipient_role: roleText || (lang === "ar" ? "الجهة المعنية" : "Concerned Authority"),
+      recipient_org: values.recipient_org || targetOrg,
+      subject: subjectValue,
+      authority_level: authorityLevel,
+      signer_name: values.signer_name || "",
+      signer_title: values.signer_title || "",
+      employee_name: values.employee_name || "",
+      civil_id: values.civil_id || "",
+    };
+
+    const mergedValues = {
+      ...baseValues,
+      ...values,
+      recipient_role: baseValues.recipient_role,
+      reference_number: baseValues.reference_number,
+      date: baseValues.date,
+      subject: baseValues.subject,
+    };
+
+    const renderedBody = renderTemplate(template, mergedValues, lang);
+    return renderedBody;
+  }
 
   return lang === "ar"
     ? `${headers.ar.company}\n${date}\n${refLine}\n\n(يرجى إكمال الحقول لاختيار النموذج المناسب)`
@@ -233,8 +233,10 @@ export default function ProfessionalLetterBuilder() {
     });
   }, []);
 
-  const [entity, setEntity] = useState("MOCI");
-  const [letterType, setLetterType] = useState("NOC");
+  const categories = useMemo(() => getCategories(), []);
+  const [entity, setEntity] = useState(categories[0] || "MOCI");
+  const initialTemplates = useMemo(() => getTemplatesByCategory(categories[0] || "MOCI"), [categories]);
+  const [letterType, setLetterType] = useState(initialTemplates[0]?.id || "");
   const [lang, setLang] = useState<Lang>("ar");
   const [authorityLevel, setAuthorityLevel] = useState("authorized_signatory");
   const [recipientRole, setRecipientRole] = useState<RecipientRole>("general_manager");
@@ -242,14 +244,16 @@ export default function ProfessionalLetterBuilder() {
   const [savedDrafts, setSavedDrafts] = useState<LetterDraft[]>([]);
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
 
-  const entityTypes = LETTER_TEMPLATES[entity as keyof typeof LETTER_TEMPLATES] || {};
+  const templatesForEntity = useMemo(() => getTemplatesByCategory(entity), [entity]);
   
   useEffect(() => {
-    const types = Object.keys(entityTypes);
-    if (!types.includes(letterType)) {
-      setLetterType(types[0] || "NOC");
+    if (templatesForEntity.length === 0) return;
+    const exists = templatesForEntity.some((tpl) => tpl.id === letterType);
+    if (!exists) {
+      setLetterType(templatesForEntity[0].id);
     }
-  }, [entity]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entity, templatesForEntity]);
 
   const [values, setValues] = useState<Record<string, string>>({
     date: new Date().toISOString().slice(0, 10),
@@ -270,6 +274,14 @@ export default function ProfessionalLetterBuilder() {
     recipient_role: recipientRole,
     custom_recipient_role: "",
     reference_number: "",
+    company_address: "P.O. Box 123, Muscat 100, Sultanate of Oman",
+    company_address_ar: "ص.ب 123، مسقط 100، سلطنة عمان",
+    company_phone: "+968 2460 0000",
+    company_email: "info@smartprohub.com",
+    company_website: "www.smartprohub.com",
+    closing: getDefaultClosing("en"),
+    closing_ar: getDefaultClosing("ar"),
+    ai_body: "",
   });
 
   useEffect(() => {
@@ -370,7 +382,8 @@ export default function ProfessionalLetterBuilder() {
 
   const reset = () => {
     setEntity("MOCI");
-    setLetterType("NOC");
+    const defaultTemplates = getTemplatesByCategory("MOCI");
+    setLetterType(defaultTemplates[0]?.id || "");
     setLang("ar");
     setAuthorityLevel("authorized_signatory");
     setRecipientRole("general_manager");
@@ -384,17 +397,27 @@ export default function ProfessionalLetterBuilder() {
       employment_start_date: "",
       department: "",
       noc_purpose: "",
-      company_name: "Smartpro Business Hub & Services",
-      company_cr: "CR-1234567",
-      signer_name: "Mohammed Al-Harthi",
-      signer_title: "Managing Director",
       recipient_name: "",
       recipient_org: "",
       recipient_role: "general_manager",
       custom_recipient_role: "",
       reference_number: "",
+      company_name: "Smartpro Business Hub & Services",
+      company_cr: "CR-1234567",
+      signer_name: "Mohammed Al-Harthi",
+      signer_title: "Managing Director",
+      company_address: "P.O. Box 123, Muscat 100, Sultanate of Oman",
+      company_address_ar: "ص.ب 123، مسقط 100، سلطنة عمان",
+      company_phone: "+968 2460 0000",
+      company_email: "info@smartprohub.com",
+      company_website: "www.smartprohub.com",
+      closing: getDefaultClosing("en"),
+      closing_ar: getDefaultClosing("ar"),
+      ai_body: "",
     });
   };
+
+  const selectedTemplate = useMemo(() => getTemplateById(letterType), [letterType]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -451,84 +474,91 @@ export default function ProfessionalLetterBuilder() {
           {/* Editor Tab */}
           <TabsContent value="editor" className="space-y-6">
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-              {/* Left: Premium Form */}
-              <Card className="shadow-2xl rounded-3xl border-2 border-white/50 bg-white/80 backdrop-blur-xl">
-                <CardHeader className="border-b bg-gradient-to-r from-blue-50 to-indigo-50">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl flex items-center gap-2">
-                      <Settings className="w-5 h-5 text-blue-600" />
-                      Letter Configuration
-                    </CardTitle>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={reset}>
-                        <RefreshCw className="w-4 h-4 mr-2" /> Reset
-                      </Button>
-                      <Button size="sm" onClick={handleSaveDraft} className="bg-gradient-to-r from-blue-600 to-indigo-600">
-                        <Save className="w-4 h-4 mr-2" /> Save Draft
-                      </Button>
+              {/* Left Column */}
+              <div className="space-y-6">
+                {/* Premium Form */}
+                <Card className="shadow-2xl rounded-3xl border-2 border-white/50 bg-white/80 backdrop-blur-xl">
+                  <CardHeader className="border-b bg-gradient-to-r from-blue-50 to-indigo-50">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-xl flex items-center gap-2">
+                        <Settings className="w-5 h-5 text-blue-600" />
+                        Letter Configuration
+                      </CardTitle>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={reset}>
+                          <RefreshCw className="w-4 h-4 mr-2" /> Reset
+                        </Button>
+                        <Button size="sm" onClick={handleSaveDraft} className="bg-gradient-to-r from-blue-600 to-indigo-600">
+                          <Save className="w-4 h-4 mr-2" /> Save Draft
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </CardHeader>
-                
-                <CardContent className="p-6 space-y-6 max-h-[calc(100vh-300px)] overflow-y-auto">
-                  {/* Entity & Type Selection */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-sm font-semibold text-gray-700">Government Entity</Label>
-                      <Select value={entity} onValueChange={setEntity}>
-                        <SelectTrigger className="border-2 border-gray-200 focus:border-blue-500">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="MOCI">🏢 MOCI - Ministry of Commerce</SelectItem>
-                          <SelectItem value="ROP">🚔 ROP - Royal Oman Police</SelectItem>
-                          <SelectItem value="MOL">👔 MOL - Ministry of Labour</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  </CardHeader>
 
-                    <div className="space-y-2">
-                      <Label className="text-sm font-semibold text-gray-700">Letter Type</Label>
-                      <Select value={letterType} onValueChange={setLetterType}>
-                        <SelectTrigger className="border-2 border-gray-200 focus:border-blue-500">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {Object.values(entityTypes).map((t: any) => (
-                            <SelectItem key={t.value} value={t.value}>
-                              {t.icon} {t.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  <CardContent className="p-6 space-y-6 max-h-[calc(100vh-300px)] overflow-y-auto">
+                    {/* Entity & Type Selection */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-semibold text-gray-700">Government Entity</Label>
+                        <Select value={entity} onValueChange={setEntity}>
+                          <SelectTrigger className="border-2 border-gray-200 focus:border-blue-500">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((cat) => {
+                              const label = CATEGORY_LABELS[cat] || { en: cat, ar: cat, icon: "📄" };
+                              return (
+                                <SelectItem key={cat} value={cat}>
+                                  {label.icon} {label.en}
+                                </SelectItem>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                    <div className="space-y-2">
-                      <Label className="text-sm font-semibold text-gray-700">Language</Label>
-                      <Select value={lang} onValueChange={(v) => setLang(v as Lang)}>
-                        <SelectTrigger className="border-2 border-gray-200 focus:border-blue-500">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="ar">🇴🇲 Arabic - العربية</SelectItem>
-                          <SelectItem value="en">🇬🇧 English</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-semibold text-gray-700">Letter Type</Label>
+                        <Select value={letterType} onValueChange={setLetterType}>
+                          <SelectTrigger className="border-2 border-gray-200 focus:border-blue-500">
+                            <SelectValue placeholder="Select template" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {templatesForEntity.map((tpl) => (
+                              <SelectItem key={tpl.id} value={tpl.id}>
+                                {tpl.icon} {lang === "ar" ? tpl.nameAr : tpl.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                    <div className="space-y-2">
-                      <Label className="text-sm font-semibold text-gray-700">Authority Level</Label>
-                      <Select value={authorityLevel} onValueChange={setAuthorityLevel}>
-                        <SelectTrigger className="border-2 border-gray-200 focus:border-blue-500">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="authorized_signatory">⭐ Authorized Signatory</SelectItem>
-                          <SelectItem value="hr_manager">👤 HR Manager</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-semibold text-gray-700">Language</Label>
+                        <Select value={lang} onValueChange={(v) => setLang(v as Lang)}>
+                          <SelectTrigger className="border-2 border-gray-200 focus:border-blue-500">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="ar">🇴🇲 Arabic - العربية</SelectItem>
+                            <SelectItem value="en">🇬🇧 English</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-semibold text-gray-700">Authority Level</Label>
+                        <Select value={authorityLevel} onValueChange={setAuthorityLevel}>
+                          <SelectTrigger className="border-2 border-gray-200 focus:border-blue-500">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="authorized_signatory">⭐ Authorized Signatory</SelectItem>
+                            <SelectItem value="hr_manager">👤 HR Manager</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
-                  </div>
 
                   {/* Recipient Section */}
                   <div className="space-y-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border-2 border-blue-100">
@@ -589,8 +619,8 @@ export default function ProfessionalLetterBuilder() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label className="text-sm font-semibold">Letter Title</Label>
-                      <Input 
-                        value={values.letter_title} 
+                      <Input
+                        value={values.letter_title}
                         onChange={(e) => setValues(v => ({...v, letter_title: e.target.value}))}
                         placeholder="Brief title..."
                       />
@@ -598,8 +628,8 @@ export default function ProfessionalLetterBuilder() {
 
                     <div className="space-y-2">
                       <Label className="text-sm font-semibold">Subject</Label>
-                      <Input 
-                        value={values.subject} 
+                      <Input
+                        value={values.subject}
                         onChange={(e) => setValues(v => ({...v, subject: e.target.value}))}
                         placeholder="Letter subject..."
                       />
@@ -665,15 +695,15 @@ export default function ProfessionalLetterBuilder() {
                         />
                       </div>
 
-                      <div className="space-y-2 col-span-2">
-                        <Label className="text-sm font-medium">Request Details / NOC Purpose</Label>
-                        <Textarea 
-                          value={values.request_details || values.noc_purpose} 
-                          onChange={(e) => setValues(v => ({...v, request_details: e.target.value, noc_purpose: e.target.value}))}
-                          placeholder="Describe the purpose..."
-                          rows={3}
-                        />
-                      </div>
+                    <div className="space-y-2 col-span-2">
+                      <Label className="text-sm font-medium">Request Details / NOC Purpose</Label>
+                      <Textarea
+                        value={values.request_details || values.noc_purpose}
+                        onChange={(e) => setValues(v => ({...v, request_details: e.target.value, noc_purpose: e.target.value}))}
+                        placeholder="Describe the purpose..."
+                        rows={3}
+                      />
+                    </div>
                     </div>
                   </div>
 
@@ -711,8 +741,83 @@ export default function ProfessionalLetterBuilder() {
                       />
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                    {/* Company Contact Details */}
+                    <div className="space-y-4 p-4 bg-white/70 border border-slate-200 rounded-xl">
+                      <h3 className="font-semibold text-gray-800 flex items-center gap-2">
+                        <Image className="w-4 h-4 text-slate-600" />
+                        Company Contact Details
+                      </h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2 col-span-2">
+                          <Label className="text-sm font-medium">Company Address (EN)</Label>
+                          <Textarea
+                            value={values.company_address}
+                            onChange={(e) => setValues(v => ({...v, company_address: e.target.value}))}
+                            rows={2}
+                          />
+                        </div>
+                        <div className="space-y-2 col-span-2">
+                          <Label className="text-sm font-medium">Company Address (AR)</Label>
+                          <Textarea
+                            value={values.company_address_ar}
+                            onChange={(e) => setValues(v => ({...v, company_address_ar: e.target.value}))}
+                            rows={2}
+                            className="text-right [direction:rtl]"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">Company Phone</Label>
+                          <Input
+                            value={values.company_phone}
+                            onChange={(e) => setValues(v => ({...v, company_phone: e.target.value}))}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">Company Email</Label>
+                          <Input
+                            type="email"
+                            value={values.company_email}
+                            onChange={(e) => setValues(v => ({...v, company_email: e.target.value}))}
+                          />
+                        </div>
+                        <div className="space-y-2 col-span-2">
+                          <Label className="text-sm font-medium">Website</Label>
+                          <Input
+                            value={values.company_website}
+                            onChange={(e) => setValues(v => ({...v, company_website: e.target.value}))}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* AI Generator */}
+                {(selectedTemplate || templatesForEntity.length > 0) && (
+                  <AILetterGenerator
+                    template={(selectedTemplate || templatesForEntity[0]) as LetterTemplate}
+                    language={lang}
+                    existingValues={values}
+                    onContentGenerated={(content) => {
+                      setValues((prev) => {
+                        const updated: Record<string, string> = {
+                          ...prev,
+                          ai_body: content,
+                          request_details: prev.request_details || prev.noc_purpose,
+                        };
+                        if (!prev.subject && (selectedTemplate || templatesForEntity[0])) {
+                          const tpl = selectedTemplate || templatesForEntity[0];
+                          updated.subject = prev.subject || (lang === "ar" ? tpl.nameAr : tpl.name);
+                        }
+                        return updated;
+                      });
+                    }}
+                    onSubjectGenerated={(subject) => {
+                      setValues((prev) => ({ ...prev, subject }));
+                    }}
+                  />
+                )}
+              </div>
 
               {/* Right: Live Preview */}
               <Card className="shadow-2xl rounded-3xl border-2 border-white/50 bg-white backdrop-blur-xl">
@@ -729,8 +834,8 @@ export default function ProfessionalLetterBuilder() {
                       <Button variant="outline" size="sm" onClick={() => handleCopy(preview)}>
                         <Copy className="w-4 h-4" />
                       </Button>
-                      <Button size="sm" className="bg-gradient-to-r from-green-600 to-emerald-600">
-                        <Download className="w-4 h-4 mr-2" /> Export PDF
+                      <Button size="sm" className="bg-gradient-to-r from-green-600 to-emerald-600" onClick={handlePrint}>
+                        <Download className="w-4 h-4 mr-2" /> Export / Save as PDF
                       </Button>
                     </div>
                   </div>
@@ -774,7 +879,7 @@ export default function ProfessionalLetterBuilder() {
                     <Button onClick={() => handleCopy(preview)} className="bg-gradient-to-r from-purple-600 to-pink-600">
                       <Copy className="w-4 h-4 mr-2" /> Copy
                     </Button>
-                    <Button className="bg-gradient-to-r from-green-600 to-emerald-600">
+                    <Button className="bg-gradient-to-r from-green-600 to-emerald-600" onClick={handlePrint}>
                       <Download className="w-4 h-4 mr-2" /> Download PDF
                     </Button>
                   </div>
