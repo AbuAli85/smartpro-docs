@@ -110,18 +110,26 @@ export default function Header() {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="lg:hidden p-2 rounded-md text-slate-700 hover:bg-slate-100"
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isOpen}
+            aria-controls="mobile-navigation"
           >
             {isOpen ? (
-              <X className="w-6 h-6" />
+              <X className="w-6 h-6" aria-hidden="true" />
             ) : (
-              <Menu className="w-6 h-6" />
+              <Menu className="w-6 h-6" aria-hidden="true" />
             )}
           </button>
         </div>
 
         {/* Mobile Navigation */}
         {isOpen && (
-            <div className="lg:hidden pb-4 space-y-2">
+            <nav 
+              id="mobile-navigation" 
+              className="lg:hidden pb-4 space-y-2"
+              role="navigation"
+              aria-label="Mobile navigation"
+            >
             {navItems.map((item) => (
               <div key={item.label}>
                 <button
@@ -131,6 +139,8 @@ export default function Header() {
                     )
                   }
                   className="w-full text-left px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-md flex items-center justify-between"
+                  aria-haspopup={item.submenu ? "true" : "false"}
+                  aria-expanded={item.submenu ? openDropdown === item.label : undefined}
                 >
                   {item.label}
                   {item.submenu && (
@@ -138,18 +148,20 @@ export default function Header() {
                       className={`w-4 h-4 transition-transform ${
                         openDropdown === item.label ? "rotate-180" : ""
                       }`}
+                      aria-hidden="true"
                     />
                   )}
                 </button>
 
                 {/* Mobile Submenu */}
                 {item.submenu && openDropdown === item.label && (
-                  <div className="pl-4 space-y-1">
+                  <div className="pl-4 space-y-1" role="menu">
                     {item.submenu.map((subitem) => (
                       <Link key={subitem.label} href={subitem.href}>
                         <div
                           className="block px-3 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-md cursor-pointer"
                           onClick={() => setIsOpen(false)}
+                          role="menuitem"
                         >
                           {subitem.label}
                         </div>
@@ -176,11 +188,11 @@ export default function Header() {
                   Contact
                 </div>
               </Link>
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" aria-label="Start free trial">
                 Start Free Trial
               </Button>
             </div>
-          </div>
+          </nav>
         )}
       </div>
     </header>

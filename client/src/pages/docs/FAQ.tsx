@@ -3,10 +3,16 @@ import { ChevronDown, Search } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { setSEOTags } from '@/lib/seoUtils';
 import { Input } from '@/components/ui/input';
+import { generateFAQSchema, insertStructuredData } from '@/lib/schemaUtils';
 
 export default function FAQ() {
   const [searchQuery, setSearchQuery] = useState('');
   const [openItems, setOpenItems] = useState<number[]>([]);
+
+  const breadcrumbs = [
+    { label: 'Documentation', href: '/docs' },
+    { label: 'FAQ', href: '/docs/faq' },
+  ];
 
   useEffect(() => {
     setSEOTags({
@@ -17,11 +23,6 @@ export default function FAQ() {
       url: "https://thesmartpro.io/docs/faq",
     });
   }, []);
-
-  const breadcrumbs = [
-    { label: 'Documentation', href: '/docs' },
-    { label: 'FAQ', href: '/docs/faq' },
-  ];
 
   const faqCategories = [
     {
@@ -147,6 +148,19 @@ export default function FAQ() {
       ],
     },
   ];
+
+  // Add structured data for SEO
+  useEffect(() => {
+    const allQuestions = faqCategories.flatMap(cat => 
+      cat.questions.map(q => ({
+        question: q.question,
+        answer: q.answer
+      }))
+    );
+    
+    const faqSchema = generateFAQSchema({ questions: allQuestions });
+    insertStructuredData(faqSchema);
+  }, []);
 
   // Filter FAQ items based on search query
   const filteredCategories = searchQuery

@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useEffect } from "react";
 import { setSEOTags } from "@/lib/seoUtils";
+import { generateOrganizationSchema, generateSoftwareSchema, insertMultipleSchemas } from "@/lib/schemaUtils";
 
 export default function HomeNew() {
   useEffect(() => {
@@ -15,6 +16,37 @@ export default function HomeNew() {
       type: "website",
       url: "https://thesmartpro.io",
     });
+
+    // Add structured data for SEO
+    const organizationSchema = generateOrganizationSchema({
+      name: "TheSmartPro.io",
+      description: "Enterprise-grade professional services marketplace connecting verified service providers with organizations",
+      url: "https://thesmartpro.io",
+      logo: "https://thesmartpro.io/logo.png",
+      contactPoint: {
+        telephone: "+1-555-0100",
+        contactType: "customer support",
+        email: "support@thesmartpro.io"
+      },
+      sameAs: [
+        "https://twitter.com/thesmartpro",
+        "https://linkedin.com/company/thesmartpro",
+        "https://facebook.com/thesmartpro"
+      ]
+    });
+
+    const softwareSchema = generateSoftwareSchema({
+      name: "TheSmartPro.io Platform",
+      description: "Professional services marketplace with contract management, booking, and payment processing",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web Browser",
+      offers: {
+        price: "0",
+        priceCurrency: "USD"
+      }
+    });
+
+    insertMultipleSchemas([organizationSchema, softwareSchema]);
   }, []);
 
   const scrollToSection = (id: string) => {
