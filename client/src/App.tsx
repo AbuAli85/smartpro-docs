@@ -1,11 +1,14 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import { initGoogleAnalytics, trackPageView } from "@/lib/googleAnalytics";
+import { initPerformanceMonitoring } from "@/lib/performanceUtils";
+import { CoreWebVitalsMonitor } from "@/components/CoreWebVitalsMonitor";
 
 // Lazy load pages to reduce initial bundle
 const ProvidersPage = lazy(() => import("./pages/ProvidersPage"));
@@ -55,6 +58,13 @@ function PageLoader() {
 }
 
 function Router() {
+  const [location] = useLocation();
+
+  // Track page views on route change
+  useEffect(() => {
+    trackPageView(location, document.title);
+  }, [location]);
+
   return (
     <Suspense fallback={<PageLoader />}>
       <Switch>
@@ -96,6 +106,25 @@ function Router() {
 }
 
 function App() {
+  // Initialize monitoring and analytics on mount
+  useEffect(() => {
+    // Initialize Google Analytics 4
+    const ga4Id = import.meta.env.VITE_GA4_MEASUREMENT_ID;
+    if (ga4Id) {
+      initGoogleAnalytics(ga4Id);
+    }
+
+    // Initialize performance monitoring
+    initPerformanceMonitoring();
+
+    // Log initialization in development
+    if (import.meta.env.DEV) {
+      console.log('✅ SmartPro App Initialized');
+      console.log('📊 Analytics:', ga4Id ? 'Enabled' : 'Disabled');
+      console.log('⚡ Performance Monitoring: Enabled');
+    }
+  }, []);
+
   return (
     <ErrorBoundary>
       <NotificationProvider>
@@ -105,6 +134,7 @@ function App() {
             <ToastContainer />
             <LiveChat />
             <EmailCapture />
+            <CoreWebVitalsMonitor />
           </TooltipProvider>
         </ThemeProvider>
       </NotificationProvider>

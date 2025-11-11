@@ -6,6 +6,8 @@ import Footer from "@/components/Footer";
 import { useEffect } from "react";
 import { setSEOTags } from "@/lib/seoUtils";
 import { generateOrganizationSchema, generateSoftwareSchema, insertMultipleSchemas } from "@/lib/schemaUtils";
+import { motion } from "framer-motion";
+import { fadeInUp, staggerContainer, staggerItem } from "@/lib/animationUtils";
 
 export default function HomeNew() {
   useEffect(() => {
@@ -66,21 +68,38 @@ export default function HomeNew() {
         
         <div className="container relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/20 text-blue-200 text-sm font-medium border border-blue-400/30">
+            <motion.div 
+              initial="hidden"
+              animate="visible"
+              variants={staggerContainer}
+              className="space-y-8"
+            >
+              <motion.div 
+                variants={staggerItem}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/20 text-blue-200 text-sm font-medium border border-blue-400/30"
+              >
                 <Shield className="w-4 h-4" />
                 <span>Enterprise-Grade Marketplace</span>
-              </div>
+              </motion.div>
               
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+              <motion.h1 
+                variants={staggerItem}
+                className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight"
+              >
                 The Professional Services Marketplace Built for Enterprise
-              </h1>
+              </motion.h1>
               
-              <p className="text-xl md:text-2xl text-slate-300 leading-relaxed">
+              <motion.p 
+                variants={staggerItem}
+                className="text-xl md:text-2xl text-slate-300 leading-relaxed"
+              >
                 Connect with verified professionals, manage contracts, and scale your business with enterprise-grade features that serious service providers and organizations demand.
-              </p>
+              </motion.p>
               
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <motion.div 
+                variants={staggerItem}
+                className="flex flex-col sm:flex-row gap-4 pt-4"
+              >
                 <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white text-lg h-12 px-8" asChild>
                   <Link href="/get-started-providers">
                     For Service Providers
@@ -93,9 +112,12 @@ export default function HomeNew() {
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Link>
                 </Button>
-              </div>
+              </motion.div>
               
-              <div className="grid grid-cols-3 gap-6 pt-8 border-t border-white/10">
+              <motion.div 
+                variants={staggerItem}
+                className="grid grid-cols-3 gap-6 pt-8 border-t border-white/10"
+              >
                 <div>
                   <div className="text-3xl font-bold">10K+</div>
                   <div className="text-sm text-slate-400">Verified Professionals</div>
@@ -108,10 +130,15 @@ export default function HomeNew() {
                   <div className="text-3xl font-bold">98%</div>
                   <div className="text-sm text-slate-400">Satisfaction Rate</div>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
             
-            <div className="relative hidden lg:block">
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="relative hidden lg:block"
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-3xl blur-3xl" />
               <div className="relative bg-slate-800/50 border border-slate-700/50 rounded-2xl p-8 backdrop-blur-sm">
                 <div className="space-y-4">
@@ -145,7 +172,7 @@ export default function HomeNew() {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -247,16 +274,34 @@ export default function HomeNew() {
       {/* Key Features */}
       <section className="py-20 bg-slate-50">
         <div className="container">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+            className="text-center mb-16"
+          >
+            <motion.h2 
+              variants={staggerItem}
+              className="text-4xl md:text-5xl font-bold mb-4"
+            >
               Enterprise-Grade Features
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            </motion.h2>
+            <motion.p 
+              variants={staggerItem}
+              className="text-xl text-muted-foreground max-w-2xl mx-auto"
+            >
               Everything you need to manage professional services engagements with confidence and compliance.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
             {[
               {
                 icon: FileText,
@@ -291,14 +336,19 @@ export default function HomeNew() {
             ].map((feature, i) => {
               const Icon = feature.icon;
               return (
-                <div key={i} className="bg-white rounded-xl p-8 border border-slate-200 hover:shadow-lg transition-shadow">
+                <motion.div 
+                  key={i} 
+                  variants={staggerItem}
+                  whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+                  className="bg-white rounded-xl p-8 border border-slate-200 hover:shadow-lg transition-shadow"
+                >
                   <Icon className="w-12 h-12 text-blue-600 mb-4" />
                   <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
                   <p className="text-muted-foreground">{feature.description}</p>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       </section>
 

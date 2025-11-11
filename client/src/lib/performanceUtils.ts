@@ -278,10 +278,5 @@ export function initPerformanceMonitoring(): void {
   lazyLoadImages();
 }
 
-// TypeScript declarations
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
+// Note: gtag is declared in googleAnalytics.ts
 

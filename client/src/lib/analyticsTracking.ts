@@ -312,10 +312,5 @@ export function initAnalytics(): void {
   initEngagementTracking();
 }
 
-// TypeScript declarations
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
+// Note: gtag is declared in googleAnalytics.ts
 
