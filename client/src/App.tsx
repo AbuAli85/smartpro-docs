@@ -40,6 +40,7 @@ const API = lazy(() => import("./pages/docs/API"));
 const FAQ = lazy(() => import("./pages/docs/FAQ"));
 const Support = lazy(() => import("./pages/docs/Support"));
 const BusinessPlanFull = lazy(() => import("./pages/docs/BusinessPlanFull"));
+const WorkflowAutomation = lazy(() => import("./pages/docs/WorkflowAutomation"));
 
 import { ToastContainer } from "./components/ToastContainer";
 // Lazy load non-critical widgets to improve INP/LCP
@@ -89,6 +90,7 @@ function Router() {
         <Route path={"/docs/faq"} component={FAQ} />
         <Route path={"/docs/support"} component={Support} />
         <Route path={"/docs/business-plan-full"} component={BusinessPlanFull} />
+        <Route path={"/docs/workflow-automation"} component={WorkflowAutomation} />
         <Route path={"/how-it-works"} component={HowItWorks} />
         <Route path={"/comparison"} component={Comparison} />
         <Route path={"/roi-calculator"} component={ROICalculator} />

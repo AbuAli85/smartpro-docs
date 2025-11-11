@@ -33,6 +33,7 @@ export default function DocsIndex() {
       links: [
         { label: 'Architecture', href: '/docs/architecture' },
         { label: 'API Documentation', href: '/docs/api' },
+        { label: 'Workflow Automation', href: '/docs/workflow-automation' },
         { label: 'Getting Started', href: '/docs/getting-started' },
       ],
     },
@@ -137,12 +138,18 @@ export default function DocsIndex() {
                   <div>└─ Technology stack</div>
                   <div>└─ Security & compliance</div>
                 </div>
-                <div>└─ <Link href="/docs/api" className="text-blue-600 hover:underline">API Documentation</Link></div>
+                <div>├─ <Link href="/docs/api" className="text-blue-600 hover:underline">API Documentation</Link></div>
                 <div className="ml-6 space-y-1">
                   <div>└─ Authentication guide</div>
                   <div>└─ 8 common endpoints</div>
                   <div>└─ Request/response examples</div>
                   <div>└─ Rate limits & error codes</div>
+                </div>
+                <div>└─ <Link href="/docs/workflow-automation" className="text-blue-600 hover:underline">Workflow Automation</Link></div>
+                <div className="ml-6 space-y-1">
+                  <div>└─ 8 automation workflows</div>
+                  <div>└─ Visual workflow builder</div>
+                  <div>└─ Integration capabilities</div>
                 </div>
               </div>
             </div>
@@ -226,10 +233,10 @@ export default function DocsIndex() {
             {[
               { label: 'API Reference', href: '/docs/api' },
               { label: 'Getting Started', href: '/docs/getting-started' },
+              { label: 'Workflow Automation', href: '/docs/workflow-automation' },
               { label: 'Architecture', href: '/docs/architecture' },
               { label: 'Complete Business Plan', href: '/docs/business-plan-full' },
               { label: 'FAQ', href: '/docs/faq' },
-              { label: 'Contact Support', href: '/contact' },
             ].map((link, index) => (
               <Link key={index} href={link.href}>
                 <div className="block p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors text-center cursor-pointer">
@@ -245,7 +252,7 @@ export default function DocsIndex() {
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Documentation Overview</h2>
           <div className="grid md:grid-cols-4 gap-6">
             {[
-              { label: 'Documentation Pages', value: '10' },
+              { label: 'Documentation Pages', value: '11' },
               { label: 'Business Plan Sections', value: '10' },
               { label: 'Enterprise Clients', value: '181+' },
               { label: 'Last Updated', value: 'Nov 2025' },
