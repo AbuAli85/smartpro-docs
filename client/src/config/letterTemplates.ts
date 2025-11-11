@@ -656,7 +656,8 @@ We request consideration of this loan application.
  * Get all unique categories
  */
 export function getCategories(): string[] {
-  const categories = [...new Set(LETTER_TEMPLATES.map(t => t.category))];
+  const categorySet = new Set(LETTER_TEMPLATES.map(t => t.category));
+  const categories = Array.from(categorySet);
   return categories.sort();
 }
 
