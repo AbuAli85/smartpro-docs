@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Activity, Zap, Move, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { onINP } from 'web-vitals/attribution';
 
 interface WebVital {
   name: string;
@@ -63,19 +62,25 @@ export function CoreWebVitalsMonitor() {
       console.warn('LCP observation not supported');
     }
 
-    // Track INP (modern CWV)
-    onINP((metric) => {
-      const value = metric.value; // ms
-      setVitals((prev) => ({
-        ...prev,
-        inp: {
-          name: 'INP',
-          value,
-          rating: getRating(value, { good: 200, poor: 500 }),
-          threshold: { good: 200, poor: 500 },
-        },
-      }));
-    });
+    // Track INP (modern CWV) - disabled for build compatibility
+    // TODO: Re-enable when web-vitals build issue is resolved
+    // Commenting out to allow production builds
+    /* import('web-vitals').then(({ onINP }) => {
+      onINP((metric) => {
+        const value = metric.value;
+        setVitals((prev) => ({
+          ...prev,
+          inp: {
+            name: 'INP',
+            value,
+            rating: getRating(value, { good: 200, poor: 500 }),
+            threshold: { good: 200, poor: 500 },
+          },
+        }));
+      });
+    }).catch(() => {
+      console.warn('web-vitals not available');
+    }); */
 
     // Track CLS
     let clsValue = 0;

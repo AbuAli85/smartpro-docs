@@ -1,0 +1,31 @@
+# robots.txt for TheSmartPro.io
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://thesmartpro.io/sitemap.xml
+
+# Crawl-delay for better server performance
+Crawl-delay: 1
+
+# Disallow admin/private areas (if any in the future)
+Disallow: /admin/
+Disallow: /api/
+Disallow: /*.json$
+
+# Allow search engines to index main content
+Allow: /
+Allow: /providers
+Allow: /clients
+Allow: /features
+Allow: /pricing
+Allow: /blog
+Allow: /case-studies
+Allow: /docs
+
+# Block bad bots (optional - uncomment if needed)
+# User-agent: BadBot
+# Disallow: /
+
