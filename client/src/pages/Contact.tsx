@@ -161,7 +161,7 @@ export default function Contact() {
 
               {/* Error Alert */}
               {error && (
-                <Alert variant="destructive">
+                <Alert variant="destructive" role="alert" aria-live="assertive">
                   <AlertDescription id="contact-error">{error}</AlertDescription>
                 </Alert>
               )}

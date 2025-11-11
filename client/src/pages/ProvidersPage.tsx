@@ -338,11 +338,16 @@ export default function ProvidersPage() {
           <h2 className="text-4xl font-bold text-white mb-6">Ready to Grow Your Professional Services Business?</h2>
           <p className="text-xl text-blue-100 mb-8">Join thousands of service providers already earning on TheSmartPro</p>
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
-              Start Earning Today
+            <Button 
+              asChild
+              size="lg" 
+              className="bg-white text-blue-600 hover:bg-gray-100"
+              onClick={() => trackCTAClick('Start Earning Today (Bottom CTA)', 'Providers', 'secondary')}
+            >
+              <Link href="/get-started-providers">Start Earning Today</Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-white border-white hover:bg-blue-700">
-              Schedule Demo
+            <Button size="lg" variant="outline" className="text-white border-white hover:bg-blue-700" asChild>
+              <Link href="/contact">Schedule Demo</Link>
             </Button>
           </div>
         </div>
