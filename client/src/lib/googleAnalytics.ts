@@ -74,10 +74,11 @@ export function trackPageView(url: string, title: string): void {
   window.gtag('event', 'page_view', {
     page_path: url,
     page_title: title,
+    page_location: window.location.origin + url
   });
 
   if (import.meta.env.DEV) {
-    console.log('GA4: Page view tracked', { url, title });
+    console.log('GA4: Page view tracked', { url, title, location: window.location.origin + url });
   }
 }
 

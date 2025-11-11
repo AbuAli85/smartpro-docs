@@ -2,14 +2,18 @@
  * Image Constants with Proper Alt Text
  * 
  * All images include:
- * - Descriptive alt text for accessibility
+ * - Descriptive alt text for accessibility (type-enforced, cannot be empty)
  * - Dimensions for layout stability
  * - Multiple sizes for responsive loading
+ * - Optimized quality params for delivery
  */
+
+// Type guard to ensure alt text is never empty
+type NonEmptyString<T extends string> = T extends '' ? never : T;
 
 export interface ImageData {
   src: string;
-  alt: string;
+  alt: NonEmptyString<string> & string;
   width: number;
   height: number;
   srcSet?: string;

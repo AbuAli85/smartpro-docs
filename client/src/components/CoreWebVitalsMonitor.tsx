@@ -15,7 +15,7 @@ interface WebVital {
  * 
  * Displays real-time Core Web Vitals metrics:
  * - LCP (Largest Contentful Paint)
- * - FID (First Input Delay)
+ * - INP (Interaction to Next Paint) - replaces deprecated FID
  * - CLS (Cumulative Layout Shift)
  * - TTFB (Time to First Byte)
  * 
@@ -24,7 +24,7 @@ interface WebVital {
 export function CoreWebVitalsMonitor() {
   const [vitals, setVitals] = useState<{
     lcp?: WebVital;
-    fid?: WebVital;
+    inp?: WebVital;
     cls?: WebVital;
     ttfb?: WebVital;
   }>({});
@@ -62,28 +62,41 @@ export function CoreWebVitalsMonitor() {
       console.warn('LCP observation not supported');
     }
 
-    // Track FID
-    const fidObserver = new PerformanceObserver((list) => {
-      const entries = list.getEntries();
-      entries.forEach((entry: any) => {
-        const value = entry.processingStart - entry.startTime;
-        
-        setVitals((prev) => ({
-          ...prev,
-          fid: {
-            name: 'FID',
-            value,
-            rating: getRating(value, { good: 100, poor: 300 }),
-            threshold: { good: 100, poor: 300 },
-          },
-        }));
+    // Track INP (Interaction to Next Paint) - replaces deprecated FID
+    let inpValue = 0;
+    const inpObserver = new PerformanceObserver((list) => {
+      const entries = list.getEntries() as any[];
+      entries.forEach((entry) => {
+        // INP tracks the worst interaction latency
+        if (entry.duration > inpValue) {
+          inpValue = entry.duration;
+          
+          setVitals((prev) => ({
+            ...prev,
+            inp: {
+              name: 'INP',
+              value: inpValue,
+              rating: getRating(inpValue, { good: 200, poor: 500 }),
+              threshold: { good: 200, poor: 500 },
+            },
+          }));
+        }
       });
     });
 
     try {
-      fidObserver.observe({ type: 'first-input', buffered: true });
+      inpObserver.observe({ 
+        type: 'event',
+        buffered: true,
+        durationThreshold: 16 // Only track interactions longer than 16ms
+      } as any);
     } catch (e) {
-      console.warn('FID observation not supported');
+      // Fallback to first-input for older browsers
+      try {
+        inpObserver.observe({ type: 'first-input', buffered: true });
+      } catch (e2) {
+        console.warn('INP/FID observation not supported');
+      }
     }
 
     // Track CLS
@@ -130,7 +143,7 @@ export function CoreWebVitalsMonitor() {
 
     return () => {
       lcpObserver.disconnect();
-      fidObserver.disconnect();
+      inpObserver.disconnect();
       clsObserver.disconnect();
     };
   }, []);
@@ -157,7 +170,7 @@ export function CoreWebVitalsMonitor() {
         </CardHeader>
         <CardContent className="space-y-3 pt-0">
           {vitals.lcp && <VitalCard vital={vitals.lcp} icon={Zap} />}
-          {vitals.fid && <VitalCard vital={vitals.fid} icon={Move} />}
+          {vitals.inp && <VitalCard vital={vitals.inp} icon={Move} />}
           {vitals.cls && <VitalCard vital={vitals.cls} icon={AlertCircle} />}
           {vitals.ttfb && <VitalCard vital={vitals.ttfb} icon={Activity} />}
 

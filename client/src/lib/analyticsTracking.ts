@@ -1,6 +1,25 @@
 /**
  * Analytics tracking utilities for user behavior and conversions
+ * 
+ * This module provides high-level tracking functions that delegate to
+ * the Google Analytics module (googleAnalytics.ts) as the single source of truth.
  */
+
+import { 
+  trackEvent as gaTrackEvent, 
+  trackPageView as gaTrackPageView,
+  trackSearch as gaTrackSearch,
+  trackVideoPlay as gaTrackVideoPlay,
+  trackFileDownload as gaTrackFileDownload,
+  trackCTAClick as gaTrackCTAClick,
+  trackFormSubmit as gaTrackFormSubmit,
+  trackSignUp as gaTrackSignUp,
+  trackLogin as gaTrackLogin,
+  trackShare as gaTrackShare,
+  trackScrollDepth as gaTrackScrollDepth,
+  trackEngagementTime as gaTrackEngagementTime,
+  trackException as gaTrackException
+} from '@/lib/googleAnalytics';
 
 export interface AnalyticsEvent {
   category: string;
@@ -19,42 +38,18 @@ export interface PageView {
  * Track custom event
  */
 export function trackEvent(event: AnalyticsEvent): void {
-  if (typeof window === 'undefined') return;
-
-  // Google Analytics 4
-  if (window.gtag) {
-    window.gtag('event', event.action, {
-      event_category: event.category,
-      event_label: event.label,
-      value: event.value
-    });
-  }
-
-  // Console log in development
-  if (import.meta.env.DEV) {
-    console.log('Analytics Event:', event);
-  }
+  gaTrackEvent(event.action, {
+    event_category: event.category,
+    event_label: event.label,
+    value: event.value
+  });
 }
 
 /**
  * Track page view
  */
 export function trackPageView(page: PageView): void {
-  if (typeof window === 'undefined') return;
-
-  // Google Analytics 4
-  if (window.gtag) {
-    window.gtag('event', 'page_view', {
-      page_path: page.path,
-      page_title: page.title,
-      page_referrer: page.referrer || document.referrer
-    });
-  }
-
-  // Console log in development
-  if (import.meta.env.DEV) {
-    console.log('Page View:', page);
-  }
+  gaTrackPageView(page.path, page.title);
 }
 
 /**
@@ -71,24 +66,19 @@ export function trackButtonClick(buttonName: string, location: string): void {
 /**
  * Track CTA clicks
  */
-export function trackCTAClick(ctaName: string, ctaType: 'primary' | 'secondary' = 'primary'): void {
-  trackEvent({
-    category: 'CTA',
-    action: 'click',
-    label: ctaName,
-    value: ctaType === 'primary' ? 10 : 5
-  });
+export function trackCTAClick(ctaName: string, ctaLocation: string, ctaType: 'primary' | 'secondary' = 'primary'): void {
+  gaTrackCTAClick(ctaName, ctaLocation, ctaType);
 }
 
 /**
  * Track form submission
  */
 export function trackFormSubmission(formName: string, success: boolean): void {
-  trackEvent({
-    category: 'Form',
-    action: success ? 'submit_success' : 'submit_error',
-    label: formName
-  });
+  if (success) {
+    gaTrackFormSubmit(formName);
+  } else {
+    gaTrackException(`Form submission failed: ${formName}`, false);
+  }
 }
 
 /**
@@ -106,34 +96,21 @@ export function trackLinkClick(linkText: string, destination: string): void {
  * Track search
  */
 export function trackSearch(query: string, resultCount?: number): void {
-  trackEvent({
-    category: 'Search',
-    action: 'query',
-    label: query,
-    value: resultCount
-  });
+  gaTrackSearch(query, resultCount);
 }
 
 /**
  * Track video play
  */
-export function trackVideoPlay(videoTitle: string): void {
-  trackEvent({
-    category: 'Video',
-    action: 'play',
-    label: videoTitle
-  });
+export function trackVideoPlay(videoTitle: string, videoUrl: string = ''): void {
+  gaTrackVideoPlay(videoTitle, videoUrl);
 }
 
 /**
  * Track download
  */
 export function trackDownload(fileName: string, fileType: string): void {
-  trackEvent({
-    category: 'Download',
-    action: 'click',
-    label: `${fileName} (${fileType})`
-  });
+  gaTrackFileDownload(fileName, fileType);
 }
 
 /**
@@ -151,23 +128,14 @@ export function trackOutboundLink(url: string): void {
  * Track social share
  */
 export function trackSocialShare(platform: string, contentTitle: string): void {
-  trackEvent({
-    category: 'Social',
-    action: 'share',
-    label: `${platform} - ${contentTitle}`
-  });
+  gaTrackShare(platform, 'page', contentTitle);
 }
 
 /**
  * Track newsletter signup
  */
 export function trackNewsletterSignup(source: string): void {
-  trackEvent({
-    category: 'Newsletter',
-    action: 'signup',
-    label: source,
-    value: 15
-  });
+  gaTrackSignUp('newsletter_' + source);
 }
 
 /**
@@ -208,35 +176,21 @@ export function trackFeatureInteraction(featureName: string, action: string): vo
  * Track error
  */
 export function trackError(errorType: string, errorMessage: string): void {
-  trackEvent({
-    category: 'Error',
-    action: errorType,
-    label: errorMessage
-  });
+  gaTrackException(`${errorType}: ${errorMessage}`, false);
 }
 
 /**
  * Track time on page
  */
 export function trackTimeOnPage(pageName: string, timeInSeconds: number): void {
-  trackEvent({
-    category: 'Engagement',
-    action: 'time_on_page',
-    label: pageName,
-    value: timeInSeconds
-  });
+  gaTrackEngagementTime(timeInSeconds);
 }
 
 /**
  * Track scroll depth
  */
 export function trackScrollDepth(depth: 25 | 50 | 75 | 100): void {
-  trackEvent({
-    category: 'Engagement',
-    action: 'scroll_depth',
-    label: `${depth}%`,
-    value: depth
-  });
+  gaTrackScrollDepth(depth);
 }
 
 /**

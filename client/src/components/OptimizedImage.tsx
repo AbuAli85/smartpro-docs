@@ -28,7 +28,7 @@ export function OptimizedImage({
   alt,
   width,
   height,
-  className,
+  className: externalClassName,
   priority = false,
   onLoad,
   objectFit = 'cover',
@@ -74,7 +74,7 @@ export function OptimizedImage({
   return (
     <div
       ref={imgRef}
-      className={cn('relative overflow-hidden', className)}
+      className={cn('relative overflow-hidden', externalClassName)}
       style={width && height ? { aspectRatio: `${width}/${height}` } : undefined}
     >
       {/* Blur placeholder while loading */}
@@ -92,6 +92,7 @@ export function OptimizedImage({
           loading={priority ? 'eager' : 'lazy'}
           decoding={priority ? 'sync' : 'async'}
           onLoad={handleLoad}
+          {...props}
           className={cn(
             'transition-opacity duration-500',
             isLoading ? 'opacity-0' : 'opacity-100',
@@ -102,7 +103,6 @@ export function OptimizedImage({
             objectFit === 'scale-down' && 'object-scale-down',
             'w-full h-full'
           )}
-          {...props}
         />
       )}
     </div>
