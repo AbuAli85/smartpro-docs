@@ -212,6 +212,34 @@ export default function WorkflowAutomation() {
           </div>
         </section>
 
+        {/* Interactive Demo CTA */}
+        <section className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-8 text-white">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex-1">
+              <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
+                <Zap className="w-6 h-6" />
+                Try the Letter Automation Demo
+              </h2>
+              <p className="text-purple-100 mb-2">
+                Experience our workflow automation capabilities firsthand with our interactive letter builder. Generate professional government letters (MOCI, ROP, MOL) in Arabic and English with smart templates.
+              </p>
+              <ul className="text-sm text-purple-100 space-y-1">
+                <li>• Real-time preview as you type</li>
+                <li>• Support for multiple government entities</li>
+                <li>• Bilingual (Arabic/English) templates</li>
+                <li>• Copy to clipboard or export as JSON</li>
+              </ul>
+            </div>
+            <div className="flex-shrink-0">
+              <Button size="lg" className="bg-white text-purple-600 hover:bg-purple-50 shadow-lg" asChild>
+                <Link href="/demo/letter-automation">
+                  Launch Interactive Demo →
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+
         {/* Automation Builder */}
         <section>
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Visual Workflow Builder</h2>
