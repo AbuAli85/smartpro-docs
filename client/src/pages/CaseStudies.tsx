@@ -62,7 +62,7 @@ export default function CaseStudies() {
       </section>
 
       {/* Case Studies Grid */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white [content-visibility:auto]">
         <div className="container">
           {isLoading ? (
             <div className="text-center py-12">
@@ -131,7 +131,7 @@ export default function CaseStudies() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white [content-visibility:auto]">
         <div className="container text-center">
           <h2 className="text-4xl font-bold mb-6">Ready to Transform Your Business?</h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">

@@ -162,7 +162,7 @@ export default function Contact() {
               {/* Error Alert */}
               {error && (
                 <Alert variant="destructive">
-                  <AlertDescription>{error}</AlertDescription>
+                  <AlertDescription id="contact-error">{error}</AlertDescription>
                 </Alert>
               )}
 
@@ -178,6 +178,9 @@ export default function Contact() {
                   onChange={handleChange}
                   placeholder="John Doe"
                   disabled={loading}
+                  aria-invalid={!!error && !formData.name}
+                  aria-describedby={error ? 'contact-error' : undefined}
+                  required
                 />
               </div>
 
@@ -193,6 +196,9 @@ export default function Contact() {
                   onChange={handleChange}
                   placeholder="john@example.com"
                   disabled={loading}
+                  aria-invalid={!!error && !formData.email}
+                  aria-describedby={error ? 'contact-error' : undefined}
+                  required
                 />
               </div>
 
@@ -208,6 +214,9 @@ export default function Contact() {
                   onChange={handleChange}
                   placeholder="Your Company"
                   disabled={loading}
+                  aria-invalid={!!error && !formData.company}
+                  aria-describedby={error ? 'contact-error' : undefined}
+                  required
                 />
               </div>
 

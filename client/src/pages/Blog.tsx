@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Link } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,9 @@ import { Search, Calendar, User, ArrowRight } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Breadcrumb from "@/components/Breadcrumb";
+import { CardImage } from "@/components/OptimizedImage";
+import { BLOG_IMAGES } from "@/constants/images";
+import { setSEOTags } from "@/lib/seoUtils";
 
 interface BlogArticle {
   id: string;
@@ -29,7 +32,7 @@ const blogArticles: BlogArticle[] = [
     date: "2025-11-05",
     category: "Contract Management",
     readTime: 8,
-    image: "📋",
+    image: "digitalTransformation",
     featured: true,
   },
   {
@@ -40,7 +43,7 @@ const blogArticles: BlogArticle[] = [
     date: "2025-11-03",
     category: "Payment Security",
     readTime: 10,
-    image: "🔒",
+    image: "digitalTransformation",
     featured: true,
   },
   {
@@ -51,7 +54,7 @@ const blogArticles: BlogArticle[] = [
     date: "2025-11-01",
     category: "Business Growth",
     readTime: 7,
-    image: "📈",
+    image: "productivityTips",
     featured: false,
   },
   {
@@ -62,7 +65,7 @@ const blogArticles: BlogArticle[] = [
     date: "2025-10-28",
     category: "Client Relations",
     readTime: 6,
-    image: "💬",
+    image: "teamBuilding",
     featured: false,
   },
   {
@@ -73,7 +76,7 @@ const blogArticles: BlogArticle[] = [
     date: "2025-10-25",
     category: "Business Strategy",
     readTime: 9,
-    image: "💰",
+    image: "digitalTransformation",
     featured: false,
   },
   {
@@ -92,6 +95,16 @@ const blogArticles: BlogArticle[] = [
 const categories = ["All", "Contract Management", "Payment Security", "Business Growth", "Client Relations", "Business Strategy", "Technology"];
 
 export default function Blog() {
+  useEffect(() => {
+    setSEOTags({
+      title: "Blog | TheSmartPro.io - Professional Services Insights & Tips",
+      description: "Read expert insights on contract management, payment security, business growth, and client relations in the professional services industry.",
+      keywords: "professional services blog, contract management, business growth, client relations, service provider tips",
+      type: "website",
+      url: "https://thesmartpro.io/blog",
+    });
+  }, []);
+  
   const breadcrumbItems = [{ label: "Blog" }];
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -172,9 +185,12 @@ export default function Blog() {
             {featuredArticles.map((article) => (
               <Link key={article.id} href={`/blog/${article.id}`}>
                 <a className="group block bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
-                  <div className="relative overflow-hidden h-48 bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center">
-                    <span className="text-6xl">{article.image}</span>
-                  </div>
+                  <CardImage
+                    src={BLOG_IMAGES[article.image as keyof typeof BLOG_IMAGES].src}
+                    alt={BLOG_IMAGES[article.image as keyof typeof BLOG_IMAGES].alt}
+                    aspectRatio="16/9"
+                    className="h-48"
+                  />
                   <div className="p-6">
                     <Badge className="mb-3 bg-blue-600">{article.category}</Badge>
                     <h3 className="text-2xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
@@ -215,8 +231,13 @@ export default function Blog() {
                 <a className="group block bg-white rounded-lg p-6 shadow hover:shadow-lg transition-shadow border border-gray-200 hover:border-blue-300">
                   <div className="flex gap-6">
                     {/* Article Image */}
-                    <div className="hidden md:flex flex-shrink-0 w-32 h-32 rounded-lg overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-100 items-center justify-center">
-                      <span className="text-5xl">{article.image}</span>
+                    <div className="hidden md:flex flex-shrink-0 w-32 h-32 rounded-lg overflow-hidden">
+                      <CardImage
+                        src={BLOG_IMAGES[article.image as keyof typeof BLOG_IMAGES].src}
+                        alt={BLOG_IMAGES[article.image as keyof typeof BLOG_IMAGES].alt}
+                        aspectRatio="1/1"
+                        className="w-32 h-32"
+                      />
                     </div>
 
                     {/* Article Content */}

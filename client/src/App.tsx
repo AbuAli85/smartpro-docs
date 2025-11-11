@@ -42,8 +42,9 @@ const Support = lazy(() => import("./pages/docs/Support"));
 const BusinessPlanFull = lazy(() => import("./pages/docs/BusinessPlanFull"));
 
 import { ToastContainer } from "./components/ToastContainer";
-import LiveChat from "./components/LiveChat";
-import EmailCapture from "./components/EmailCapture";
+// Lazy load non-critical widgets to improve INP/LCP
+const LiveChat = lazy(() => import("./components/LiveChat"));
+const EmailCapture = lazy(() => import("./components/EmailCapture"));
 
 // Loading fallback component
 function PageLoader() {
@@ -62,7 +63,8 @@ function Router() {
 
   // Track page views on route change
   useEffect(() => {
-    trackPageView(location, document.title);
+    // Re-read title one microtask later (after page effect runs setSEOTags)
+    queueMicrotask(() => trackPageView(location, document.title));
   }, [location]);
 
   return (
@@ -132,9 +134,15 @@ function App() {
           <TooltipProvider>
             <Router />
             <ToastContainer />
-            <LiveChat />
-            <EmailCapture />
-            <CoreWebVitalsMonitor />
+            <Suspense fallback={null}>
+              <LiveChat />
+            </Suspense>
+            <Suspense fallback={null}>
+              <EmailCapture />
+            </Suspense>
+            {(import.meta.env.DEV || (typeof window !== 'undefined' && localStorage.getItem('debug_webvitals') === 'true')) && (
+              <CoreWebVitalsMonitor />
+            )}
           </TooltipProvider>
         </ThemeProvider>
       </NotificationProvider>

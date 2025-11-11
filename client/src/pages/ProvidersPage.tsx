@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useEffect } from "react";
 import { setSEOTags } from "@/lib/seoUtils";
+import { trackCTAClick } from "@/lib/googleAnalytics";
 
 export default function ProvidersPage() {
   useEffect(() => {
@@ -39,11 +40,16 @@ export default function ProvidersPage() {
               </div>
 
               <div className="flex flex-col gap-4 sm:flex-row">
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
-                  Start Earning Today
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  onClick={() => trackCTAClick('Start Earning Today', 'Providers Hero', 'primary')}
+                >
+                  <Link href="/get-started-providers">Start Earning Today</Link>
                 </Button>
-                <Button size="lg" variant="outline">
-                  Watch Demo
+                <Button size="lg" variant="outline" asChild>
+                  <Link href="/how-it-works">Watch Demo</Link>
                 </Button>
               </div>
 
