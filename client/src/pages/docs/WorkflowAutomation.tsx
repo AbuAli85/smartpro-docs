@@ -1,5 +1,5 @@
 import DocsLayout from '@/components/DocsLayout';
-import { Zap, Clock, Bot, Share2, Database, DollarSign, Package, UserPlus, MessageSquare, CheckCircle } from 'lucide-react';
+import { Zap, Clock, Bot, Share2, Database, DollarSign, Package, UserPlus, MessageSquare, CheckCircle, Sparkles, Save, Download, Printer, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
 import { useEffect } from 'react';
@@ -212,28 +212,86 @@ export default function WorkflowAutomation() {
           </div>
         </section>
 
-        {/* Interactive Demo CTA */}
-        <section className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg p-8 text-white">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
-                <Zap className="w-6 h-6" />
-                Try the Letter Automation Demo
-              </h2>
-              <p className="text-purple-100 mb-2">
-                Experience our workflow automation capabilities firsthand with our interactive letter builder. Generate professional government letters (MOCI, ROP, MOL) in Arabic and English with smart templates.
-              </p>
-              <ul className="text-sm text-purple-100 space-y-1">
-                <li>• Real-time preview as you type</li>
-                <li>• Support for multiple government entities</li>
-                <li>• Bilingual (Arabic/English) templates</li>
-                <li>• Copy to clipboard or export as JSON</li>
-              </ul>
+        {/* Professional Builder - Featured */}
+        <section className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-2xl p-8 text-white shadow-2xl border-2 border-white/20">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
+          
+          <div className="relative z-10">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-xs font-bold uppercase">✨ New & Premium</span>
+              <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold">Business Class</span>
             </div>
-            <div className="flex-shrink-0">
-              <Button size="lg" className="bg-white text-purple-600 hover:bg-purple-50 shadow-lg" asChild>
+            
+            <h2 className="text-3xl font-bold mb-4 flex items-center gap-3">
+              <Sparkles className="w-8 h-8" />
+              Professional Letter Builder PRO
+            </h2>
+            
+            <p className="text-lg text-purple-100 mb-6 max-w-3xl">
+              Elevate your business correspondence with our enterprise-grade letter builder. Advanced features, premium UI, and professional output for high-end business communication.
+            </p>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                <div className="flex items-center gap-2 mb-2">
+                  <Download className="w-5 h-5 text-green-300" />
+                  <span className="font-semibold">PDF Export</span>
+                </div>
+                <p className="text-sm text-purple-100">Download professional PDFs</p>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                <div className="flex items-center gap-2 mb-2">
+                  <Save className="w-5 h-5 text-blue-300" />
+                  <span className="font-semibold">Auto-Save & Drafts</span>
+                </div>
+                <p className="text-sm text-purple-100">Never lose your work</p>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                <div className="flex items-center gap-2 mb-2">
+                  <Printer className="w-5 h-5 text-pink-300" />
+                  <span className="font-semibold">Print Preview</span>
+                </div>
+                <p className="text-sm text-purple-100">Professional print layouts</p>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                <div className="flex items-center gap-2 mb-2">
+                  <FileText className="w-5 h-5 text-yellow-300" />
+                  <span className="font-semibold">Premium Templates</span>
+                </div>
+                <p className="text-sm text-purple-100">Enhanced letter formats</p>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                <div className="flex items-center gap-2 mb-2">
+                  <Clock className="w-5 h-5 text-indigo-300" />
+                  <span className="font-semibold">History & Tracking</span>
+                </div>
+                <p className="text-sm text-purple-100">Access past letters</p>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="w-5 h-5 text-purple-300" />
+                  <span className="font-semibold">Glassmorphism UI</span>
+                </div>
+                <p className="text-sm text-purple-100">Modern, premium design</p>
+              </div>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button size="lg" className="bg-white text-purple-600 hover:bg-purple-50 shadow-xl font-bold" asChild>
+                <Link href="/demo/professional-letter-builder">
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  Launch Professional Builder
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/20 backdrop-blur-sm" asChild>
                 <Link href="/demo/letter-automation">
-                  Launch Interactive Demo →
+                  Try Basic Version
                 </Link>
               </Button>
             </div>
