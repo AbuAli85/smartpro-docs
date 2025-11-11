@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Activity, Zap, Move, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { onINP } from 'web-vitals/attribution';
 
 interface WebVital {
   name: string;
@@ -62,42 +63,19 @@ export function CoreWebVitalsMonitor() {
       console.warn('LCP observation not supported');
     }
 
-    // Track INP (Interaction to Next Paint) - replaces deprecated FID
-    let inpValue = 0;
-    const inpObserver = new PerformanceObserver((list) => {
-      const entries = list.getEntries() as any[];
-      entries.forEach((entry) => {
-        // INP tracks the worst interaction latency
-        if (entry.duration > inpValue) {
-          inpValue = entry.duration;
-          
-          setVitals((prev) => ({
-            ...prev,
-            inp: {
-              name: 'INP',
-              value: inpValue,
-              rating: getRating(inpValue, { good: 200, poor: 500 }),
-              threshold: { good: 200, poor: 500 },
-            },
-          }));
-        }
-      });
+    // Track INP (modern CWV)
+    onINP((metric) => {
+      const value = metric.value; // ms
+      setVitals((prev) => ({
+        ...prev,
+        inp: {
+          name: 'INP',
+          value,
+          rating: getRating(value, { good: 200, poor: 500 }),
+          threshold: { good: 200, poor: 500 },
+        },
+      }));
     });
-
-    try {
-      inpObserver.observe({ 
-        type: 'event',
-        buffered: true,
-        durationThreshold: 16 // Only track interactions longer than 16ms
-      } as any);
-    } catch (e) {
-      // Fallback to first-input for older browsers
-      try {
-        inpObserver.observe({ type: 'first-input', buffered: true });
-      } catch (e2) {
-        console.warn('INP/FID observation not supported');
-      }
-    }
 
     // Track CLS
     let clsValue = 0;
@@ -143,7 +121,7 @@ export function CoreWebVitalsMonitor() {
 
     return () => {
       lcpObserver.disconnect();
-      inpObserver.disconnect();
+      // no INP observer to disconnect
       clsObserver.disconnect();
     };
   }, []);

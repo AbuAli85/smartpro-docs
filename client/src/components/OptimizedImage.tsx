@@ -53,7 +53,7 @@ export function OptimizedImage({
         });
       },
       {
-        rootMargin: '50px', // Start loading 50px before entering viewport
+        rootMargin: '200px', // Start loading 200px before entering viewport for better perceived performance
       }
     );
 
@@ -101,7 +101,8 @@ export function OptimizedImage({
             objectFit === 'fill' && 'object-fill',
             objectFit === 'none' && 'object-none',
             objectFit === 'scale-down' && 'object-scale-down',
-            'w-full h-full'
+            'w-full h-full',
+            externalClassName
           )}
         />
       )}
