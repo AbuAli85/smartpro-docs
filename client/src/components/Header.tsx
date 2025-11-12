@@ -110,9 +110,17 @@ export default function Header() {
                 )}
               </button>
             )}
-            <Link href="/get-started-providers">
+            <a 
+              href="https://thesmartpro.io" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 transition-colors"
+            >
+              Visit Main Platform
+            </a>
+            <Link href="/pricing">
               <div className="text-sm font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 cursor-pointer">
-                For Providers
+                Pricing
               </div>
             </Link>
             <Link href="/get-started-providers">
@@ -205,12 +213,21 @@ export default function Header() {
                   )}
                 </button>
               )}
-              <Link href="/get-started-providers">
+              <a 
+                href="https://thesmartpro.io" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="block px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md"
+                onClick={() => setIsOpen(false)}
+              >
+                Visit Main Platform
+              </a>
+              <Link href="/pricing">
                 <div
                   className="block px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md cursor-pointer"
                   onClick={() => setIsOpen(false)}
                 >
-                  For Providers
+                  Pricing
                 </div>
               </Link>
               <Link href="/contact">

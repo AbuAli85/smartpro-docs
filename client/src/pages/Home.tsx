@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PlatformScreenshots from "@/components/PlatformScreenshots";
 import { useEffect } from "react";
 import { setSEOTags } from "@/lib/seoUtils";
 import { generateOrganizationSchema, generateSoftwareSchema, insertMultipleSchemas } from "@/lib/schemaUtils";
@@ -413,6 +414,9 @@ export default function HomeNew() {
           </div>
         </div>
       </section>
+
+      {/* Platform Screenshots */}
+      <PlatformScreenshots />
 
       {/* Testimonials */}
       <section className="py-20 bg-slate-50">

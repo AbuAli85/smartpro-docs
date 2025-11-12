@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Github } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Github, ArrowRight } from "lucide-react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -104,20 +104,31 @@ export default function Footer() {
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm">
                 <Mail className="w-4 h-4 text-blue-400" />
-                <a href="mailto:hello@thesmartpro.io" className="hover:text-blue-400">
-                  hello@thesmartpro.io
+                <a href="mailto:chairman@falconeyegroup.com" className="hover:text-blue-400">
+                  chairman@falconeyegroup.com
                 </a>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <Phone className="w-4 h-4 text-blue-400" />
-                <a href="tel:+15551234567" className="hover:text-blue-400">
-                  +1 (555) 123-4567
+                <a href="tel:+96895153930" className="hover:text-blue-400">
+                  +968 9515 3930
                 </a>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <MapPin className="w-4 h-4 text-blue-400" />
-                <span>San Francisco, CA</span>
+                <span>Muscat, Oman</span>
               </div>
+            </div>
+            <div className="mt-6 pt-6 border-t border-slate-800">
+              <a 
+                href="https://thesmartpro.io" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+              >
+                Visit Main Platform
+                <ArrowRight className="w-4 h-4" />
+              </a>
             </div>
           </div>
 

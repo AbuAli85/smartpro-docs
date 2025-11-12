@@ -1,5 +1,5 @@
 import DocsLayout from '@/components/DocsLayout';
-import { BookOpen, Zap, Code, TrendingUp, Users, Shield } from 'lucide-react';
+import { BookOpen, Zap, Code, TrendingUp, Users, Shield, ArrowRight } from 'lucide-react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useEffect } from 'react';
@@ -262,6 +262,28 @@ export default function DocsIndex() {
                 <p className="text-gray-700 font-medium">{stat.label}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Main Platform CTA */}
+        <section className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg p-8 text-white mb-8">
+          <h2 className="text-2xl font-bold mb-4">Ready to Get Started?</h2>
+          <p className="mb-6 text-green-100">
+            Experience TheSmartPro.io platform with 10,000+ verified professionals and enterprise-grade features.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <a 
+              href="https://thesmartpro.io" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center px-6 py-3 bg-white text-green-600 font-semibold rounded-lg hover:bg-green-50 transition-colors"
+            >
+              Visit Main Platform
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </a>
+            <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-green-700" asChild>
+              <Link href="/pricing">View Pricing</Link>
+            </Button>
           </div>
         </section>
 
