@@ -22,8 +22,8 @@ const regions: Region[] = [
     providers: 4500,
     organizations: 12000,
     growth: 28,
-    x: 75,
-    y: 30,
+    x: 82,
+    y: 15,
     description: "Capital city with the highest concentration of service providers and enterprise clients",
     industries: ["Technology", "Finance", "Consulting", "Legal", "Healthcare"],
     topServices: ["IT Services", "Financial Consulting", "Legal Services", "Healthcare"],
@@ -34,8 +34,8 @@ const regions: Region[] = [
     providers: 1800,
     organizations: 4800,
     growth: 22,
-    x: 20,
-    y: 75,
+    x: 25,
+    y: 88,
     description: "Major commercial hub in southern Oman with growing service sector",
     industries: ["Tourism", "Logistics", "Retail", "Hospitality"],
     topServices: ["Tourism Services", "Logistics", "Retail Consulting", "Hospitality"],
@@ -46,8 +46,8 @@ const regions: Region[] = [
     providers: 1200,
     organizations: 3200,
     growth: 35,
-    x: 15,
-    y: 25,
+    x: 12,
+    y: 12,
     description: "Industrial port city with expanding professional services sector",
     industries: ["Manufacturing", "Shipping", "Engineering", "Construction"],
     topServices: ["Engineering Services", "Manufacturing Consulting", "Port Services"],
@@ -58,8 +58,8 @@ const regions: Region[] = [
     providers: 800,
     organizations: 2100,
     growth: 18,
-    x: 50,
-    y: 40,
+    x: 45,
+    y: 35,
     description: "Historic city with expanding professional services and growing business community",
     industries: ["Education", "Tourism", "Retail", "Agriculture"],
     topServices: ["Educational Services", "Tourism Consulting", "Agricultural Services"],
@@ -70,8 +70,8 @@ const regions: Region[] = [
     providers: 600,
     organizations: 1500,
     growth: 25,
-    x: 85,
-    y: 50,
+    x: 88,
+    y: 42,
     description: "Coastal city with maritime and tourism services, growing business sector",
     industries: ["Maritime", "Tourism", "Fishing", "Handicrafts"],
     topServices: ["Maritime Services", "Tourism", "Fishing Industry Services"],
@@ -82,8 +82,8 @@ const regions: Region[] = [
     providers: 400,
     organizations: 1100,
     growth: 20,
-    x: 30,
-    y: 35,
+    x: 22,
+    y: 28,
     description: "Growing regional center for business services and professional consulting",
     industries: ["Agriculture", "Retail", "Construction", "Education"],
     topServices: ["Agricultural Consulting", "Construction Services", "Educational Services"],
@@ -94,8 +94,8 @@ const regions: Region[] = [
     providers: 700,
     organizations: 1800,
     growth: 15,
-    x: 60,
-    y: 70,
+    x: 55,
+    y: 65,
     description: "Service providers across all other regions of Oman, covering diverse industries",
     industries: ["Various", "Diverse", "Multi-sector"],
     topServices: ["General Consulting", "Various Services"],
@@ -200,24 +200,125 @@ export default function OmanMap() {
             className="relative bg-white rounded-2xl shadow-2xl p-8 border-2 border-blue-100"
           >
             <div className="relative aspect-[4/3] bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 rounded-lg overflow-hidden">
-              {/* Enhanced Oman Map Shape */}
+              {/* Accurate Oman Map Shape */}
               <svg
-                viewBox="0 0 400 300"
+                viewBox="0 0 400 600"
                 className="w-full h-full"
                 xmlns="http://www.w3.org/2000/svg"
+                preserveAspectRatio="xMidYMid meet"
               >
-                {/* Oman outline with gradient */}
                 <defs>
                   <linearGradient id="omanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="rgba(59, 130, 246, 0.15)" />
-                    <stop offset="100%" stopColor="rgba(99, 102, 241, 0.15)" />
+                    <stop offset="0%" stopColor="rgba(59, 130, 246, 0.2)" />
+                    <stop offset="50%" stopColor="rgba(99, 102, 241, 0.15)" />
+                    <stop offset="100%" stopColor="rgba(139, 92, 246, 0.2)" />
+                  </linearGradient>
+                  <linearGradient id="omanCoastline" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="rgba(59, 130, 246, 0.6)" />
+                    <stop offset="100%" stopColor="rgba(99, 102, 241, 0.6)" />
                   </linearGradient>
                 </defs>
+                
+                {/* Main Oman body - more accurate shape */}
                 <path
-                  d="M 200 50 L 350 80 L 380 150 L 350 220 L 200 250 L 50 220 L 20 150 L 50 80 Z"
+                  d="M 50 50 
+                     L 80 45 
+                     L 120 40 
+                     L 180 35 
+                     L 250 30 
+                     L 320 35 
+                     L 350 45 
+                     L 360 60 
+                     L 365 90 
+                     L 360 130 
+                     L 355 180 
+                     L 350 230 
+                     L 345 280 
+                     L 340 330 
+                     L 335 380 
+                     L 330 420 
+                     L 320 460 
+                     L 300 500 
+                     L 270 530 
+                     L 230 550 
+                     L 180 560 
+                     L 130 555 
+                     L 90 540 
+                     L 60 510 
+                     L 45 470 
+                     L 40 430 
+                     L 38 380 
+                     L 40 330 
+                     L 42 280 
+                     L 45 230 
+                     L 46 180 
+                     L 47 130 
+                     L 48 90 
+                     Z"
                   fill="url(#omanGradient)"
+                  stroke="rgba(59, 130, 246, 0.5)"
+                  strokeWidth="2.5"
+                />
+                
+                {/* Eastern coastline detail (more curved) */}
+                <path
+                  d="M 320 35 
+                     L 340 40 
+                     L 355 55 
+                     L 360 75 
+                     L 365 100 
+                     L 363 130 
+                     L 360 160 
+                     L 358 200 
+                     L 355 240 
+                     L 352 280 
+                     L 348 320 
+                     L 345 360 
+                     L 340 400 
+                     L 335 440 
+                     L 330 480 
+                     L 320 520 
+                     L 300 550"
+                  fill="none"
+                  stroke="url(#omanCoastline)"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+                
+                {/* Northern region (Musandam area) */}
+                <path
+                  d="M 50 50 
+                     L 45 35 
+                     L 50 25 
+                     L 60 20 
+                     L 75 18 
+                     L 90 20 
+                     L 100 25 
+                     L 105 35 
+                     L 100 45 
+                     L 90 48 
+                     L 75 50 
+                     L 60 50 
+                     Z"
+                  fill="rgba(59, 130, 246, 0.25)"
+                  stroke="rgba(59, 130, 246, 0.6)"
+                  strokeWidth="2"
+                />
+                
+                {/* Southern region detail */}
+                <path
+                  d="M 180 560 
+                     L 200 565 
+                     L 220 568 
+                     L 240 565 
+                     L 260 560 
+                     L 280 550 
+                     L 295 535 
+                     L 300 520"
+                  fill="none"
                   stroke="rgba(59, 130, 246, 0.4)"
-                  strokeWidth="3"
+                  strokeWidth="2"
+                  strokeLinecap="round"
                 />
               </svg>
 
