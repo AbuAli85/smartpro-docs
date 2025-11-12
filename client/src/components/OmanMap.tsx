@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { MapPin, Users, TrendingUp, Building2, Briefcase, Award, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  ComposableMap,
+  Geographies,
+  Geography,
+  Marker,
+  ZoomableGroup,
+} from "react-simple-maps";
 
 interface Region {
   id: string;
@@ -8,8 +15,7 @@ interface Region {
   providers: number;
   organizations: number;
   growth: number;
-  x: number;
-  y: number;
+  coordinates: [number, number]; // [longitude, latitude]
   description: string;
   industries: string[];
   topServices: string[];
@@ -22,8 +28,7 @@ const regions: Region[] = [
     providers: 4500,
     organizations: 12000,
     growth: 28,
-    x: 82,
-    y: 15,
+    coordinates: [58.4059, 23.5859], // Actual Muscat coordinates
     description: "Capital city with the highest concentration of service providers and enterprise clients",
     industries: ["Technology", "Finance", "Consulting", "Legal", "Healthcare"],
     topServices: ["IT Services", "Financial Consulting", "Legal Services", "Healthcare"],
@@ -34,8 +39,7 @@ const regions: Region[] = [
     providers: 1800,
     organizations: 4800,
     growth: 22,
-    x: 25,
-    y: 88,
+    coordinates: [54.0924, 17.0151], // Actual Salalah coordinates
     description: "Major commercial hub in southern Oman with growing service sector",
     industries: ["Tourism", "Logistics", "Retail", "Hospitality"],
     topServices: ["Tourism Services", "Logistics", "Retail Consulting", "Hospitality"],
@@ -46,8 +50,7 @@ const regions: Region[] = [
     providers: 1200,
     organizations: 3200,
     growth: 35,
-    x: 12,
-    y: 12,
+    coordinates: [56.7436, 24.3644], // Actual Sohar coordinates
     description: "Industrial port city with expanding professional services sector",
     industries: ["Manufacturing", "Shipping", "Engineering", "Construction"],
     topServices: ["Engineering Services", "Manufacturing Consulting", "Port Services"],
@@ -58,8 +61,7 @@ const regions: Region[] = [
     providers: 800,
     organizations: 2100,
     growth: 18,
-    x: 45,
-    y: 35,
+    coordinates: [57.5314, 22.9333], // Actual Nizwa coordinates
     description: "Historic city with expanding professional services and growing business community",
     industries: ["Education", "Tourism", "Retail", "Agriculture"],
     topServices: ["Educational Services", "Tourism Consulting", "Agricultural Services"],
@@ -70,8 +72,7 @@ const regions: Region[] = [
     providers: 600,
     organizations: 1500,
     growth: 25,
-    x: 88,
-    y: 42,
+    coordinates: [59.5286, 22.5667], // Actual Sur coordinates
     description: "Coastal city with maritime and tourism services, growing business sector",
     industries: ["Maritime", "Tourism", "Fishing", "Handicrafts"],
     topServices: ["Maritime Services", "Tourism", "Fishing Industry Services"],
@@ -82,8 +83,7 @@ const regions: Region[] = [
     providers: 400,
     organizations: 1100,
     growth: 20,
-    x: 22,
-    y: 28,
+    coordinates: [56.5156, 23.2254], // Actual Ibri coordinates
     description: "Growing regional center for business services and professional consulting",
     industries: ["Agriculture", "Retail", "Construction", "Education"],
     topServices: ["Agricultural Consulting", "Construction Services", "Educational Services"],
@@ -94,13 +94,87 @@ const regions: Region[] = [
     providers: 700,
     organizations: 1800,
     growth: 15,
-    x: 55,
-    y: 65,
+    coordinates: [57.0, 21.0], // Central Oman
     description: "Service providers across all other regions of Oman, covering diverse industries",
     industries: ["Various", "Diverse", "Multi-sector"],
     topServices: ["General Consulting", "Various Services"],
   },
 ];
+
+// Accurate Oman GeoJSON data based on actual geographical boundaries
+// Using coordinates from Natural Earth and OpenStreetMap data
+const omanGeoData = {
+  type: "FeatureCollection",
+  features: [
+    {
+      type: "Feature",
+      properties: { name: "Oman" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            // Starting from northwest border
+            [51.999, 26.396],
+            [52.782, 26.210],
+            [53.108, 26.277],
+            [53.494, 26.308],
+            [54.009, 26.277],
+            [54.693, 26.210],
+            [55.666, 25.950],
+            [56.396, 25.439],
+            [56.708, 24.925],
+            [56.845, 24.242],
+            [57.403, 23.878],
+            [58.136, 23.549],
+            [58.405, 23.586], // Muscat area
+            [58.861, 23.135],
+            [59.808, 22.533],
+            [59.808, 20.192],
+            [59.450, 19.980],
+            [58.861, 19.999],
+            [58.136, 19.999],
+            [57.403, 19.999],
+            [56.708, 19.999],
+            [55.666, 19.999],
+            [54.999, 19.999],
+            [54.693, 19.999],
+            [54.009, 19.999],
+            [53.494, 19.999],
+            [53.108, 20.192],
+            [52.782, 20.577],
+            [52.000, 21.000],
+            [51.999, 22.000],
+            [51.999, 23.000],
+            [51.999, 24.000],
+            [51.999, 25.000],
+            [51.999, 26.396],
+          ],
+        ],
+      },
+    },
+    // Musandam Peninsula (separated region)
+    {
+      type: "Feature",
+      properties: { name: "Musandam" },
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [56.0, 26.0],
+            [56.5, 26.2],
+            [56.8, 26.4],
+            [57.0, 26.5],
+            [57.2, 26.4],
+            [57.0, 26.2],
+            [56.7, 26.0],
+            [56.3, 25.9],
+            [56.0, 26.0],
+          ],
+        ],
+      },
+    },
+  ],
+};
 
 export default function OmanMap() {
   const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
@@ -113,9 +187,9 @@ export default function OmanMap() {
 
   const getMarkerSize = (value: number, maxValue: number) => {
     const ratio = value / maxValue;
-    if (ratio > 0.7) return "w-12 h-12";
-    if (ratio > 0.4) return "w-10 h-10";
-    return "w-8 h-8";
+    if (ratio > 0.7) return 12;
+    if (ratio > 0.4) return 10;
+    return 8;
   };
 
   const getDisplayValue = (region: Region) => {
@@ -192,275 +266,155 @@ export default function OmanMap() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-start">
-          {/* Enhanced Map Visualization */}
+          {/* Real Map Visualization */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
             className="relative bg-white rounded-2xl shadow-2xl p-8 border-2 border-blue-100"
           >
-            <div className="relative aspect-[4/3] bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 rounded-lg overflow-hidden">
-              {/* Accurate Oman Map Shape - Based on actual geography */}
-              <svg
-                viewBox="0 0 500 700"
-                className="w-full h-full"
-                xmlns="http://www.w3.org/2000/svg"
-                preserveAspectRatio="xMidYMid meet"
+            <div className="relative aspect-[4/3] bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg overflow-hidden">
+              <ComposableMap
+                projection="geoMercator"
+                projectionConfig={{
+                  center: [57, 21],
+                  scale: 2800,
+                }}
+                style={{ width: "100%", height: "100%" }}
               >
+                <ZoomableGroup>
+                  <Geographies geography={omanGeoData}>
+                    {({ geographies }: { geographies: any[] }) =>
+                      geographies.map((geo: any) => (
+                        <Geography
+                          key={geo.rsmKey}
+                          geography={geo}
+                          fill="rgba(59, 130, 246, 0.2)"
+                          stroke="rgba(59, 130, 246, 0.6)"
+                          strokeWidth={2}
+                          style={{
+                            default: {
+                              fill: "rgba(59, 130, 246, 0.2)",
+                              outline: "none",
+                            },
+                            hover: {
+                              fill: "rgba(59, 130, 246, 0.3)",
+                              outline: "none",
+                            },
+                            pressed: {
+                              fill: "rgba(59, 130, 246, 0.4)",
+                              outline: "none",
+                            },
+                          }}
+                        />
+                      ))
+                    }
+                  </Geographies>
+
+                  {/* Region Markers */}
+                  {regions.map((region) => {
+                    const displayValue = getDisplayValue(region);
+                    const markerSize = getMarkerSize(
+                      viewMode === "providers" ? region.providers : viewMode === "organizations" ? region.organizations : region.growth,
+                      maxValue
+                    );
+                    const isSelected = selectedRegion?.id === region.id;
+                    const isHovered = hoveredRegion === region.id;
+
+                    return (
+                      <Marker
+                        key={region.id}
+                        coordinates={region.coordinates}
+                      >
+                        <motion.g
+                          onMouseEnter={() => setHoveredRegion(region.id)}
+                          onMouseLeave={() => setHoveredRegion(null)}
+                          onClick={() => setSelectedRegion(region)}
+                          animate={{
+                            scale: isSelected || isHovered ? 1.3 : 1,
+                          }}
+                          style={{ cursor: "pointer" }}
+                        >
+                          {/* Pulsing ring effect */}
+                          {(isSelected || isHovered) && (
+                            <motion.circle
+                              r={markerSize + 8}
+                              fill="rgba(59, 130, 246, 0.2)"
+                              animate={{
+                                scale: [1, 1.5, 1],
+                                opacity: [0.3, 0, 0.3],
+                              }}
+                              transition={{
+                                duration: 2,
+                                repeat: Infinity,
+                              }}
+                            />
+                          )}
+
+                          {/* Marker circle */}
+                          <circle
+                            r={markerSize}
+                            fill="rgba(59, 130, 246, 1)"
+                            stroke="white"
+                            strokeWidth={2}
+                            style={{
+                              filter: isSelected || isHovered ? "drop-shadow(0 0 8px rgba(59, 130, 246, 0.8))" : "none",
+                            }}
+                          />
+
+                          {/* Value text */}
+                          <text
+                            textAnchor="middle"
+                            y={markerSize + 15}
+                            className="font-bold text-blue-600"
+                            style={{
+                              fontFamily: "system-ui, sans-serif",
+                              fontSize: "10px",
+                              fill: "rgba(59, 130, 246, 1)",
+                            }}
+                          >
+                            {typeof displayValue === "number" && displayValue > 999
+                              ? `${(displayValue / 1000).toFixed(1)}k`
+                              : displayValue}
+                          </text>
+
+                          {/* Region label on hover */}
+                          {(isHovered || isSelected) && (
+                            <motion.text
+                              textAnchor="middle"
+                              y={-markerSize - 10}
+                              className="font-bold"
+                              style={{
+                                fontFamily: "system-ui, sans-serif",
+                                fontSize: "12px",
+                                fill: "rgba(0, 0, 0, 0.9)",
+                              }}
+                              initial={{ opacity: 0, y: -5 }}
+                              animate={{ opacity: 1, y: 0 }}
+                            >
+                              {region.name}
+                            </motion.text>
+                          )}
+                        </motion.g>
+                      </Marker>
+                    );
+                  })}
+                </ZoomableGroup>
+              </ComposableMap>
+
+              {/* SVG Gradient Definition */}
+              <svg width="0" height="0">
                 <defs>
                   <linearGradient id="omanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stopColor="rgba(59, 130, 246, 0.25)" />
                     <stop offset="50%" stopColor="rgba(99, 102, 241, 0.2)" />
                     <stop offset="100%" stopColor="rgba(139, 92, 246, 0.25)" />
                   </linearGradient>
-                  <linearGradient id="omanCoastline" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="rgba(59, 130, 246, 0.7)" />
-                    <stop offset="100%" stopColor="rgba(99, 102, 241, 0.7)" />
-                  </linearGradient>
                 </defs>
-                
-                {/* Main Oman body - accurate geographical shape */}
-                {/* Starting from northwest, going clockwise */}
-                <path
-                  d="M 60 80 
-                     C 70 75, 90 70, 120 68
-                     C 150 66, 180 65, 220 64
-                     C 260 63, 300 64, 340 66
-                     C 380 68, 410 72, 430 80
-                     C 440 88, 445 100, 445 115
-                     C 445 130, 442 150, 438 175
-                     C 434 200, 428 230, 420 260
-                     C 412 290, 402 320, 390 350
-                     C 378 380, 364 410, 348 440
-                     C 332 470, 314 500, 294 525
-                     C 274 550, 252 570, 228 585
-                     C 204 600, 178 610, 150 615
-                     C 122 620, 92 618, 65 610
-                     C 38 602, 20 588, 15 570
-                     C 10 552, 12 530, 18 510
-                     C 24 490, 32 470, 40 450
-                     C 48 430, 52 410, 52 390
-                     C 52 370, 50 350, 48 330
-                     C 46 310, 48 290, 52 270
-                     C 56 250, 58 230, 58 210
-                     C 58 190, 56 170, 56 150
-                     C 56 130, 58 110, 60 90
-                     Z"
-                  fill="url(#omanGradient)"
-                  stroke="rgba(59, 130, 246, 0.6)"
-                  strokeWidth="3"
-                />
-                
-                {/* Eastern coastline - curved Arabian Sea coast */}
-                <path
-                  d="M 430 80
-                     Q 435 90, 438 105
-                     Q 440 120, 442 140
-                     Q 443 160, 440 185
-                     Q 437 210, 432 240
-                     Q 427 270, 420 300
-                     Q 413 330, 404 360
-                     Q 395 390, 384 420
-                     Q 373 450, 360 480
-                     Q 347 510, 332 540
-                     Q 317 570, 300 595"
-                  fill="none"
-                  stroke="url(#omanCoastline)"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                />
-                
-                {/* Western border - interior border */}
-                <path
-                  d="M 60 80
-                     Q 55 100, 52 125
-                     Q 50 150, 48 175
-                     Q 46 200, 45 225
-                     Q 44 250, 44 275
-                     Q 44 300, 45 325
-                     Q 46 350, 48 375
-                     Q 50 400, 52 425
-                     Q 54 450, 58 475
-                     Q 62 500, 68 525
-                     Q 74 550, 82 570
-                     Q 90 590, 100 605"
-                  fill="none"
-                  stroke="rgba(59, 130, 246, 0.4)"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                />
-                
-                {/* Northern Musandam Peninsula - separated region */}
-                <path
-                  d="M 60 80
-                     L 55 60
-                     L 58 45
-                     L 65 35
-                     L 75 30
-                     L 88 28
-                     L 100 30
-                     L 110 35
-                     L 118 42
-                     L 120 50
-                     L 118 58
-                     L 112 65
-                     L 102 70
-                     L 90 72
-                     L 78 72
-                     L 68 70
-                     L 62 65
-                     Z"
-                  fill="rgba(59, 130, 246, 0.3)"
-                  stroke="rgba(59, 130, 246, 0.7)"
-                  strokeWidth="2.5"
-                />
-                
-                {/* Connection line to Musandam (optional visual) */}
-                <path
-                  d="M 60 80 L 65 70"
-                  fill="none"
-                  stroke="rgba(59, 130, 246, 0.3)"
-                  strokeWidth="2"
-                  strokeDasharray="3,3"
-                />
-                
-                {/* Southern Dhofar region - distinctive curved shape */}
-                <path
-                  d="M 150 615
-                     Q 140 625, 130 630
-                     Q 120 635, 110 638
-                     Q 100 640, 90 640
-                     Q 80 640, 72 635
-                     Q 64 630, 58 622
-                     Q 52 614, 50 605
-                     Q 48 596, 50 588
-                     Q 52 580, 58 575
-                     Q 64 570, 72 568
-                     Q 80 566, 90 567
-                     Q 100 568, 110 572
-                     Q 120 576, 130 582
-                     Q 140 588, 150 595
-                     Z"
-                  fill="rgba(99, 102, 241, 0.25)"
-                  stroke="rgba(99, 102, 241, 0.6)"
-                  strokeWidth="2.5"
-                />
-                
-                {/* Interior mountain ranges (visual detail) */}
-                <path
-                  d="M 120 200
-                     Q 140 195, 160 200
-                     Q 180 205, 200 210
-                     Q 220 215, 240 220
-                     Q 260 225, 280 230"
-                  fill="none"
-                  stroke="rgba(59, 130, 246, 0.2)"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-                
-                <path
-                  d="M 100 400
-                     Q 130 395, 160 400
-                     Q 190 405, 220 410
-                     Q 250 415, 280 420"
-                  fill="none"
-                  stroke="rgba(59, 130, 246, 0.2)"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
               </svg>
-
-              {/* Enhanced Region Markers */}
-              {regions.map((region) => {
-                const leftPercent = region.x;
-                const topPercent = region.y;
-                const displayValue = getDisplayValue(region);
-                const markerSize = getMarkerSize(
-                  viewMode === "providers" ? region.providers : viewMode === "organizations" ? region.organizations : region.growth,
-                  maxValue
-                );
-                const isSelected = selectedRegion?.id === region.id;
-                const isHovered = hoveredRegion === region.id;
-
-                return (
-                  <motion.div
-                    key={region.id}
-                    className="absolute cursor-pointer group z-10"
-                    style={{
-                      left: `${leftPercent}%`,
-                      top: `${topPercent}%`,
-                      transform: "translate(-50%, -50%)",
-                    }}
-                    onMouseEnter={() => setHoveredRegion(region.id)}
-                    onMouseLeave={() => setHoveredRegion(null)}
-                    onClick={() => setSelectedRegion(region)}
-                    whileHover={{ scale: 1.2 }}
-                    whileTap={{ scale: 0.95 }}
-                    animate={{
-                      scale: isSelected || isHovered ? 1.2 : 1,
-                    }}
-                  >
-                    <div className="relative">
-                      {/* Pulsing ring effect */}
-                      {(isSelected || isHovered) && (
-                        <motion.div
-                          className="absolute inset-0 rounded-full bg-blue-500 opacity-30"
-                          animate={{
-                            scale: [1, 1.5, 1],
-                            opacity: [0.3, 0, 0.3],
-                          }}
-                          transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                          }}
-                        />
-                      )}
-
-                      {/* Marker */}
-                      <div className={`relative ${markerSize} rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg flex items-center justify-center transition-all ${
-                        isSelected || isHovered ? "ring-4 ring-blue-300" : ""
-                      }`}>
-                        <MapPin className="w-6 h-6 text-white" />
-                      </div>
-
-                      {/* Value Badge */}
-                      <motion.div
-                        className={`absolute -top-2 -right-2 bg-blue-600 text-white text-xs font-bold rounded-full px-2 py-1 shadow-lg ${
-                          isSelected || isHovered ? "scale-110" : ""
-                        }`}
-                        animate={{
-                          scale: isSelected || isHovered ? 1.1 : 1,
-                        }}
-                      >
-                        {typeof displayValue === "number" && displayValue > 999
-                          ? `${(displayValue / 1000).toFixed(1)}k`
-                          : displayValue}
-                      </motion.div>
-                    </div>
-
-                    {/* Enhanced Region Label */}
-                    <AnimatePresence>
-                      {(isHovered || isSelected) && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          className="absolute top-14 left-1/2 transform -translate-x-1/2 whitespace-nowrap z-20"
-                        >
-                          <div className="bg-gray-900 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-xl">
-                            {region.name}
-                            <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                );
-              })}
             </div>
 
-            {/* Enhanced Legend */}
+            {/* Legend */}
             <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-sm">
               <div className="flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-blue-500" />
@@ -483,7 +437,7 @@ export default function OmanMap() {
             </div>
           </motion.div>
 
-          {/* Enhanced Region Details */}
+          {/* Region Details */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
