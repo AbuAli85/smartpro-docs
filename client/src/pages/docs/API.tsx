@@ -1,8 +1,9 @@
 import DocsLayout from '@/components/DocsLayout';
-import { Code, Lock, Zap, CheckCircle, Copy } from 'lucide-react';
+import { Code, Lock, Zap, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useEffect } from 'react';
 import { setSEOTags } from '@/lib/seoUtils';
+import CopyCodeButton from '@/components/CopyCodeButton';
 
 export default function API() {
   useEffect(() => {
@@ -19,10 +20,6 @@ export default function API() {
     { label: 'Documentation', href: '/docs' },
     { label: 'API Documentation', href: '/docs/api' },
   ];
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-  };
 
   return (
     <DocsLayout pageTitle="API Documentation" breadcrumbs={breadcrumbs}>
@@ -55,13 +52,7 @@ export default function API() {
         <section>
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Base URL</h2>
           <div className="bg-gray-900 rounded-lg p-6 text-white font-mono text-sm relative">
-            <button
-              onClick={() => copyToClipboard('https://api.thesmartpro.io/v1')}
-              className="absolute top-4 right-4 p-2 hover:bg-gray-800 rounded transition-colors"
-              aria-label="Copy to clipboard"
-            >
-              <Copy className="w-4 h-4" />
-            </button>
+            <CopyCodeButton text="https://api.thesmartpro.io/v1" />
             <code>https://api.thesmartpro.io/v1</code>
           </div>
           <p className="text-sm text-gray-600 mt-3">
@@ -90,13 +81,9 @@ export default function API() {
             <div>
               <h3 className="text-xl font-bold text-gray-900 mb-4">Using Your API Key</h3>
               <div className="bg-gray-900 rounded-lg p-6 text-white font-mono text-sm relative">
-                <button
-                  onClick={() => copyToClipboard('Authorization: Bearer YOUR_API_KEY')}
-                  className="absolute top-4 right-4 p-2 hover:bg-gray-800 rounded transition-colors"
-                  aria-label="Copy to clipboard"
-                >
-                  <Copy className="w-4 h-4" />
-                </button>
+                <CopyCodeButton text={`curl https://api.thesmartpro.io/v1/projects \\
+  -H "Authorization: Bearer YOUR_API_KEY" \\
+  -H "Content-Type: application/json"`} />
                 <pre className="overflow-x-auto">
 {`curl https://api.thesmartpro.io/v1/projects \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
@@ -181,8 +168,7 @@ export default function API() {
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Request Example</h2>
           <p className="text-gray-600 mb-6">Example of creating a new project:</p>
           <div className="bg-gray-900 rounded-lg p-6 text-white font-mono text-sm relative">
-            <button
-              onClick={() => copyToClipboard(`curl -X POST https://api.thesmartpro.io/v1/projects \\
+            <CopyCodeButton text={`curl -X POST https://api.thesmartpro.io/v1/projects \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -191,12 +177,7 @@ export default function API() {
     "status": "active",
     "start_date": "2025-01-01",
     "end_date": "2025-03-31"
-  }'`)}
-              className="absolute top-4 right-4 p-2 hover:bg-gray-800 rounded transition-colors"
-              aria-label="Copy to clipboard"
-            >
-              <Copy className="w-4 h-4" />
-            </button>
+  }'`} />
             <pre className="overflow-x-auto">
 {`curl -X POST https://api.thesmartpro.io/v1/projects \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
@@ -217,8 +198,7 @@ export default function API() {
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Response Example</h2>
           <p className="text-gray-600 mb-6">Successful response (201 Created):</p>
           <div className="bg-gray-900 rounded-lg p-6 text-white font-mono text-sm relative">
-            <button
-              onClick={() => copyToClipboard(`{
+            <CopyCodeButton text={`{
   "id": "proj_1234567890",
   "name": "Website Redesign",
   "description": "Complete website redesign project",
@@ -227,12 +207,7 @@ export default function API() {
   "end_date": "2025-03-31",
   "created_at": "2025-11-10T10:00:00Z",
   "updated_at": "2025-11-10T10:00:00Z"
-}`)}
-              className="absolute top-4 right-4 p-2 hover:bg-gray-800 rounded transition-colors"
-              aria-label="Copy to clipboard"
-            >
-              <Copy className="w-4 h-4" />
-            </button>
+}`} />
             <pre className="overflow-x-auto">
 {`{
   "id": "proj_1234567890",

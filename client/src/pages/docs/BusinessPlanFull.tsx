@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
 import { useEffect } from 'react';
 import { setSEOTags } from '@/lib/seoUtils';
+import TableOfContents from '@/components/TableOfContents';
 
 export default function BusinessPlanFull() {
   useEffect(() => {
@@ -69,25 +70,8 @@ export default function BusinessPlanFull() {
           </p>
         </section>
 
-        {/* Quick Navigation */}
-        <section>
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Table of Contents</h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            {sections.map((section, index) => (
-              <a
-                key={index}
-                href={`#${section.id}`}
-                className="flex items-center gap-3 p-4 bg-white rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all"
-              >
-                <div className="text-blue-600">{section.icon}</div>
-                <div>
-                  <div className="font-semibold text-gray-900">{index + 1}. {section.title}</div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-400 ml-auto" />
-              </a>
-            ))}
-          </div>
-        </section>
+        {/* Table of Contents */}
+        <TableOfContents sections={sections} title="Table of Contents" />
 
         {/* Key Metrics Dashboard */}
         <section>
