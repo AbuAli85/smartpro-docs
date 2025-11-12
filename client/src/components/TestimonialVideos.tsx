@@ -28,7 +28,7 @@ const testimonials: Testimonial[] = [
     title: "Founder & CEO",
     company: "Digital Solutions Inc",
     role: "provider",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    videoUrl: "", // Placeholder - replace with actual testimonial video URL
     thumbnail: "🎥",
     quote: "TheSmartPro.io transformed how we manage contracts and payments. We've cut administrative time by 60% and increased our client base by 3x in just 6 months.",
     rating: 5,
@@ -43,7 +43,7 @@ const testimonials: Testimonial[] = [
     title: "Operations Manager",
     company: "Enterprise Services Group",
     role: "client",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    videoUrl: "", // Placeholder - replace with actual testimonial video URL
     thumbnail: "📹",
     quote: "Finding verified professionals has never been easier. The platform is intuitive, reliable, and has helped us reduce hiring costs by 40% while improving quality.",
     rating: 5,
@@ -58,7 +58,7 @@ const testimonials: Testimonial[] = [
     title: "Service Provider",
     company: "Thompson Consulting",
     role: "provider",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    videoUrl: "", // Placeholder - replace with actual testimonial video URL
     thumbnail: "🎬",
     quote: "I've grown my business 3x since joining. The tools and support are exceptional. The contract management alone has saved me 15 hours per week.",
     rating: 5,
@@ -73,7 +73,7 @@ const testimonials: Testimonial[] = [
     title: "Director of Operations",
     company: "Oman Business Solutions",
     role: "client",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    videoUrl: "", // Placeholder - replace with actual testimonial video URL
     thumbnail: "🎯",
     quote: "As a business in Muscat, we needed a platform that understands the local market. TheSmartPro.io delivers with verified professionals across all of Oman.",
     rating: 5,
@@ -88,7 +88,7 @@ const testimonials: Testimonial[] = [
     title: "Independent Consultant",
     company: "Al-Zahra Consulting",
     role: "provider",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    videoUrl: "", // Placeholder - replace with actual testimonial video URL
     thumbnail: "💼",
     quote: "The payment processing is seamless and secure. I get paid faster, and my clients love the professional experience. Highly recommend!",
     rating: 5,
@@ -103,7 +103,7 @@ const testimonials: Testimonial[] = [
     title: "VP of Operations",
     company: "TechStart Middle East",
     role: "client",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    videoUrl: "", // Placeholder - replace with actual testimonial video URL
     thumbnail: "🚀",
     quote: "We've streamlined our entire service procurement process. The platform's analytics help us make data-driven decisions and optimize our vendor relationships.",
     rating: 5,
@@ -143,26 +143,28 @@ export default function TestimonialVideos() {
           </p>
 
           {/* Filter Buttons */}
-          <div className="flex justify-center gap-3">
+          <div className="flex justify-center gap-3" aria-label="Filter testimonials">
             {[
               { id: "all", label: "All Testimonials" },
               { id: "provider", label: "Service Providers" },
               { id: "client", label: "Organizations" },
-            ].map((filterOption) => (
-              <button
-                key={filterOption.id}
-                onClick={() => setFilter(filterOption.id as typeof filter)}
-                className={`px-6 py-2 rounded-full font-medium transition-all ${
-                  filter === filterOption.id
-                    ? "bg-blue-600 text-white shadow-lg"
-                    : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
-                }`}
-                aria-label={`Filter testimonials by ${filterOption.label}`}
-                aria-pressed={filter === filterOption.id}
-              >
-                {filterOption.label}
-              </button>
-            ))}
+            ].map((filterOption) => {
+              const isSelected = filter === filterOption.id;
+              return (
+                <button
+                  key={filterOption.id}
+                  onClick={() => setFilter(filterOption.id as typeof filter)}
+                  className={`px-6 py-2 rounded-full font-medium transition-all ${
+                    isSelected
+                      ? "bg-blue-600 text-white shadow-lg"
+                      : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
+                  }`}
+                  aria-label={`Filter testimonials by ${filterOption.label}. ${isSelected ? "Currently selected" : "Click to select"}`}
+                >
+                  {filterOption.label}
+                </button>
+              );
+            })}
           </div>
         </motion.div>
 
@@ -181,6 +183,7 @@ export default function TestimonialVideos() {
                 role="button"
                 tabIndex={0}
                 aria-label={`Watch testimonial from ${testimonial.name}`}
+                title={`Watch testimonial from ${testimonial.name}`}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
@@ -312,23 +315,38 @@ export default function TestimonialVideos() {
                     onClick={() => setSelectedVideo(null)}
                     className="p-2 hover:bg-gray-200 rounded-lg transition-colors ml-4"
                     aria-label="Close video modal"
+                    title="Close video modal"
                   >
                     <X className="h-6 w-6 text-gray-600" />
                   </button>
                 </div>
 
                 {/* Video */}
-                <div className="aspect-video bg-black">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src={selectedVideo.videoUrl}
-                    title={selectedVideo.name}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full"
-                  />
+                <div className="aspect-video bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center relative">
+                  {selectedVideo.videoUrl ? (
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      src={selectedVideo.videoUrl}
+                      title={selectedVideo.name}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full"
+                    />
+                  ) : (
+                    <div className="text-center text-white p-8">
+                      <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Play className="h-10 w-10 text-white fill-white" />
+                      </div>
+                      <h4 className="text-2xl font-bold mb-2">Video Testimonial</h4>
+                      <p className="text-white/90 mb-4">Video coming soon</p>
+                      <p className="text-white/70 text-sm max-w-md mx-auto">
+                        We're currently collecting video testimonials from our users. 
+                        Check back soon to watch {selectedVideo.name}'s full testimonial.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Enhanced Quote Section */}
