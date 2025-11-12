@@ -7,6 +7,7 @@ import PlatformScreenshots from "@/components/PlatformScreenshots";
 import CustomerLogos from "@/components/CustomerLogos";
 import NetworkStats from "@/components/NetworkStats";
 import TestimonialVideos from "@/components/TestimonialVideos";
+import LastUpdates from "@/components/LastUpdates";
 import { useEffect } from "react";
 import { setSEOTags } from "@/lib/seoUtils";
 import { generateOrganizationSchema, generateSoftwareSchema, insertMultipleSchemas } from "@/lib/schemaUtils";
@@ -429,6 +430,9 @@ export default function HomeNew() {
 
       {/* Network Stats */}
       <NetworkStats />
+
+      {/* Last Updates */}
+      <LastUpdates />
 
       {/* Testimonials */}
       <section className="py-20 bg-slate-50">
