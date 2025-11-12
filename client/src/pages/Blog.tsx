@@ -87,7 +87,7 @@ const blogArticles: BlogArticle[] = [
     date: "2025-10-22",
     category: "Technology",
     readTime: 11,
-    image: "🚀",
+    image: "digitalTransformation",
     featured: false,
   },
 ];

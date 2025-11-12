@@ -13,6 +13,9 @@ import { CoreWebVitalsMonitor } from "@/components/CoreWebVitalsMonitor";
 // Lazy load pages to reduce initial bundle
 const ProvidersPage = lazy(() => import("./pages/ProvidersPage"));
 const ClientsPage = lazy(() => import("./pages/ClientsPage"));
+const GetStartedClients = lazy(() => import("./pages/GetStartedClients"));
+const Company = lazy(() => import("./pages/Company"));
+const Careers = lazy(() => import("./pages/Careers"));
 const About = lazy(() => import("./pages/About"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Features = lazy(() => import("./pages/Features"));
@@ -76,6 +79,9 @@ function Router() {
         <Route path={"/"} component={Home} />
         <Route path={"/providers"} component={ProvidersPage} />
         <Route path={"/clients"} component={ClientsPage} />
+        <Route path={"/get-started-clients"} component={GetStartedClients} />
+        <Route path={"/company"} component={Company} />
+        <Route path={"/careers"} component={Careers} />
         <Route path={"/about"} component={About} />
         <Route path={"/pricing"} component={Pricing} />
         <Route path={"/features"} component={Features} />
