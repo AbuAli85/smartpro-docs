@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Menu, X, ChevronRight, Search } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { Input } from '@/components/ui/input';
 import FeedbackWidget from '@/components/FeedbackWidget';
+import { useKeyboardShortcuts, KeyboardShortcut } from '@/hooks/useKeyboardShortcuts';
+import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp';
+import { trackSearch } from '@/lib/feedbackAnalytics';
 
 interface NavItem {
   title: string;
@@ -68,9 +71,22 @@ interface DocsLayoutProps {
 export default function DocsLayout({ children, pageTitle, breadcrumbs, lastUpdated = 'November 2025', githubPath }: DocsLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const isActive = (href: string) => location === href;
+
+  // Get all navigation links for keyboard navigation
+  const getAllNavLinks = (): string[] => {
+    const links: string[] = [];
+    navigationItems.forEach(item => {
+      if (item.href !== '#') links.push(item.href);
+      if (item.children) {
+        item.children.forEach(child => links.push(child.href));
+      }
+    });
+    return links;
+  };
 
   // Filter navigation items based on search query
   const filteredItems = searchQuery
@@ -85,8 +101,63 @@ export default function DocsLayout({ children, pageTitle, breadcrumbs, lastUpdat
       }).filter(Boolean) as NavItem[]
     : navigationItems;
 
+  // Track search analytics
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      const hasResults = filteredItems.length > 0;
+      const resultCount = filteredItems.reduce((count, item) => {
+        return count + (item.children ? item.children.length : 1);
+      }, 0);
+      trackSearch(searchQuery, hasResults, resultCount);
+    }
+  }, [searchQuery, filteredItems.length]);
+
+  // Keyboard shortcuts
+  const shortcuts: KeyboardShortcut[] = [
+    {
+      key: 'k',
+      ctrl: true,
+      action: () => {
+        searchInputRef.current?.focus();
+      },
+      description: 'Focus search',
+    },
+    {
+      key: '/',
+      action: () => {
+        searchInputRef.current?.focus();
+      },
+      description: 'Focus search',
+    },
+    {
+      key: '[',
+      action: () => {
+        const links = getAllNavLinks();
+        const currentIndex = links.indexOf(location);
+        if (currentIndex > 0) {
+          navigate(links[currentIndex - 1]);
+        }
+      },
+      description: 'Previous page',
+    },
+    {
+      key: ']',
+      action: () => {
+        const links = getAllNavLinks();
+        const currentIndex = links.indexOf(location);
+        if (currentIndex < links.length - 1) {
+          navigate(links[currentIndex + 1]);
+        }
+      },
+      description: 'Next page',
+    },
+  ];
+
+  useKeyboardShortcuts(shortcuts);
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
+      <KeyboardShortcutsHelp shortcuts={shortcuts} />
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white border-b border-gray-200">
         <div className="container flex items-center justify-between h-16">
@@ -120,11 +191,13 @@ export default function DocsLayout({ children, pageTitle, breadcrumbs, lastUpdat
             <div className="mb-6 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
+                ref={searchInputRef}
                 type="text"
                 placeholder="Search docs..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 w-full"
+                aria-label="Search documentation"
               />
             </div>
 

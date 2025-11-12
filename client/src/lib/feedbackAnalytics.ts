@@ -76,6 +76,49 @@ export function trackFeedback(data: FeedbackData): void {
 }
 
 /**
+ * Track search query
+ * 
+ * @param query - Search query text
+ * @param hasResults - Whether search returned results
+ * @param resultCount - Number of results (if any)
+ */
+export function trackSearch(query: string, hasResults: boolean, resultCount?: number): void {
+  const searchData = {
+    query,
+    hasResults,
+    resultCount,
+    timestamp: new Date().toISOString(),
+    pagePath: typeof window !== 'undefined' ? window.location.pathname : undefined,
+  };
+
+  // Log to console in development
+  if (import.meta.env.DEV) {
+    console.log('[Search Analytics]', searchData);
+  }
+
+  // Example: Send to Google Analytics
+  // if (typeof window !== 'undefined' && window.gtag) {
+  //   window.gtag('event', 'docs_search', {
+  //     search_term: query,
+  //     has_results: hasResults,
+  //     result_count: resultCount || 0,
+  //   });
+  // }
+
+  // Example: Send to custom analytics endpoint
+  // fetch('/api/analytics/search', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify(searchData),
+  // }).catch(console.error);
+
+  // Track failed searches for content gap analysis
+  // if (!hasResults) {
+  //   trackContentGap({ query, pagePath: searchData.pagePath });
+  // }
+}
+
+/**
  * Get feedback statistics (for admin dashboard)
  * 
  * This would typically fetch from your analytics backend
@@ -97,6 +140,31 @@ export async function getFeedbackStats(pagePath?: string): Promise<{
     notHelpful: 0,
     helpfulRate: 0,
     comments: [],
+  };
+}
+
+/**
+ * Get search statistics (for admin dashboard)
+ * 
+ * This would typically fetch from your analytics backend
+ */
+export async function getSearchStats(): Promise<{
+  totalSearches: number;
+  successfulSearches: number;
+  failedSearches: number;
+  topQueries: Array<{ query: string; count: number }>;
+  failedQueries: Array<{ query: string; count: number }>;
+}> {
+  // Example implementation - replace with actual API call
+  // const response = await fetch('/api/analytics/search');
+  // return response.json();
+
+  return {
+    totalSearches: 0,
+    successfulSearches: 0,
+    failedSearches: 0,
+    topQueries: [],
+    failedQueries: [],
   };
 }
 

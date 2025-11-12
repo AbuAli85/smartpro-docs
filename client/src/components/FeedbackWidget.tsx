@@ -88,6 +88,8 @@ export default function FeedbackWidget({ pagePath, onFeedback, enableAnalytics =
           onChange={(e) => setComment(e.target.value)}
           placeholder="Tell us what we can improve..."
           className="mb-4 min-h-[100px] dark:bg-slate-800 dark:border-slate-700 dark:text-gray-100"
+          aria-label="Feedback comment"
+          aria-required="true"
         />
         <div className="flex items-center gap-3">
           <Button
