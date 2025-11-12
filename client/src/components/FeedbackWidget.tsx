@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { ThumbsUp, ThumbsDown, CheckCircle, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { trackFeedback } from '@/lib/feedbackAnalytics';
 
 interface FeedbackWidgetProps {
   pagePath?: string;
   onFeedback?: (helpful: boolean, pagePath?: string, comment?: string) => void;
+  enableAnalytics?: boolean;
 }
 
-export default function FeedbackWidget({ pagePath, onFeedback }: FeedbackWidgetProps) {
+export default function FeedbackWidget({ pagePath, onFeedback, enableAnalytics = true }: FeedbackWidgetProps) {
   const [feedback, setFeedback] = useState<'helpful' | 'not-helpful' | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [showComment, setShowComment] = useState(false);
@@ -19,6 +21,12 @@ export default function FeedbackWidget({ pagePath, onFeedback }: FeedbackWidgetP
       // For helpful feedback, submit immediately
       setFeedback('helpful');
       setSubmitted(true);
+      
+      // Track analytics
+      if (enableAnalytics && pagePath) {
+        trackFeedback({ helpful: true, pagePath });
+      }
+      
       if (onFeedback) {
         onFeedback(true, pagePath);
       }
@@ -31,11 +39,15 @@ export default function FeedbackWidget({ pagePath, onFeedback }: FeedbackWidgetP
 
   const handleSubmit = () => {
     setSubmitted(true);
+    
+    // Track analytics
+    if (enableAnalytics && pagePath) {
+      trackFeedback({ helpful: false, pagePath, comment });
+    }
+    
     if (onFeedback) {
       onFeedback(false, pagePath, comment);
     }
-    // Optional: Send to analytics service
-    // Example: trackEvent('docs_feedback', { helpful: false, page: pagePath, comment });
   };
 
   if (submitted) {
