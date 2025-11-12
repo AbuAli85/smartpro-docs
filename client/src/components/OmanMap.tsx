@@ -200,124 +200,173 @@ export default function OmanMap() {
             className="relative bg-white rounded-2xl shadow-2xl p-8 border-2 border-blue-100"
           >
             <div className="relative aspect-[4/3] bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 rounded-lg overflow-hidden">
-              {/* Accurate Oman Map Shape */}
+              {/* Accurate Oman Map Shape - Based on actual geography */}
               <svg
-                viewBox="0 0 400 600"
+                viewBox="0 0 500 700"
                 className="w-full h-full"
                 xmlns="http://www.w3.org/2000/svg"
                 preserveAspectRatio="xMidYMid meet"
               >
                 <defs>
                   <linearGradient id="omanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="rgba(59, 130, 246, 0.2)" />
-                    <stop offset="50%" stopColor="rgba(99, 102, 241, 0.15)" />
-                    <stop offset="100%" stopColor="rgba(139, 92, 246, 0.2)" />
+                    <stop offset="0%" stopColor="rgba(59, 130, 246, 0.25)" />
+                    <stop offset="50%" stopColor="rgba(99, 102, 241, 0.2)" />
+                    <stop offset="100%" stopColor="rgba(139, 92, 246, 0.25)" />
                   </linearGradient>
                   <linearGradient id="omanCoastline" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="rgba(59, 130, 246, 0.6)" />
-                    <stop offset="100%" stopColor="rgba(99, 102, 241, 0.6)" />
+                    <stop offset="0%" stopColor="rgba(59, 130, 246, 0.7)" />
+                    <stop offset="100%" stopColor="rgba(99, 102, 241, 0.7)" />
                   </linearGradient>
                 </defs>
                 
-                {/* Main Oman body - more accurate shape */}
+                {/* Main Oman body - accurate geographical shape */}
+                {/* Starting from northwest, going clockwise */}
                 <path
-                  d="M 50 50 
-                     L 80 45 
-                     L 120 40 
-                     L 180 35 
-                     L 250 30 
-                     L 320 35 
-                     L 350 45 
-                     L 360 60 
-                     L 365 90 
-                     L 360 130 
-                     L 355 180 
-                     L 350 230 
-                     L 345 280 
-                     L 340 330 
-                     L 335 380 
-                     L 330 420 
-                     L 320 460 
-                     L 300 500 
-                     L 270 530 
-                     L 230 550 
-                     L 180 560 
-                     L 130 555 
-                     L 90 540 
-                     L 60 510 
-                     L 45 470 
-                     L 40 430 
-                     L 38 380 
-                     L 40 330 
-                     L 42 280 
-                     L 45 230 
-                     L 46 180 
-                     L 47 130 
-                     L 48 90 
+                  d="M 60 80 
+                     C 70 75, 90 70, 120 68
+                     C 150 66, 180 65, 220 64
+                     C 260 63, 300 64, 340 66
+                     C 380 68, 410 72, 430 80
+                     C 440 88, 445 100, 445 115
+                     C 445 130, 442 150, 438 175
+                     C 434 200, 428 230, 420 260
+                     C 412 290, 402 320, 390 350
+                     C 378 380, 364 410, 348 440
+                     C 332 470, 314 500, 294 525
+                     C 274 550, 252 570, 228 585
+                     C 204 600, 178 610, 150 615
+                     C 122 620, 92 618, 65 610
+                     C 38 602, 20 588, 15 570
+                     C 10 552, 12 530, 18 510
+                     C 24 490, 32 470, 40 450
+                     C 48 430, 52 410, 52 390
+                     C 52 370, 50 350, 48 330
+                     C 46 310, 48 290, 52 270
+                     C 56 250, 58 230, 58 210
+                     C 58 190, 56 170, 56 150
+                     C 56 130, 58 110, 60 90
                      Z"
                   fill="url(#omanGradient)"
-                  stroke="rgba(59, 130, 246, 0.5)"
-                  strokeWidth="2.5"
+                  stroke="rgba(59, 130, 246, 0.6)"
+                  strokeWidth="3"
                 />
                 
-                {/* Eastern coastline detail (more curved) */}
+                {/* Eastern coastline - curved Arabian Sea coast */}
                 <path
-                  d="M 320 35 
-                     L 340 40 
-                     L 355 55 
-                     L 360 75 
-                     L 365 100 
-                     L 363 130 
-                     L 360 160 
-                     L 358 200 
-                     L 355 240 
-                     L 352 280 
-                     L 348 320 
-                     L 345 360 
-                     L 340 400 
-                     L 335 440 
-                     L 330 480 
-                     L 320 520 
-                     L 300 550"
+                  d="M 430 80
+                     Q 435 90, 438 105
+                     Q 440 120, 442 140
+                     Q 443 160, 440 185
+                     Q 437 210, 432 240
+                     Q 427 270, 420 300
+                     Q 413 330, 404 360
+                     Q 395 390, 384 420
+                     Q 373 450, 360 480
+                     Q 347 510, 332 540
+                     Q 317 570, 300 595"
                   fill="none"
                   stroke="url(#omanCoastline)"
-                  strokeWidth="2"
+                  strokeWidth="3"
                   strokeLinecap="round"
                 />
                 
-                {/* Northern region (Musandam area) */}
+                {/* Western border - interior border */}
                 <path
-                  d="M 50 50 
-                     L 45 35 
-                     L 50 25 
-                     L 60 20 
-                     L 75 18 
-                     L 90 20 
-                     L 100 25 
-                     L 105 35 
-                     L 100 45 
-                     L 90 48 
-                     L 75 50 
-                     L 60 50 
-                     Z"
-                  fill="rgba(59, 130, 246, 0.25)"
-                  stroke="rgba(59, 130, 246, 0.6)"
-                  strokeWidth="2"
-                />
-                
-                {/* Southern region detail */}
-                <path
-                  d="M 180 560 
-                     L 200 565 
-                     L 220 568 
-                     L 240 565 
-                     L 260 560 
-                     L 280 550 
-                     L 295 535 
-                     L 300 520"
+                  d="M 60 80
+                     Q 55 100, 52 125
+                     Q 50 150, 48 175
+                     Q 46 200, 45 225
+                     Q 44 250, 44 275
+                     Q 44 300, 45 325
+                     Q 46 350, 48 375
+                     Q 50 400, 52 425
+                     Q 54 450, 58 475
+                     Q 62 500, 68 525
+                     Q 74 550, 82 570
+                     Q 90 590, 100 605"
                   fill="none"
                   stroke="rgba(59, 130, 246, 0.4)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+                
+                {/* Northern Musandam Peninsula - separated region */}
+                <path
+                  d="M 60 80
+                     L 55 60
+                     L 58 45
+                     L 65 35
+                     L 75 30
+                     L 88 28
+                     L 100 30
+                     L 110 35
+                     L 118 42
+                     L 120 50
+                     L 118 58
+                     L 112 65
+                     L 102 70
+                     L 90 72
+                     L 78 72
+                     L 68 70
+                     L 62 65
+                     Z"
+                  fill="rgba(59, 130, 246, 0.3)"
+                  stroke="rgba(59, 130, 246, 0.7)"
+                  strokeWidth="2.5"
+                />
+                
+                {/* Connection line to Musandam (optional visual) */}
+                <path
+                  d="M 60 80 L 65 70"
+                  fill="none"
+                  stroke="rgba(59, 130, 246, 0.3)"
                   strokeWidth="2"
+                  strokeDasharray="3,3"
+                />
+                
+                {/* Southern Dhofar region - distinctive curved shape */}
+                <path
+                  d="M 150 615
+                     Q 140 625, 130 630
+                     Q 120 635, 110 638
+                     Q 100 640, 90 640
+                     Q 80 640, 72 635
+                     Q 64 630, 58 622
+                     Q 52 614, 50 605
+                     Q 48 596, 50 588
+                     Q 52 580, 58 575
+                     Q 64 570, 72 568
+                     Q 80 566, 90 567
+                     Q 100 568, 110 572
+                     Q 120 576, 130 582
+                     Q 140 588, 150 595
+                     Z"
+                  fill="rgba(99, 102, 241, 0.25)"
+                  stroke="rgba(99, 102, 241, 0.6)"
+                  strokeWidth="2.5"
+                />
+                
+                {/* Interior mountain ranges (visual detail) */}
+                <path
+                  d="M 120 200
+                     Q 140 195, 160 200
+                     Q 180 205, 200 210
+                     Q 220 215, 240 220
+                     Q 260 225, 280 230"
+                  fill="none"
+                  stroke="rgba(59, 130, 246, 0.2)"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+                
+                <path
+                  d="M 100 400
+                     Q 130 395, 160 400
+                     Q 190 405, 220 410
+                     Q 250 415, 280 420"
+                  fill="none"
+                  stroke="rgba(59, 130, 246, 0.2)"
+                  strokeWidth="1.5"
                   strokeLinecap="round"
                 />
               </svg>
