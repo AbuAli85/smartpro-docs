@@ -1,10 +1,22 @@
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, Shield, BarChart3, Users, Lock, TrendingUp, Clock, Zap } from "lucide-react";
 import { Link } from "wouter";
 import Breadcrumb from "@/components/Breadcrumb";
+import { setSEOTags } from "@/lib/seoUtils";
 
 export default function ClientsPage() {
+  useEffect(() => {
+    setSEOTags({
+      title: "For Clients | TheSmartPro.io - Hire Verified Professionals",
+      description: "Access verified professionals with enterprise-grade security. Find, hire, and manage professional services with confidence.",
+      keywords: "hire professionals, find talent, enterprise services, professional marketplace",
+      type: "website",
+      url: "https://thesmartpro.io/clients",
+    });
+  }, []);
+
   return (
     <>
       <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "For Clients" }, { label: "Find Professionals" }]} />

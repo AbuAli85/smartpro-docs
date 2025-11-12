@@ -1,9 +1,20 @@
+import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, X } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
+import { setSEOTags } from "@/lib/seoUtils";
 
 export default function Comparison() {
+  useEffect(() => {
+    setSEOTags({
+      title: "Compare TheSmartPro.io | Platform Comparison",
+      description: "See how TheSmartPro.io compares to Upwork, Fiverr, and Freelancer. Enterprise-grade features for serious professionals.",
+      keywords: "platform comparison, thesmartpro vs upwork, thesmartpro vs fiverr, professional services comparison",
+      type: "website",
+      url: "https://thesmartpro.io/comparison",
+    });
+  }, []);
   const features = [
     {
       category: "Contract Management",

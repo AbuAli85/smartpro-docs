@@ -1,10 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, DollarSign, Clock, Users } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
+import { setSEOTags } from "@/lib/seoUtils";
 
 export default function ROICalculator() {
+  useEffect(() => {
+    setSEOTags({
+      title: "ROI Calculator | TheSmartPro.io - Calculate Your Savings",
+      description: "Calculate your organization's ROI with TheSmartPro's professional services platform. Discover potential savings and efficiency gains.",
+      keywords: "roi calculator, cost savings, professional services roi, efficiency calculator",
+      type: "website",
+      url: "https://thesmartpro.io/roi-calculator",
+    });
+  }, []);
   const [employees, setEmployees] = useState(10);
   const [avgSalary, setAvgSalary] = useState(75000);
   const [utilizationRate, setUtilizationRate] = useState(70);

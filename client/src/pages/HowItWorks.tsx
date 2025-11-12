@@ -1,9 +1,21 @@
+import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, ArrowRight, Clock, DollarSign, FileText, MessageSquare, BarChart3, Shield } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
+import { setSEOTags } from "@/lib/seoUtils";
 
 export default function HowItWorks() {
+  useEffect(() => {
+    setSEOTags({
+      title: "How It Works | TheSmartPro.io - Platform Guide",
+      description: "Learn how TheSmartPro.io works for both service providers and clients. Simple workflows for secure, professional collaborations.",
+      keywords: "how it works, platform guide, service provider workflow, client workflow",
+      type: "website",
+      url: "https://thesmartpro.io/how-it-works",
+    });
+  }, []);
+
   return (
     <>
       <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "How It Works" }]} />

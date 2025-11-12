@@ -1,9 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CheckCircle2, DollarSign, TrendingUp, Clock, Shield, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Breadcrumb from "@/components/Breadcrumb";
+import { setSEOTags } from "@/lib/seoUtils";
 
 export default function ProviderOnboarding() {
+  useEffect(() => {
+    setSEOTags({
+      title: "Provider Onboarding | TheSmartPro.io - Start Earning Today",
+      description: "Join TheSmartPro as a service provider. Calculate your earnings potential and start growing your professional services business.",
+      keywords: "provider onboarding, become a provider, earn money, professional services provider",
+      type: "website",
+      url: "https://thesmartpro.io/get-started-providers",
+    });
+  }, []);
   const [monthlyRate, setMonthlyRate] = useState(5000);
   const [utilizationRate, setUtilizationRate] = useState(75);
   const [yearsExperience, setYearsExperience] = useState(5);
