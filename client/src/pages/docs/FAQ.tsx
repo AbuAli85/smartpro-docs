@@ -185,7 +185,7 @@ export default function FAQ() {
   let globalIndex = 0;
 
   return (
-    <DocsLayout pageTitle="Frequently Asked Questions" breadcrumbs={breadcrumbs}>
+    <DocsLayout pageTitle="Frequently Asked Questions" breadcrumbs={breadcrumbs} githubPath="client/src/pages/docs/FAQ.tsx">
       <div className="space-y-12">
         {/* Introduction */}
         <section>

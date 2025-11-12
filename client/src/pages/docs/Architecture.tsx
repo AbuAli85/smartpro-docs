@@ -19,7 +19,7 @@ export default function Architecture() {
   ];
 
   return (
-    <DocsLayout pageTitle="Technical Architecture" breadcrumbs={breadcrumbs}>
+    <DocsLayout pageTitle="Technical Architecture" breadcrumbs={breadcrumbs} githubPath="client/src/pages/docs/Architecture.tsx">
       <div className="space-y-12">
         {/* Introduction */}
         <section>

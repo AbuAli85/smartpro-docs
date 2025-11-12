@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Menu, X, ChevronRight, Search } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { Input } from '@/components/ui/input';
+import FeedbackWidget from '@/components/FeedbackWidget';
 
 interface NavItem {
   title: string;
@@ -61,9 +62,10 @@ interface DocsLayoutProps {
   pageTitle: string;
   breadcrumbs?: Array<{ label: string; href: string }>;
   lastUpdated?: string;
+  githubPath?: string;
 }
 
-export default function DocsLayout({ children, pageTitle, breadcrumbs, lastUpdated = 'November 2025' }: DocsLayoutProps) {
+export default function DocsLayout({ children, pageTitle, breadcrumbs, lastUpdated = 'November 2025', githubPath }: DocsLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [location] = useLocation();
@@ -211,16 +213,32 @@ export default function DocsLayout({ children, pageTitle, breadcrumbs, lastUpdat
             <div className="container max-w-4xl">
               {children}
               
+              {/* Feedback Widget */}
+              <FeedbackWidget pagePath={location} />
+              
               {/* Last Updated Footer */}
               <div className="mt-16 pt-8 border-t border-gray-200">
-                <div className="flex items-center justify-between text-sm text-gray-500">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-sm text-gray-500">
                   <div className="flex items-center gap-2">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span>Last updated: <strong className="text-gray-700">{lastUpdated}</strong></span>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    {githubPath && (
+                      <>
+                        <a 
+                          href={`https://github.com/AbuAli85/smartpro-docs/edit/main/${githubPath}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="hover:text-blue-600 transition-colors"
+                        >
+                          Edit this page
+                        </a>
+                        <span className="text-gray-300">•</span>
+                      </>
+                    )}
                     <a href="https://github.com/AbuAli85/smartpro-docs" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors">
                       View on GitHub
                     </a>

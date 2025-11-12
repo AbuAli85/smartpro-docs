@@ -142,7 +142,7 @@ function App() {
   return (
     <ErrorBoundary>
       <NotificationProvider>
-        <ThemeProvider defaultTheme="light">
+        <ThemeProvider defaultTheme="light" switchable={true}>
           <TooltipProvider>
             <Router />
             <ToastContainer />

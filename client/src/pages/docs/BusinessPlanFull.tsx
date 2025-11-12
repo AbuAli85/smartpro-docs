@@ -37,7 +37,7 @@ export default function BusinessPlanFull() {
   ];
 
   return (
-    <DocsLayout pageTitle="SmartPRO Complete Business Plan" breadcrumbs={breadcrumbs}>
+    <DocsLayout pageTitle="SmartPRO Complete Business Plan" breadcrumbs={breadcrumbs} githubPath="client/src/pages/docs/BusinessPlanFull.tsx">
       <div className="space-y-12">
         {/* Introduction */}
         <section>

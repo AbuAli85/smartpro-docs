@@ -22,7 +22,7 @@ export default function GettingStarted() {
   ];
 
   return (
-    <DocsLayout pageTitle="Getting Started" breadcrumbs={breadcrumbs}>
+    <DocsLayout pageTitle="Getting Started" breadcrumbs={breadcrumbs} githubPath="client/src/pages/docs/GettingStarted.tsx">
       <div className="space-y-12">
         {/* Introduction */}
         <section>

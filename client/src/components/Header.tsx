@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Search from "@/components/Search";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const { theme, toggleTheme, switchable } = useTheme();
 
   const navItems = [
     { label: "Home", href: "/" },
@@ -49,7 +51,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm" role="banner">
+    <header className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm" role="banner">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -94,8 +96,22 @@ export default function Header() {
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
             <Search />
+            {switchable && toggleTheme && (
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-md text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+                aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              >
+                {theme === "dark" ? (
+                  <Sun className="w-5 h-5" />
+                ) : (
+                  <Moon className="w-5 h-5" />
+                )}
+              </button>
+            )}
             <Link href="/get-started-providers">
-              <div className="text-sm font-medium text-slate-700 hover:text-slate-900 cursor-pointer">
+              <div className="text-sm font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 cursor-pointer">
                 For Providers
               </div>
             </Link>
@@ -171,10 +187,27 @@ export default function Header() {
                 )}
               </div>
             ))}
-            <div className="pt-4 border-t border-slate-200 space-y-2">
+            <div className="pt-4 border-t border-slate-200 dark:border-slate-700 space-y-2">
+              {switchable && toggleTheme && (
+                <button
+                  onClick={() => {
+                    toggleTheme();
+                    setIsOpen(false);
+                  }}
+                  className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md"
+                  aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                >
+                  <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+                  {theme === "dark" ? (
+                    <Sun className="w-4 h-4" />
+                  ) : (
+                    <Moon className="w-4 h-4" />
+                  )}
+                </button>
+              )}
               <Link href="/get-started-providers">
                 <div
-                  className="block px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-md cursor-pointer"
+                  className="block px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md cursor-pointer"
                   onClick={() => setIsOpen(false)}
                 >
                   For Providers
@@ -182,7 +215,7 @@ export default function Header() {
               </Link>
               <Link href="/contact">
                 <div
-                  className="block px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-md cursor-pointer"
+                  className="block px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md cursor-pointer"
                   onClick={() => setIsOpen(false)}
                 >
                   Contact

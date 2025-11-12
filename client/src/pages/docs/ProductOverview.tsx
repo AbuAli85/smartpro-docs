@@ -21,7 +21,7 @@ export default function ProductOverview() {
   ];
 
   return (
-    <DocsLayout pageTitle="Product Overview" breadcrumbs={breadcrumbs}>
+    <DocsLayout pageTitle="Product Overview" breadcrumbs={breadcrumbs} githubPath="client/src/pages/docs/ProductOverview.tsx">
       <div className="space-y-12">
         {/* Introduction */}
         <section>

@@ -100,7 +100,7 @@ export default function Features() {
   ];
 
   return (
-    <DocsLayout pageTitle="Features" breadcrumbs={breadcrumbs}>
+    <DocsLayout pageTitle="Features" breadcrumbs={breadcrumbs} githubPath="client/src/pages/docs/Features.tsx">
       <div className="space-y-12">
         {/* Introduction */}
         <section>

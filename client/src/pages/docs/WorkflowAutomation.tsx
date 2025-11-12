@@ -137,7 +137,7 @@ export default function WorkflowAutomation() {
   ];
 
   return (
-    <DocsLayout pageTitle="Workflow Automation" breadcrumbs={breadcrumbs}>
+    <DocsLayout pageTitle="Workflow Automation" breadcrumbs={breadcrumbs} githubPath="client/src/pages/docs/WorkflowAutomation.tsx">
       <div className="space-y-12">
         {/* Introduction */}
         <section>

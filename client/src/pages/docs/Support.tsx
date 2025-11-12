@@ -118,7 +118,7 @@ export default function Support() {
   ];
 
   return (
-    <DocsLayout pageTitle="Support" breadcrumbs={breadcrumbs}>
+    <DocsLayout pageTitle="Support" breadcrumbs={breadcrumbs} githubPath="client/src/pages/docs/Support.tsx">
       <div className="space-y-12">
         {/* Introduction */}
         <section>

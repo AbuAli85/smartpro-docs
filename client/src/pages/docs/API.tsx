@@ -22,7 +22,7 @@ export default function API() {
   ];
 
   return (
-    <DocsLayout pageTitle="API Documentation" breadcrumbs={breadcrumbs}>
+    <DocsLayout pageTitle="API Documentation" breadcrumbs={breadcrumbs} githubPath="client/src/pages/docs/API.tsx">
       <div className="space-y-12">
         {/* Introduction */}
         <section>

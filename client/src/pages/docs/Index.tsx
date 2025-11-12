@@ -70,7 +70,7 @@ export default function DocsIndex() {
   ];
 
   return (
-    <DocsLayout pageTitle="Documentation Hub" breadcrumbs={[{ label: 'Documentation', href: '/docs' }]}>
+    <DocsLayout pageTitle="Documentation Hub" breadcrumbs={[{ label: 'Documentation', href: '/docs' }]} githubPath="client/src/pages/docs/Index.tsx">
       <div className="space-y-12">
         {/* Welcome Section */}
         <section>

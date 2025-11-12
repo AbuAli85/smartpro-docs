@@ -21,7 +21,7 @@ export default function BusinessPlan() {
   ];
 
   return (
-    <DocsLayout pageTitle="Business Plan & Strategy" breadcrumbs={breadcrumbs}>
+    <DocsLayout pageTitle="Business Plan & Strategy" breadcrumbs={breadcrumbs} githubPath="client/src/pages/docs/BusinessPlan.tsx">
       <div className="space-y-12">
         {/* Quick Link to Full Plan */}
         <section>
