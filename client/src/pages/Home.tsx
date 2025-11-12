@@ -4,6 +4,9 @@ import { Link } from "wouter";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PlatformScreenshots from "@/components/PlatformScreenshots";
+import CustomerLogos from "@/components/CustomerLogos";
+import NetworkStats from "@/components/NetworkStats";
+import TestimonialVideos from "@/components/TestimonialVideos";
 import { useEffect } from "react";
 import { setSEOTags } from "@/lib/seoUtils";
 import { generateOrganizationSchema, generateSoftwareSchema, insertMultipleSchemas } from "@/lib/schemaUtils";
@@ -417,6 +420,15 @@ export default function HomeNew() {
 
       {/* Platform Screenshots */}
       <PlatformScreenshots />
+
+      {/* Customer Logos */}
+      <CustomerLogos />
+
+      {/* Video Testimonials */}
+      <TestimonialVideos />
+
+      {/* Network Stats */}
+      <NetworkStats />
 
       {/* Testimonials */}
       <section className="py-20 bg-slate-50">

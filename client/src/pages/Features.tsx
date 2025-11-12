@@ -4,6 +4,8 @@ import { CheckCircle2, BarChart3, Users, Zap, Shield, Smartphone } from "lucide-
 import Breadcrumb from "@/components/Breadcrumb";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import IntegrationHub from "@/components/IntegrationHub";
+import OmanMap from "@/components/OmanMap";
 import { useEffect } from "react";
 import { setSEOTags } from "@/lib/seoUtils";
 
@@ -267,6 +269,12 @@ export default function Features() {
           </div>
         </div>
       </section>
+
+      {/* Integration Hub */}
+      <IntegrationHub />
+
+      {/* Oman Network Map */}
+      <OmanMap />
 
       {/* CTA Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Code, Zap, Link2, BookOpen, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -44,6 +45,12 @@ const integrations: Integration[] = [
 const categories = ['All', 'CRM', 'Communication', 'Email', 'Marketing', 'Payments', 'Storage', 'Automation'];
 
 export default function IntegrationHub() {
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+
+  const filteredIntegrations = selectedCategory === 'All'
+    ? integrations
+    : integrations.filter(integration => integration.category === selectedCategory);
+
   return (
     <section id="integrations" className="py-20 bg-gradient-to-b from-gray-50 to-white">
       <div className="container">
@@ -66,9 +73,10 @@ export default function IntegrationHub() {
           {categories.map((category) => (
             <button
               key={category}
+              onClick={() => setSelectedCategory(category)}
               className={`px-6 py-2 rounded-full font-medium transition-all ${
-                category === 'All'
-                  ? 'bg-blue-600 text-white'
+                selectedCategory === category
+                  ? 'bg-blue-600 text-white shadow-lg'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
@@ -79,7 +87,7 @@ export default function IntegrationHub() {
 
         {/* Integrations Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          {integrations.map((integration) => (
+          {filteredIntegrations.map((integration) => (
             <div
               key={integration.name}
               className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-shadow group cursor-pointer"
@@ -140,9 +148,11 @@ export default function IntegrationHub() {
                 </div>
               </div>
             </div>
-            <Button className="mt-8 bg-blue-600 hover:bg-blue-700 text-white">
-              View API Documentation
-              <ArrowRight className="ml-2 w-4 h-4" />
+            <Button className="mt-8 bg-blue-600 hover:bg-blue-700 text-white" asChild>
+              <a href="/docs/api">
+                View API Documentation
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </a>
             </Button>
           </div>
 

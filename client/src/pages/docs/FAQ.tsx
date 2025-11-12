@@ -40,6 +40,18 @@ export default function FAQ() {
           question: 'How is TheSmartPro.io different from competitors?',
           answer: 'Unlike competitors that focus on single functions, TheSmartPro.io provides 5 critical business functions in one platform. This eliminates the need for multiple subscriptions, reduces integration complexity, and provides a unified view of your entire business. We also offer superior customer support and a more intuitive user experience.',
         },
+        {
+          question: 'Where is TheSmartPro.io based?',
+          answer: 'TheSmartPro.io is based in Muscat, Oman, and serves businesses across the Middle East and globally. We have a strong presence in Oman with 10,000+ verified service providers and growing.',
+        },
+        {
+          question: 'What industries do you serve?',
+          answer: 'We serve a wide range of industries including professional services, consulting, IT services, healthcare, education, legal services, marketing agencies, and more. Our platform is flexible enough to adapt to any service-based business model.',
+        },
+        {
+          question: 'How many users are on the platform?',
+          answer: 'TheSmartPro.io has over 10,000 verified service providers and continues to grow. We process millions in transactions and serve hundreds of enterprise clients across various industries.',
+        },
       ],
     },
     {
@@ -60,6 +72,18 @@ export default function FAQ() {
         {
           question: 'Do you offer discounts for annual billing?',
           answer: 'Yes! We offer a 20% discount when you pay annually instead of monthly. For example, the Professional plan costs $299/month or $2,870/year (equivalent to $239/month).',
+        },
+        {
+          question: 'Are there any setup fees?',
+          answer: 'No, there are no setup fees for any of our plans. You only pay the monthly or annual subscription fee. Enterprise customers may have custom implementation services available at an additional cost.',
+        },
+        {
+          question: 'What payment methods do you accept?',
+          answer: 'We accept all major credit cards (Visa, Mastercard, American Express), bank transfers, and for enterprise customers, we can arrange invoicing with net payment terms.',
+        },
+        {
+          question: 'What happens if I exceed my plan limits?',
+          answer: 'If you exceed your plan limits (such as number of users or storage), we\'ll notify you and you can either upgrade your plan or purchase additional capacity. We never cut off service without warning.',
         },
       ],
     },
@@ -123,6 +147,14 @@ export default function FAQ() {
         {
           question: 'What if I need help?',
           answer: 'We offer multiple support channels including email support, live chat, phone support (Professional and Enterprise), and a comprehensive knowledge base. Enterprise customers also get a dedicated account manager.',
+        },
+        {
+          question: 'How do I contact support?',
+          answer: 'You can reach our support team via email at chairman@falconeyegroup.com, phone at +968 9515 3930, or through the in-app live chat. Response times vary by plan: Starter (24-48 hours), Professional (2-4 hours), Enterprise (1 hour or less).',
+        },
+        {
+          question: 'Do you offer onboarding assistance?',
+          answer: 'Yes! All plans include access to our onboarding resources. Professional and Enterprise plans include dedicated onboarding assistance to help you get set up quickly and efficiently.',
         },
       ],
     },
