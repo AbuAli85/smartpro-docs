@@ -4,6 +4,12 @@ import { Button } from '@/components/ui/button';
 import { useEffect } from 'react';
 import { setSEOTags } from '@/lib/seoUtils';
 import CopyCodeButton from '@/components/CopyCodeButton';
+import {
+  apiEndpoints,
+  apiRateLimits,
+  apiErrorCodes,
+  apiBestPractices,
+} from '@/data/apiDocs';
 
 export default function API() {
   useEffect(() => {
@@ -98,63 +104,14 @@ export default function API() {
         <section>
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Common Endpoints</h2>
           <div className="space-y-6">
-            {[
-              {
-                method: 'GET',
-                endpoint: '/projects',
-                description: 'List all projects',
-                color: 'bg-green-100 text-green-800',
-              },
-              {
-                method: 'POST',
-                endpoint: '/projects',
-                description: 'Create a new project',
-                color: 'bg-blue-100 text-blue-800',
-              },
-              {
-                method: 'GET',
-                endpoint: '/projects/:id',
-                description: 'Get a specific project',
-                color: 'bg-green-100 text-green-800',
-              },
-              {
-                method: 'PUT',
-                endpoint: '/projects/:id',
-                description: 'Update a project',
-                color: 'bg-yellow-100 text-yellow-800',
-              },
-              {
-                method: 'DELETE',
-                endpoint: '/projects/:id',
-                description: 'Delete a project',
-                color: 'bg-red-100 text-red-800',
-              },
-              {
-                method: 'GET',
-                endpoint: '/clients',
-                description: 'List all clients',
-                color: 'bg-green-100 text-green-800',
-              },
-              {
-                method: 'POST',
-                endpoint: '/clients',
-                description: 'Create a new client',
-                color: 'bg-blue-100 text-blue-800',
-              },
-              {
-                method: 'GET',
-                endpoint: '/employees',
-                description: 'List all employees',
-                color: 'bg-green-100 text-green-800',
-              },
-            ].map((endpoint, index) => (
+            {apiEndpoints.map((endpoint, index) => (
               <div key={index} className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-start gap-4">
                   <span className={`px-3 py-1 rounded-md text-xs font-bold ${endpoint.color}`}>
                     {endpoint.method}
                   </span>
                   <div className="flex-1">
-                    <code className="text-sm font-mono text-gray-900">{endpoint.endpoint}</code>
+                    <code className="text-sm font-mono text-gray-900">{endpoint.path}</code>
                     <p className="text-sm text-gray-600 mt-2">{endpoint.description}</p>
                   </div>
                 </div>
@@ -231,18 +188,14 @@ export default function API() {
               API requests are rate-limited to ensure fair usage and platform stability:
             </p>
             <ul className="space-y-2">
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-green-600" />
-                <span className="text-gray-700"><strong>Standard Plan:</strong> 1,000 requests per hour</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-green-600" />
-                <span className="text-gray-700"><strong>Professional Plan:</strong> 5,000 requests per hour</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-green-600" />
-                <span className="text-gray-700"><strong>Enterprise Plan:</strong> Custom limits available</span>
-              </li>
+              {apiRateLimits.map((tier) => (
+                <li key={tier.plan} className="flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <span className="text-gray-700">
+                    <strong>{tier.plan}:</strong> {tier.limit}
+                  </span>
+                </li>
+              ))}
             </ul>
           </div>
         </section>
@@ -259,19 +212,10 @@ export default function API() {
                 </tr>
               </thead>
               <tbody>
-                {[
-                  { code: '200', desc: 'OK - Request succeeded' },
-                  { code: '201', desc: 'Created - Resource created successfully' },
-                  { code: '400', desc: 'Bad Request - Invalid request parameters' },
-                  { code: '401', desc: 'Unauthorized - Invalid or missing API key' },
-                  { code: '403', desc: 'Forbidden - Insufficient permissions' },
-                  { code: '404', desc: 'Not Found - Resource not found' },
-                  { code: '429', desc: 'Too Many Requests - Rate limit exceeded' },
-                  { code: '500', desc: 'Internal Server Error - Server error occurred' },
-                ].map((error, index) => (
-                  <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
+                {apiErrorCodes.map((error) => (
+                  <tr key={error.code} className="border-b border-gray-200 hover:bg-gray-50">
                     <td className="px-6 py-4 font-mono text-sm text-gray-900 font-bold">{error.code}</td>
-                    <td className="px-6 py-4 text-gray-700">{error.desc}</td>
+                    <td className="px-6 py-4 text-gray-700">{error.description}</td>
                   </tr>
                 ))}
               </tbody>
@@ -283,32 +227,7 @@ export default function API() {
         <section>
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Best Practices</h2>
           <div className="space-y-4">
-            {[
-              {
-                title: 'Use HTTPS',
-                description: 'Always use HTTPS for API requests to ensure data security.',
-              },
-              {
-                title: 'Handle Errors Gracefully',
-                description: 'Implement proper error handling and retry logic for failed requests.',
-              },
-              {
-                title: 'Cache Responses',
-                description: 'Cache API responses when appropriate to reduce unnecessary requests.',
-              },
-              {
-                title: 'Use Webhooks',
-                description: 'Subscribe to webhooks for real-time updates instead of polling.',
-              },
-              {
-                title: 'Paginate Results',
-                description: 'Use pagination for large result sets to improve performance.',
-              },
-              {
-                title: 'Keep API Keys Secure',
-                description: 'Never expose API keys in client-side code or public repositories.',
-              },
-            ].map((practice, index) => (
+            {apiBestPractices.map((practice, index) => (
               <div key={index} className="bg-white rounded-lg border border-gray-200 p-6">
                 <h3 className="font-bold text-gray-900 mb-2">{practice.title}</h3>
                 <p className="text-gray-600 text-sm">{practice.description}</p>
