@@ -1,5 +1,5 @@
 import DocsLayout from '@/components/DocsLayout';
-import { Users, BarChart3, Briefcase, BookOpen, FileText, Zap } from 'lucide-react';
+import { featureList, advancedFeatures } from '@/data/features';
 import { useEffect } from 'react';
 import { setSEOTags } from '@/lib/seoUtils';
 
@@ -18,87 +18,6 @@ export default function Features() {
     { label: 'Features', href: '/docs/features' },
   ];
 
-  const features = [
-    {
-      icon: <Users className="w-8 h-8" />,
-      title: 'Employee Management',
-      description: 'Complete workforce management system',
-      capabilities: [
-        'Employee lifecycle management',
-        'Payroll integration',
-        'Leave management',
-        'Performance tracking',
-        'Organizational hierarchy',
-        'Compensation management',
-      ],
-    },
-    {
-      icon: <BarChart3 className="w-8 h-8" />,
-      title: 'CRM & Client Management',
-      description: 'Comprehensive customer relationship management',
-      capabilities: [
-        'Contact management',
-        'Sales pipeline tracking',
-        'Email integration',
-        'Activity tracking',
-        'Deal forecasting',
-        'Customer analytics',
-      ],
-    },
-    {
-      icon: <Briefcase className="w-8 h-8" />,
-      title: 'Project Management',
-      description: 'Advanced project planning and execution',
-      capabilities: [
-        'Multiple methodologies (Waterfall, Agile)',
-        'Task management',
-        'Resource allocation',
-        'Time tracking',
-        'Gantt charts & Kanban boards',
-        'Collaboration tools',
-      ],
-    },
-    {
-      icon: <BookOpen className="w-8 h-8" />,
-      title: 'E-Learning Platform',
-      description: 'Comprehensive training and development',
-      capabilities: [
-        'Course authoring',
-        'Progress tracking',
-        'Assessments & quizzes',
-        'Certification management',
-        'Competency mapping',
-        'Learning analytics',
-      ],
-    },
-    {
-      icon: <FileText className="w-8 h-8" />,
-      title: 'Contract Management',
-      description: 'Complete contract lifecycle management',
-      capabilities: [
-        'Centralized repository',
-        'Automated renewal management',
-        'Obligation tracking',
-        'E-signature integration',
-        'Version control',
-        'Compliance tracking',
-      ],
-    },
-    {
-      icon: <Zap className="w-8 h-8" />,
-      title: 'Workflow Automation',
-      description: 'No-code automation for business processes',
-      capabilities: [
-        'Visual workflow builder',
-        'Conditional logic',
-        'Integration capabilities',
-        'Approval workflows',
-        'Notifications & alerts',
-        'Process templates',
-      ],
-    },
-  ];
-
   return (
     <DocsLayout pageTitle="Features" breadcrumbs={breadcrumbs} githubPath="client/src/pages/docs/Features.tsx">
       <div className="space-y-12">
@@ -112,7 +31,7 @@ export default function Features() {
         {/* Features Grid */}
         <section>
           <div className="grid md:grid-cols-2 gap-8">
-            {features.map((feature, index) => (
+            {featureList.map((feature, index) => (
               <div key={index} className="bg-white rounded-lg border border-gray-200 p-8 hover:shadow-lg transition-shadow">
                 <div className="w-12 h-12 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center mb-4">
                   {feature.icon}
@@ -139,32 +58,7 @@ export default function Features() {
         <section>
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Advanced Features</h2>
           <div className="space-y-6">
-            {[
-              {
-                title: 'Real-Time Notifications',
-                description: 'Stay informed with real-time notifications across all business functions. WebSocket-based delivery ensures instant updates.',
-              },
-              {
-                title: 'Advanced Analytics',
-                description: 'Comprehensive dashboards and reports provide insights into business performance. Custom reports enable data-driven decision making.',
-              },
-              {
-                title: 'Multi-Tenant Architecture',
-                description: 'Enterprise-grade multi-tenant architecture enables secure data isolation while maintaining operational efficiency.',
-              },
-              {
-                title: 'API & Integrations',
-                description: 'Comprehensive REST API enables custom integrations. Pre-built integrations with 50+ popular business applications.',
-              },
-              {
-                title: 'Security & Compliance',
-                description: 'Enterprise-grade security with SOC 2, ISO 27001, GDPR, HIPAA, and PCI DSS compliance certifications.',
-              },
-              {
-                title: 'Mobile Applications',
-                description: 'Native mobile applications for iOS and Android enable access from anywhere, supporting modern distributed work.',
-              },
-            ].map((feature, index) => (
+            {advancedFeatures.map((feature, index) => (
               <div key={index} className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                 <h3 className="font-bold text-gray-900 mb-2">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>

@@ -1,9 +1,10 @@
 import DocsLayout from '@/components/DocsLayout';
-import { CheckCircle, Zap, Shield, TrendingUp } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
 import { useEffect } from 'react';
 import { setSEOTags } from '@/lib/seoUtils';
+import { coreFeatures, serviceOfferings } from '@/data/productOverview';
 
 export default function ProductOverview() {
   useEffect(() => {
@@ -45,32 +46,7 @@ export default function ProductOverview() {
         <section>
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Core Features & Capabilities</h2>
           <div className="space-y-6">
-            {[
-              {
-                icon: <Zap className="w-6 h-6" />,
-                title: 'Employee Management',
-                description: 'Comprehensive workforce management from recruitment through separation. Includes payroll integration, leave management, performance tracking, and organizational hierarchy management.',
-                features: ['Recruitment & Onboarding', 'Payroll Integration', 'Leave Management', 'Performance Reviews'],
-              },
-              {
-                icon: <TrendingUp className="w-6 h-6" />,
-                title: 'CRM & Client Management',
-                description: 'Complete customer relationship management with contact management, sales pipeline tracking, email integration, and activity management.',
-                features: ['Contact Management', 'Sales Pipeline', 'Email Integration', 'Deal Forecasting'],
-              },
-              {
-                icon: <CheckCircle className="w-6 h-6" />,
-                title: 'Project Management',
-                description: 'Comprehensive project planning and execution with support for Waterfall, Agile, and hybrid methodologies. Includes task management, resource allocation, and collaboration tools.',
-                features: ['Task Management', 'Gantt Charts', 'Kanban Boards', 'Time Tracking'],
-              },
-              {
-                icon: <Shield className="w-6 h-6" />,
-                title: 'Contract Management',
-                description: 'Complete contract lifecycle management with centralized repository, automated renewal management, obligation tracking, and e-signature integration.',
-                features: ['Contract Repository', 'Renewal Alerts', 'E-Signatures', 'Compliance Tracking'],
-              },
-            ].map((feature, index) => (
+            {coreFeatures.map((feature, index) => (
               <div key={index} className="flex gap-4 p-6 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
                 <div className="w-12 h-12 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
                   {feature.icon}
@@ -117,27 +93,7 @@ export default function ProductOverview() {
         <section>
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Service Offerings</h2>
           <div className="space-y-4">
-            {[
-              {
-                name: 'Starter Plan',
-                price: '$99',
-                users: 'Up to 10 users',
-                features: ['Core modules', 'Basic analytics', 'Community support'],
-              },
-              {
-                name: 'Professional Plan',
-                price: '$299',
-                users: 'Up to 100 users',
-                features: ['All core modules', 'Standard analytics', 'Email support', 'Pre-built integrations'],
-                highlighted: true,
-              },
-              {
-                name: 'Enterprise Plan',
-                price: '$999',
-                users: 'Unlimited users',
-                features: ['All features', 'Advanced analytics', '24/7 support', 'Custom integrations', 'Dedicated account manager'],
-              },
-            ].map((plan, index) => (
+            {serviceOfferings.map((plan, index) => (
               <div
                 key={index}
                 className={`p-6 rounded-lg border-2 transition-all ${
