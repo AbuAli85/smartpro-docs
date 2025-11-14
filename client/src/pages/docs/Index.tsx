@@ -52,7 +52,7 @@ export default function DocsIndex() {
       title: 'Security & Policies',
       description: 'Security features and legal information',
       links: [
-        { label: 'Security Overview', href: '/docs/architecture#security-architecture' },
+        { label: 'Security & Compliance', href: '/docs/security' },
         { label: 'Privacy Policy', href: '/privacy' },
         { label: 'Terms of Service', href: '/terms' },
       ],
@@ -235,6 +235,7 @@ export default function DocsIndex() {
               { label: 'Getting Started', href: '/docs/getting-started' },
               { label: 'Workflow Automation', href: '/docs/workflow-automation' },
               { label: 'Architecture', href: '/docs/architecture' },
+          { label: 'Security & Compliance', href: '/docs/security' },
               { label: 'Complete Business Plan', href: '/docs/business-plan-full' },
               { label: 'FAQ', href: '/docs/faq' },
             ].map((link, index) => (

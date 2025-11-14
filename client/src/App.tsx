@@ -43,7 +43,10 @@ const API = lazy(() => import("./pages/docs/API"));
 const FAQ = lazy(() => import("./pages/docs/FAQ"));
 const Support = lazy(() => import("./pages/docs/Support"));
 const BusinessPlanFull = lazy(() => import("./pages/docs/BusinessPlanFull"));
-const WorkflowAutomation = lazy(() => import("./pages/docs/WorkflowAutomation"));
+const WorkflowAutomation = lazy(
+  () => import("./pages/docs/WorkflowAutomation"),
+);
+const DocsSecurity = lazy(() => import("./pages/docs/Security"));
 const LetterAutomationDemo = lazy(() => import("./pages/demo/LetterAutomationDemo"));
 const ProfessionalLetterBuilder = lazy(() => import("./pages/demo/ProfessionalLetterBuilder"));
 
@@ -98,7 +101,11 @@ function Router() {
         <Route path={"/docs/faq"} component={FAQ} />
         <Route path={"/docs/support"} component={Support} />
         <Route path={"/docs/business-plan-full"} component={BusinessPlanFull} />
-        <Route path={"/docs/workflow-automation"} component={WorkflowAutomation} />
+        <Route
+          path={"/docs/workflow-automation"}
+          component={WorkflowAutomation}
+        />
+        <Route path={"/docs/security"} component={DocsSecurity} />
         <Route path={"/demo/letter-automation"} component={LetterAutomationDemo} />
         <Route path={"/demo/professional-letter-builder"} component={ProfessionalLetterBuilder} />
         <Route path={"/how-it-works"} component={HowItWorks} />
