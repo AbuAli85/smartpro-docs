@@ -1,8 +1,18 @@
 import DocsLayout from '@/components/DocsLayout';
-import { BookOpen, Zap, Code, TrendingUp, Users, Shield, ArrowRight } from 'lucide-react';
+import {
+  BookOpen,
+  Zap,
+  Code,
+  TrendingUp,
+  Users,
+  Shield,
+  ArrowRight,
+  History,
+  Sparkles,
+} from 'lucide-react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { setSEOTags } from '@/lib/seoUtils';
 
 export default function DocsIndex() {
@@ -15,11 +25,14 @@ export default function DocsIndex() {
       url: "https://thesmartpro.io/docs",
     });
   }, []);
-  const sections = [
+  const [activeCategory, setActiveCategory] = useState('All');
+
+  const sections = useMemo(() => [
     {
       icon: <BookOpen className="w-8 h-8" />,
       title: 'Product Documentation',
       description: 'Learn about TheSmartPro.io features and capabilities',
+      category: 'Product',
       links: [
         { label: 'Product Overview', href: '/docs/product-overview' },
         { label: 'Features', href: '/docs/features' },
@@ -30,6 +43,7 @@ export default function DocsIndex() {
       icon: <Code className="w-8 h-8" />,
       title: 'Technical Documentation',
       description: 'Explore our technical architecture and APIs',
+      category: 'Technical',
       links: [
         { label: 'Architecture', href: '/docs/architecture' },
         { label: 'API Documentation', href: '/docs/api' },
@@ -41,6 +55,7 @@ export default function DocsIndex() {
       icon: <TrendingUp className="w-8 h-8" />,
       title: 'Business Resources',
       description: 'Strategic planning and business insights',
+      category: 'Business',
       links: [
         { label: 'Business Plan Summary', href: '/docs/business-plan' },
         { label: 'Complete Business Plan', href: '/docs/business-plan-full' },
@@ -51,6 +66,7 @@ export default function DocsIndex() {
       icon: <Shield className="w-8 h-8" />,
       title: 'Security & Policies',
       description: 'Security features and legal information',
+      category: 'Security',
       links: [
         { label: 'Security & Compliance', href: '/docs/security' },
         { label: 'Privacy Policy', href: '/privacy' },
@@ -61,13 +77,78 @@ export default function DocsIndex() {
       icon: <Zap className="w-8 h-8" />,
       title: 'Support & Resources',
       description: 'Get help and find additional resources',
+      category: 'Support',
       links: [
         { label: 'FAQ', href: '/docs/faq' },
         { label: 'Support', href: '/docs/support' },
         { label: 'Contact Us', href: '/contact' },
       ],
     },
+  ], []);
+
+  const personaGuides = [
+    {
+      title: 'Developers',
+      icon: <Code className="w-6 h-6 text-blue-500" aria-hidden="true" />,
+      description: 'Everything you need to integrate SmartPro into your stack.',
+      highlights: ['API reference & SDK', 'Workflow automation recipes', 'Webhooks & events'],
+      links: [
+        { label: 'API Docs', href: '/docs/api' },
+        { label: 'Automation Guide', href: '/docs/workflow-automation' },
+        { label: 'Architecture', href: '/docs/architecture' },
+      ],
+    },
+    {
+      title: 'Product Teams',
+      icon: <Users className="w-6 h-6 text-indigo-500" aria-hidden="true" />,
+      description: 'Understand capabilities, pricing, and onboarding journeys.',
+      highlights: ['Feature deep dives', 'Pricing calculators', 'Adoption playbooks'],
+      links: [
+        { label: 'Product Overview', href: '/docs/product-overview' },
+        { label: 'Features', href: '/docs/features' },
+        { label: 'Getting Started', href: '/docs/getting-started' },
+      ],
+    },
+    {
+      title: 'Executives',
+      icon: <TrendingUp className="w-6 h-6 text-emerald-500" aria-hidden="true" />,
+      description: 'Strategic plans, ROI narratives, and compliance summaries.',
+      highlights: ['Full business plan', 'Security posture', 'Market positioning'],
+      links: [
+        { label: 'Business Plan', href: '/docs/business-plan-full' },
+        { label: 'Security & Compliance', href: '/docs/security' },
+        { label: 'Support Tiers', href: '/docs/support' },
+      ],
+    },
   ];
+
+  const docUpdates = [
+    {
+      date: 'Nov 2025',
+      title: 'Docs navigation revamp',
+      description: 'Keyboard shortcuts, search analytics, and mobile sidebar polish shipped.',
+      impact: 'Improved discovery & accessibility',
+    },
+    {
+      date: 'Oct 2025',
+      title: 'API & Automation refresh',
+      description: 'Added modern SDK quick start, webhook lifecycle examples, and INP-friendly code blocks.',
+      impact: 'Faster developer onboarding',
+    },
+    {
+      date: 'Sep 2025',
+      title: 'Business plan overhaul',
+      description: 'Expanded investor-ready sections, updated TAM/SAM figures, and linked KPI dashboards.',
+      impact: 'Clearer executive storytelling',
+    },
+  ];
+
+  const categories = ['All', 'Product', 'Technical', 'Business', 'Security', 'Support'];
+
+  const filteredSections = useMemo(() => {
+    if (activeCategory === 'All') return sections;
+    return sections.filter((section) => section.category === activeCategory);
+  }, [activeCategory, sections]);
 
   return (
     <DocsLayout pageTitle="Documentation Hub" breadcrumbs={[{ label: 'Documentation', href: '/docs' }]} githubPath="client/src/pages/docs/Index.tsx">
@@ -204,8 +285,27 @@ export default function DocsIndex() {
         {/* Documentation Sections */}
         <section>
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Documentation Sections</h2>
+          <div className="flex flex-wrap gap-3 mb-6">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                className={`px-4 py-2 rounded-full border transition-colors text-sm ${
+                  activeCategory === category
+                    ? 'bg-blue-600 text-white border-blue-600'
+                    : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300'
+                }`}
+                type="button"
+              >
+                {category}
+              </button>
+            ))}
+            <span className="text-sm text-gray-500 self-center">
+              Showing {filteredSections.length} of {sections.length} sections
+            </span>
+          </div>
           <div className="grid md:grid-cols-2 gap-8">
-            {sections.map((section, index) => (
+            {filteredSections.map((section, index) => (
               <div key={index} className="bg-white rounded-lg border border-gray-200 p-8 hover:shadow-lg transition-shadow">
                 <div className="w-12 h-12 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center mb-4">
                   {section.icon}
@@ -217,6 +317,51 @@ export default function DocsIndex() {
                     <Link key={i} href={link.href}>
                       <div className="block text-blue-600 hover:text-blue-700 font-medium text-sm cursor-pointer">
                         → {link.label}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Persona Quick Starts */}
+        <section>
+          <div className="flex items-center gap-2 mb-3">
+            <Sparkles className="w-5 h-5 text-yellow-500" aria-hidden="true" />
+            <h2 className="text-3xl font-bold text-gray-900">Role-based Jumpstarts</h2>
+          </div>
+          <p className="text-gray-600 mb-6">
+            Pick a track and follow the curated checklist to get the most relevant docs in under 10 minutes.
+          </p>
+          <div className="grid gap-6 md:grid-cols-3">
+            {personaGuides.map((persona) => (
+              <div key={persona.title} className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col hover:shadow-lg transition-shadow">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
+                    {persona.icon}
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Tailored path</p>
+                    <h3 className="text-lg font-semibold text-gray-900">{persona.title}</h3>
+                  </div>
+                </div>
+                <p className="text-gray-600 mb-4 flex-1">{persona.description}</p>
+                <ul className="space-y-2 text-sm text-gray-600 mb-6">
+                  {persona.highlights.map((highlight) => (
+                    <li key={highlight} className="flex items-start gap-2">
+                      <span className="text-blue-500 mt-0.5">•</span>
+                      <span>{highlight}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="space-y-2">
+                  {persona.links.map((link) => (
+                    <Link key={link.label} href={link.href}>
+                      <div className="inline-flex items-center gap-2 text-blue-600 font-medium text-sm hover:text-blue-700 cursor-pointer">
+                        {link.label}
+                        <ArrowRight className="w-4 h-4" aria-hidden="true" />
                       </div>
                     </Link>
                   ))}
@@ -244,6 +389,34 @@ export default function DocsIndex() {
                   <span className="text-gray-900 font-medium">{link.label}</span>
                 </div>
               </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Docs changelog */}
+        <section>
+          <div className="flex items-center gap-2 mb-4">
+            <History className="w-5 h-5 text-indigo-500" aria-hidden="true" />
+            <h2 className="text-3xl font-bold text-gray-900">What&apos;s new in Docs</h2>
+          </div>
+          <p className="text-gray-600 mb-8">
+            Transparent changelog so you can see how the documentation evolves each month.
+          </p>
+          <div className="space-y-6 relative">
+            <span className="absolute left-3 top-0 bottom-0 w-px bg-gradient-to-b from-indigo-200 to-transparent hidden md:block" aria-hidden="true" />
+            {docUpdates.map((update, index) => (
+              <div key={update.title} className="relative pl-10 md:pl-14">
+                <span className="absolute left-0 md:left-2 top-2 w-3 h-3 rounded-full bg-indigo-500 border-4 border-white shadow-md" aria-hidden="true" />
+                <div className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                  <div className="flex flex-wrap items-center gap-3 mb-2 text-sm text-indigo-600 font-semibold">
+                    <span>{update.date}</span>
+                    <span className="text-gray-300">•</span>
+                    <span>{update.impact}</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{update.title}</h3>
+                  <p className="text-gray-600">{update.description}</p>
+                </div>
+              </div>
             ))}
           </div>
         </section>
