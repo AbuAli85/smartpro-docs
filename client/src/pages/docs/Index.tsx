@@ -463,11 +463,6 @@ export default function DocsIndex() {
 
   const categories = ['All', 'Product', 'Technical', 'Business', 'Security', 'Support'];
 
-  const filteredSections = useMemo(() => {
-    if (activeCategory === 'All') return sections;
-    return sections.filter((section) => section.category === activeCategory);
-  }, [activeCategory, sections]);
-
   const journeys = [
     {
       title: 'Integrate SmartPro',
