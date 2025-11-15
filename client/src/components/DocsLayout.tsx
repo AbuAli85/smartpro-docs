@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { Menu, X, ChevronRight, Search } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { Input } from '@/components/ui/input';
@@ -6,6 +6,7 @@ import FeedbackWidget from '@/components/FeedbackWidget';
 import { useKeyboardShortcuts, KeyboardShortcut } from '@/hooks/useKeyboardShortcuts';
 import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp';
 import { trackSearch } from '@/lib/feedbackAnalytics';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface NavItem {
   title: string;
@@ -73,6 +74,7 @@ export default function DocsLayout({ children, pageTitle, breadcrumbs, lastUpdat
   const [searchQuery, setSearchQuery] = useState('');
   const [location, navigate] = useLocation();
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const debouncedQuery = useDebounce(searchQuery, 400);
 
   const isActive = (href: string) => location === href;
 
@@ -89,8 +91,13 @@ export default function DocsLayout({ children, pageTitle, breadcrumbs, lastUpdat
   };
 
   // Filter navigation items based on search query
-  const filteredItems = searchQuery
-    ? navigationItems.map(item => {
+  const filteredItems = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return navigationItems;
+    }
+
+    return navigationItems
+      .map(item => {
         if (item.children) {
           const filteredChildren = item.children.filter(child =>
             child.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -98,19 +105,21 @@ export default function DocsLayout({ children, pageTitle, breadcrumbs, lastUpdat
           return filteredChildren.length > 0 ? { ...item, children: filteredChildren } : null;
         }
         return item.title.toLowerCase().includes(searchQuery.toLowerCase()) ? item : null;
-      }).filter(Boolean) as NavItem[]
-    : navigationItems;
+      })
+      .filter(Boolean) as NavItem[];
+  }, [searchQuery]);
 
   // Track search analytics
   useEffect(() => {
-    if (searchQuery.trim()) {
-      const hasResults = filteredItems.length > 0;
-      const resultCount = filteredItems.reduce((count, item) => {
-        return count + (item.children ? item.children.length : 1);
-      }, 0);
-      trackSearch(searchQuery, hasResults, resultCount);
-    }
-  }, [searchQuery, filteredItems.length]);
+    if (!debouncedQuery.trim()) return;
+
+    const hasResults = filteredItems.length > 0;
+    const resultCount = filteredItems.reduce((count, item) => {
+      return count + (item.children ? item.children.length : 1);
+    }, 0);
+
+    trackSearch(debouncedQuery, hasResults, resultCount);
+  }, [debouncedQuery, filteredItems]);
 
   // Keyboard shortcuts
   const shortcuts: KeyboardShortcut[] = [

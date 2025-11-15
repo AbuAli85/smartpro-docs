@@ -35,6 +35,22 @@ export const searchIndex: SearchResult[] = [
     keywords: ["pricing", "plans", "starter", "professional", "enterprise", "cost"]
   },
   {
+    id: "company",
+    title: "Company",
+    description: "Mission, leadership principles, and the story behind TheSmartPro.io",
+    url: "/company",
+    category: "Company",
+    keywords: ["company", "mission", "values", "team", "leadership", "story"]
+  },
+  {
+    id: "careers",
+    title: "Careers",
+    description: "Current openings, culture, and benefits for joining TheSmartPro.io",
+    url: "/careers",
+    category: "Company",
+    keywords: ["careers", "jobs", "open roles", "hiring", "benefits", "culture"]
+  },
+  {
     id: "security",
     title: "Security",
     description: "Enterprise-Grade Security - SOC 2, ISO 27001, GDPR Compliant",
@@ -83,6 +99,14 @@ export const searchIndex: SearchResult[] = [
     keywords: ["about", "company", "mission", "vision", "team", "culture"]
   },
   {
+    id: "community",
+    title: "Community",
+    description: "Join programs, office hours, and builder forums to shape the roadmap",
+    url: "/community",
+    category: "Company",
+    keywords: ["community", "user group", "champions", "office hours", "events"]
+  },
+  {
     id: "contact",
     title: "Contact Us",
     description: "Get in touch with our team - We're here to help",
@@ -101,6 +125,14 @@ export const searchIndex: SearchResult[] = [
     keywords: ["providers", "earn", "income", "calculator", "onboarding", "verification"]
   },
   {
+    id: "get-started-clients",
+    title: "For Clients: Onboarding",
+    description: "Guided onboarding, procurement alignment, and enterprise controls for clients",
+    url: "/get-started-clients",
+    category: "For Clients",
+    keywords: ["clients", "onboarding", "enterprise", "procurement", "controls", "guide"]
+  },
+  {
     id: "providers",
     title: "For Service Providers",
     description: "Grow Your Professional Services Business with enterprise-grade tools",
@@ -117,6 +149,15 @@ export const searchIndex: SearchResult[] = [
     url: "/clients",
     category: "For Clients",
     keywords: ["clients", "organizations", "enterprises", "hiring", "professionals", "contractors"]
+  },
+
+  {
+    id: "help",
+    title: "Help Center",
+    description: "Access support articles, contact options, and onboarding resources",
+    url: "/help",
+    category: "Support",
+    keywords: ["help", "support", "knowledge base", "contact support", "onboarding"]
   },
 
   // Legal Pages

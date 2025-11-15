@@ -30,7 +30,10 @@ export function BusinessPlanFullWithAutoTOC() {
   }), []);
 
   // Auto-generate TOC from page headings
-  const tocSections = useTOC(undefined, [2, 3], iconMap);
+  const tocSections = useTOC({
+    headingLevels: [2, 3],
+    iconMap,
+  });
 
   // Convert to TableOfContents format
   const sections = useMemo(() => 

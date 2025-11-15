@@ -27,7 +27,7 @@ export default function Footer() {
       title: "Resources",
       links: [
         { label: "Documentation", href: "/docs" },
-        { label: "API Reference", href: "/docs/architecture" },
+        { label: "API Reference", href: "/docs/api" },
         { label: "Help Center", href: "/help" },
         { label: "Community", href: "/community" }
       ]

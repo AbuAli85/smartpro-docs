@@ -2,9 +2,10 @@ import DocsLayout from '@/components/DocsLayout';
 import { TrendingUp, Target, Users, DollarSign, Calendar, CheckCircle, ArrowRight, Globe, Zap, Shield, Award, BarChart3, FileText, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { setSEOTags } from '@/lib/seoUtils';
 import TableOfContents from '@/components/TableOfContents';
+import { useTOC, TOCIconMap } from '@/hooks/useTOC';
 
 export default function BusinessPlanFull() {
   useEffect(() => {
@@ -23,18 +24,24 @@ export default function BusinessPlanFull() {
     { label: 'Complete Business Plan', href: '/docs/business-plan-full' },
   ];
 
-  const sections = [
-    { id: 'executive-summary', title: 'Executive Summary', icon: <Target className="w-5 h-5" /> },
-    { id: 'company-description', title: 'Company Description', icon: <Users className="w-5 h-5" /> },
-    { id: 'market-analysis', title: 'Market Analysis', icon: <TrendingUp className="w-5 h-5" /> },
-    { id: 'products-services', title: 'Products & Services', icon: <CheckCircle className="w-5 h-5" /> },
-    { id: 'marketing-sales', title: 'Marketing & Sales', icon: <Users className="w-5 h-5" /> },
-    { id: 'operations', title: 'Operational Plan', icon: <Calendar className="w-5 h-5" /> },
-    { id: 'organization', title: 'Organization & Management', icon: <Users className="w-5 h-5" /> },
-    { id: 'financials', title: 'Financial Plan', icon: <DollarSign className="w-5 h-5" /> },
-    { id: 'implementation', title: 'Implementation Plan', icon: <Calendar className="w-5 h-5" /> },
-    { id: 'appendices', title: 'Appendices', icon: <CheckCircle className="w-5 h-5" /> },
-  ];
+  const iconMap: TOCIconMap = useMemo(() => ({
+    'executive-summary': <Target className="w-5 h-5" />,
+    'company-description': <Users className="w-5 h-5" />,
+    'market-analysis': <TrendingUp className="w-5 h-5" />,
+    'products-services': <CheckCircle className="w-5 h-5" />,
+    'marketing-sales': <Users className="w-5 h-5" />,
+    'operations': <Calendar className="w-5 h-5" />,
+    'organization': <Users className="w-5 h-5" />,
+    'financials': <DollarSign className="w-5 h-5" />,
+    'implementation': <Calendar className="w-5 h-5" />,
+    'appendices': <CheckCircle className="w-5 h-5" />,
+  }), []);
+
+  const sections = useTOC({
+    containerId: 'business-plan-content',
+    headingLevels: [2, 3],
+    iconMap,
+  });
 
   return (
     <DocsLayout pageTitle="SmartPRO Complete Business Plan" breadcrumbs={breadcrumbs} githubPath="client/src/pages/docs/BusinessPlanFull.tsx">
@@ -73,6 +80,7 @@ export default function BusinessPlanFull() {
         {/* Table of Contents */}
         <TableOfContents sections={sections} title="Table of Contents" />
 
+        <div id="business-plan-content" className="space-y-12">
         {/* Key Metrics Dashboard */}
         <section>
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Key Business Metrics</h2>
@@ -2961,7 +2969,8 @@ export default function BusinessPlanFull() {
           </div>
         </section>
       </div>
-    </DocsLayout>
+    </div>
+  </DocsLayout>
   );
 }
 

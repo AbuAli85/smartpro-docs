@@ -8,7 +8,37 @@ import { useTheme } from "@/contexts/ThemeContext";
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [openDesktopDropdown, setOpenDesktopDropdown] = useState<string | null>(null);
   const { theme, toggleTheme, switchable } = useTheme();
+
+  const getDropdownId = (label: string) =>
+    `desktop-menu-${label.toLowerCase().replace(/\s+/g, "-")}`;
+
+  const focusFirstDesktopItem = (label: string) => {
+    const menu = document.getElementById(getDropdownId(label));
+    const focusable = menu?.querySelector<HTMLElement>("a, button, [tabindex]");
+    focusable?.focus();
+  };
+
+  const handleDesktopMenuKeydown = (
+    event: React.KeyboardEvent<HTMLButtonElement>,
+    label: string,
+    hasSubmenu: boolean,
+  ) => {
+    if (!hasSubmenu) return;
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setOpenDesktopDropdown(label);
+      focusFirstDesktopItem(label);
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      setOpenDesktopDropdown(null);
+      (event.currentTarget as HTMLButtonElement).focus();
+    } else if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      setOpenDesktopDropdown((prev) => (prev === label ? null : label));
+    }
+  };
 
   const navItems = [
     { label: "Home", href: "/" },
@@ -66,21 +96,46 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1" role="navigation" aria-label="Main navigation">
-            {navItems.map((item) => (
-              <div key={item.label} className="relative group">
+            {navItems.map((item) => {
+              const hasSubmenu = Boolean(item.submenu);
+              const dropdownId = hasSubmenu ? getDropdownId(item.label) : undefined;
+              const isOpen = hasSubmenu && openDesktopDropdown === item.label;
+
+              return (
+                <div
+                  key={item.label}
+                  className="relative"
+                  onMouseEnter={() => hasSubmenu && setOpenDesktopDropdown(item.label)}
+                  onMouseLeave={() => hasSubmenu && setOpenDesktopDropdown(null)}
+                  onFocus={() => hasSubmenu && setOpenDesktopDropdown(item.label)}
+                  onBlur={(event) => {
+                    if (hasSubmenu && !event.currentTarget.contains(event.relatedTarget as Node)) {
+                      setOpenDesktopDropdown(null);
+                    }
+                  }}
+                >
                 <button 
                   className="px-3 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors flex items-center gap-1"
-                  aria-haspopup={item.submenu ? "true" : "false"}
-                  aria-expanded={item.submenu ? "false" : undefined}
+                  aria-haspopup={hasSubmenu ? "menu" : undefined}
+                  aria-expanded={hasSubmenu ? isOpen : undefined}
+                  aria-controls={dropdownId}
+                  onKeyDown={(event) => handleDesktopMenuKeydown(event, item.label, hasSubmenu)}
                 >
                   {item.label}
-                  {item.submenu && <ChevronDown className="w-4 h-4" aria-hidden="true" />}
+                  {hasSubmenu && <ChevronDown className="w-4 h-4" aria-hidden="true" />}
                 </button>
 
                 {/* Dropdown Menu */}
-                {item.submenu && (
-                  <div className="absolute left-0 mt-0 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2" role="menu">
-                    {item.submenu.map((subitem) => (
+                {hasSubmenu && (
+                  <div
+                    id={dropdownId}
+                    className={`absolute left-0 mt-0 w-56 bg-white rounded-lg shadow-lg transition-all duration-200 py-2 border border-slate-100 focus-within:opacity-100 focus-within:visible ${
+                      isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+                    }`}
+                    role="menu"
+                    aria-hidden={isOpen ? undefined : "true"}
+                  >
+                    {item.submenu!.map((subitem) => (
                       <Link key={subitem.label} href={subitem.href}>
                         <div className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer" role="menuitem">
                           {subitem.label}
@@ -90,7 +145,8 @@ export default function Header() {
                   </div>
                 )}
               </div>
-            ))}
+            );
+            })}
           </nav>
 
           {/* CTA Buttons */}

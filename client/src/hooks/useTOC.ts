@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useLocation } from 'wouter';
 import { generateTOC, TOCSection } from '@/lib/generateTOC';
 
 /**
@@ -39,22 +40,53 @@ export interface TOCIconMap {
  * const sections = useTOC(undefined, [2, 3], iconMap);
  * ```
  */
-export function useTOC(
-  containerId?: string,
-  headingLevels: number[] = [2, 3],
-  iconMap?: TOCIconMap
-): Array<TOCSection & { icon?: React.ReactNode }> {
+export interface UseTOCOptions {
+  containerId?: string;
+  headingLevels?: number[];
+  iconMap?: TOCIconMap;
+  delay?: number;
+  prefetchOnRouteChange?: boolean;
+}
+
+export function useTOC({
+  containerId,
+  headingLevels = [2, 3],
+  iconMap,
+  delay = 100,
+  prefetchOnRouteChange = true,
+}: UseTOCOptions = {}): Array<TOCSection & { icon?: React.ReactNode }> {
   const [sections, setSections] = useState<TOCSection[]>([]);
+  const [location] = useLocation();
+  const headingSignature = useMemo(() => headingLevels.join(','), [headingLevels]);
+
+  const refreshTOC = useCallback(() => {
+    const toc = generateTOC(containerId, headingLevels);
+    setSections(toc);
+  }, [containerId, headingSignature, headingLevels]);
 
   useEffect(() => {
-    // Small delay to ensure DOM is ready
-    const timer = setTimeout(() => {
-      const toc = generateTOC(containerId, headingLevels);
-      setSections(toc);
-    }, 100);
+    // Delay ensures the DOM updates settle before scanning
+    let frame: number | null = null;
+    let timer: number | null = null;
 
-    return () => clearTimeout(timer);
-  }, [containerId, headingLevels.join(',')]);
+    frame = window.requestAnimationFrame(() => {
+      timer = window.setTimeout(refreshTOC, delay);
+    });
+
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      if (timer) clearTimeout(timer);
+    };
+  }, [refreshTOC, delay]);
+
+  useEffect(() => {
+    if (!prefetchOnRouteChange) return;
+    let frame: number | null = null;
+    frame = window.requestAnimationFrame(() => refreshTOC());
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [location, prefetchOnRouteChange, refreshTOC]);
 
   // Add icons to sections if iconMap provided
   const sectionsWithIcons = useMemo(() => {
