@@ -150,6 +150,43 @@ export default function DocsIndex() {
     return sections.filter((section) => section.category === activeCategory);
   }, [activeCategory, sections]);
 
+  const journeys = [
+    {
+      title: 'Integrate SmartPro',
+      duration: '35 min',
+      steps: [
+        { label: '1. Request sandbox credentials', href: '/docs/support#sandbox-access' },
+        { label: '2. Review authentication + SDK', href: '/docs/api#authentication' },
+        { label: '3. Test workflow automation', href: '/docs/workflow-automation' },
+      ],
+    },
+    {
+      title: 'Evaluate for rollout',
+      duration: '25 min',
+      steps: [
+        { label: '1. Scan product overview', href: '/docs/product-overview' },
+        { label: '2. Compare plans & SLAs', href: '/pricing' },
+        { label: '3. Share business plan summary', href: '/docs/business-plan' },
+      ],
+    },
+    {
+      title: 'Complete security review',
+      duration: '30 min',
+      steps: [
+        { label: '1. Download security brief', href: '/docs/security' },
+        { label: '2. Map data flows', href: '/docs/architecture#data-flow' },
+        { label: '3. Schedule compliance call', href: '/contact' },
+      ],
+    },
+  ];
+
+  const insightBadges = [
+    { label: 'Search satisfaction', value: '92%', meta: '↑ 4% vs last quarter' },
+    { label: 'Pages refreshed last 60d', value: '14', meta: 'All core guides verified' },
+    { label: 'Avg. helpful rating', value: '4.7/5', meta: 'Based on in-page feedback' },
+    { label: 'Median onboarding time', value: '43 min', meta: 'From persona jumpstarts' },
+  ];
+
   return (
     <DocsLayout pageTitle="Documentation Hub" breadcrumbs={[{ label: 'Documentation', href: '/docs' }]} githubPath="client/src/pages/docs/Index.tsx">
       <div className="space-y-12">
@@ -371,6 +408,38 @@ export default function DocsIndex() {
           </div>
         </section>
 
+        {/* Guided Journeys */}
+        <section>
+          <div className="flex items-center gap-2 mb-3">
+            <BookOpen className="w-5 h-5 text-blue-600" aria-hidden="true" />
+            <h2 className="text-3xl font-bold text-gray-900">Docs Journeys</h2>
+          </div>
+          <p className="text-gray-600 mb-6">
+            Follow a pre-built path to accomplish a common goal. Each timeline links to the exact doc that unblocks the next step.
+          </p>
+          <div className="grid gap-6 md:grid-cols-3">
+            {journeys.map((journey) => (
+              <div key={journey.title} className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col hover:shadow-lg transition-shadow">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold text-gray-900">{journey.title}</h3>
+                  <span className="text-sm text-gray-500">{journey.duration}</span>
+                </div>
+                <ol className="space-y-3 text-sm text-gray-700 flex-1">
+                  {journey.steps.map((step) => (
+                    <li key={step.label} className="flex gap-3">
+                      <span className="w-4 text-blue-500 font-semibold">•</span>
+                      <Link href={step.href}>
+                        <span className="hover:text-blue-600 cursor-pointer">{step.label}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ol>
+                <p className="mt-4 text-xs text-gray-500">Avg. completion time includes reading + checklist items.</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* Quick Links */}
         <section>
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Quick Access</h2>
@@ -389,6 +458,23 @@ export default function DocsIndex() {
                   <span className="text-gray-900 font-medium">{link.label}</span>
                 </div>
               </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Docs health insights */}
+        <section>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Docs Health Snapshot</h2>
+          <p className="text-gray-600 mb-6">
+            We treat documentation like a product. These pulse scores help you trust what you’re reading.
+          </p>
+          <div className="grid gap-4 md:grid-cols-4">
+            {insightBadges.map((insight) => (
+              <div key={insight.label} className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition-shadow">
+                <p className="text-3xl font-bold text-blue-600 mb-2">{insight.value}</p>
+                <p className="text-gray-900 font-medium">{insight.label}</p>
+                <p className="text-sm text-gray-500 mt-1">{insight.meta}</p>
+              </div>
             ))}
           </div>
         </section>
