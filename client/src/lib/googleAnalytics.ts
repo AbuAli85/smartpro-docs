@@ -265,9 +265,44 @@ export function trackCTAClick(
   ctaType: 'primary' | 'secondary' = 'primary'
 ): void {
   trackEvent('cta_click', {
+    cta_id: ctaText.toLowerCase().replace(/\s+/g, '_'),
     cta_text: ctaText,
     cta_location: ctaLocation,
     cta_type: ctaType,
+  });
+}
+
+/**
+ * CTA view/impression tracking
+ */
+export function trackCTAView(
+  ctaId: string,
+  ctaText: string,
+  ctaLocation: string,
+  ctaType: 'primary' | 'secondary' = 'primary'
+): void {
+  trackEvent('cta_view', {
+    cta_id: ctaId,
+    cta_text: ctaText,
+    cta_location: ctaLocation,
+    cta_type: ctaType,
+  });
+}
+
+/**
+ * CTA conversion/submission tracking
+ */
+export function trackCTAConversion(
+  ctaId: string,
+  ctaText: string,
+  conversionStage: 'submission' | 'view_to_submission' | 'click_to_submission' = 'submission',
+  metadata?: Record<string, any>
+): void {
+  trackEvent('cta_conversion', {
+    cta_id: ctaId,
+    cta_text: ctaText,
+    conversion_stage: conversionStage,
+    ...metadata,
   });
 }
 
