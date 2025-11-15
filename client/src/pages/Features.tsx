@@ -8,6 +8,7 @@ import IntegrationHub from "@/components/IntegrationHub";
 import OmanMap from "@/components/OmanMap";
 import { useEffect } from "react";
 import { setSEOTags } from "@/lib/seoUtils";
+import { Link } from "wouter";
 
 export default function Features() {
   useEffect(() => {
@@ -200,8 +201,10 @@ export default function Features() {
               ))}
             </div>
           </div>
-          <Button size="lg" className="mt-8 bg-blue-600 hover:bg-blue-700">
-            View All Integrations
+          <Button size="lg" className="mt-8 bg-blue-600 hover:bg-blue-700" asChild>
+            <Link href="/features#integrations">
+              View All Integrations
+            </Link>
           </Button>
         </div>
       </section>

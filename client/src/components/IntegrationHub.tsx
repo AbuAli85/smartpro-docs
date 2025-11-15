@@ -1,20 +1,22 @@
-import { useState } from 'react';
-import { Code, Zap, Link2, BookOpen, ArrowRight } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Code, Zap, Link2, BookOpen, ArrowRight, Users, MessageSquare, Mail, Megaphone, CreditCard, HardDrive, Workflow } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import CopyCodeButton from '@/components/CopyCodeButton';
+
+type IntegrationCategory = 'CRM' | 'Communication' | 'Email' | 'Marketing' | 'Payments' | 'Storage' | 'Automation';
 
 interface Integration {
   name: string;
-  category: string;
-  icon: string;
+  category: IntegrationCategory;
   description: string;
   status: 'available' | 'coming-soon';
 }
 
 const integrations: Integration[] = [
   // CRM & Sales
-  { name: 'Salesforce', category: 'CRM', icon: '☁️', description: 'Sync contacts and deals', status: 'available' },
-  { name: 'HubSpot', category: 'CRM', icon: '🎯', description: 'Unified sales platform', status: 'available' },
-  { name: 'Pipedrive', category: 'CRM', icon: '📊', description: 'Sales pipeline management', status: 'available' },
+  { name: 'Salesforce', category: 'CRM', description: 'Sync contacts and deals', status: 'available' },
+  { name: 'HubSpot', category: 'CRM', description: 'Unified sales platform', status: 'available' },
+  { name: 'Pipedrive', category: 'CRM', description: 'Sales pipeline management', status: 'available' },
   
   // Communication
   { name: 'Slack', category: 'Communication', icon: '💬', description: 'Team messaging', status: 'available' },
@@ -42,20 +44,56 @@ const integrations: Integration[] = [
   { name: 'IFTTT', category: 'Automation', icon: '🎯', description: 'Smart automations', status: 'coming-soon' },
 ];
 
-const categories = ['All', 'CRM', 'Communication', 'Email', 'Marketing', 'Payments', 'Storage', 'Automation'];
+const categories = ['All', 'CRM', 'Communication', 'Email', 'Marketing', 'Payments', 'Storage', 'Automation'] as const;
+
+const categoryIcons: Record<IntegrationCategory, typeof Users> = {
+  CRM: Users,
+  Communication: MessageSquare,
+  Email: Mail,
+  Marketing: Megaphone,
+  Payments: CreditCard,
+  Storage: HardDrive,
+  Automation: Workflow,
+};
+
+const codeSample = `import SmartPro from "@smartpro/sdk";
+
+const client = new SmartPro({
+  apiKey: process.env.SMARTPRO_API_KEY!,
+});
+
+async function run() {
+  const contracts = await client.contracts.list({
+    limit: 10,
+    status: "active",
+  });
+
+  await client.contacts.create({
+    firstName: "John",
+    lastName: "Doe",
+    email: "john@example.com",
+  });
+
+  client.webhooks.on("contract.signed", (event) => {
+    console.log("Contract signed:", event.data.id);
+  });
+}
+
+run().catch(console.error);`;
 
 export default function IntegrationHub() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
-  const filteredIntegrations = selectedCategory === 'All'
-    ? integrations
-    : integrations.filter(integration => integration.category === selectedCategory);
+  const filteredIntegrations = useMemo(() => {
+    if (selectedCategory === 'All') return integrations;
+    return integrations.filter((integration) => integration.category === selectedCategory);
+  }, [selectedCategory]);
 
   return (
     <section id="integrations" className="py-20 bg-gradient-to-b from-gray-50 to-white">
       <div className="container">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16" id="integrations">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-4">
             <Link2 className="w-4 h-4" />
             <span>Integrations & API</span>
@@ -90,10 +128,19 @@ export default function IntegrationHub() {
           {filteredIntegrations.map((integration) => (
             <div
               key={integration.name}
-              className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-shadow group cursor-pointer"
+              className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-shadow group"
+              role="article"
+              aria-label={`${integration.name} integration`}
             >
-              <div className="text-4xl mb-4">{integration.icon}</div>
-              <h3 className="font-bold text-gray-900 mb-1">{integration.name}</h3>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
+                  {(() => {
+                    const Icon = categoryIcons[integration.category];
+                    return <Icon className="w-6 h-6 text-blue-600" aria-hidden="true" />;
+                  })()}
+                </div>
+                <h3 className="font-bold text-gray-900 text-lg mb-0">{integration.name}</h3>
+              </div>
               <p className="text-sm text-gray-500 mb-4">{integration.category}</p>
               <p className="text-sm text-gray-600 mb-4">{integration.description}</p>
               <div className="flex items-center justify-between">
@@ -149,7 +196,7 @@ export default function IntegrationHub() {
               </div>
             </div>
             <Button className="mt-8 bg-blue-600 hover:bg-blue-700 text-white" asChild>
-              <a href="/docs/api">
+              <a href="/docs/api" aria-label="View API documentation">
                 View API Documentation
                 <ArrowRight className="ml-2 w-4 h-4" />
               </a>
@@ -157,33 +204,11 @@ export default function IntegrationHub() {
           </div>
 
           {/* Code Example */}
-          <div>
+          <div className="relative">
             <h3 className="text-3xl font-bold text-gray-900 mb-8">Quick Start</h3>
-            <div className="bg-gray-900 rounded-xl p-6 text-gray-100 font-mono text-sm overflow-x-auto">
-              <pre>{`// Initialize the client
-const smartpro = require('@smartpro/sdk');
-
-const client = new smartpro.Client({
-  apiKey: 'your_api_key'
-});
-
-// Get all contracts
-const contracts = await client.contracts.list({
-  limit: 10,
-  status: 'active'
-});
-
-// Create a new contact
-const contact = await client.contacts.create({
-  firstName: 'John',
-  lastName: 'Doe',
-  email: 'john@example.com'
-});
-
-// Listen to webhooks
-client.webhooks.on('contract.signed', (event) => {
-  console.log('Contract signed:', event.data);
-});`}</pre>
+            <div className="bg-gray-900 rounded-xl p-6 text-gray-100 font-mono text-sm overflow-x-auto relative">
+              <CopyCodeButton text={codeSample} className="top-4 right-4" />
+              <pre className="whitespace-pre-wrap">{codeSample}</pre>
             </div>
           </div>
         </div>
@@ -198,15 +223,21 @@ client.webhooks.on('contract.signed', (event) => {
             <Button
               size="lg"
               className="bg-white text-blue-600 hover:bg-gray-100 text-lg h-14 px-8"
+              asChild
             >
-              Get API Key
+              <a href="/contact?topic=api" aria-label="Request an API key">
+                Get API Key
+              </a>
             </Button>
             <Button
               size="lg"
               variant="outline"
               className="border-white text-white hover:bg-blue-700 text-lg h-14 px-8"
+              asChild
             >
-              View Docs
+              <a href="/docs/api" aria-label="View API docs">
+                View Docs
+              </a>
             </Button>
           </div>
         </div>
