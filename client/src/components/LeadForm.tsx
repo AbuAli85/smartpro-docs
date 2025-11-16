@@ -14,6 +14,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { MAKE_WEBHOOK_URL } from "@/config/webhook";
+import { trackFormSubmit } from "@/lib/googleAnalytics";
 
 export interface LeadFormData {
   name: string;
@@ -39,6 +40,7 @@ export function LeadForm({ className }: LeadFormProps) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [submitAttempts, setSubmitAttempts] = useState(0);
 
   const serviceOptions = [
     "Company Formation",
@@ -94,6 +96,22 @@ export function LeadForm({ className }: LeadFormProps) {
     setError("");
     setSuccess(false);
 
+    // Basic rate limiting: prevent more than 3 submissions per minute
+    if (submitAttempts >= 3) {
+      const lastSubmitTime = localStorage.getItem("lastFormSubmitTime");
+      if (lastSubmitTime) {
+        const timeSinceLastSubmit = Date.now() - parseInt(lastSubmitTime);
+        if (timeSinceLastSubmit < 60000) {
+          setError("Please wait a moment before submitting again.");
+          return;
+        } else {
+          // Reset counter after 1 minute
+          setSubmitAttempts(0);
+          localStorage.removeItem("lastFormSubmitTime");
+        }
+      }
+    }
+
     if (!validateForm()) {
       return;
     }
@@ -117,6 +135,13 @@ export function LeadForm({ className }: LeadFormProps) {
       });
 
       if (response.ok) {
+        // Track successful form submission
+        trackFormSubmit("consultation_lead_form", {
+          service_interested: formData.serviceInterested,
+          has_business_name: !!formData.businessName,
+          has_extra_details: !!formData.extraDetails,
+        });
+
         // Success - clear form and show success message
         setFormData({
           name: "",
@@ -126,13 +151,35 @@ export function LeadForm({ className }: LeadFormProps) {
           extraDetails: "",
         });
         setSuccess(true);
+        // Reset submit attempts on success
+        setSubmitAttempts(0);
+        localStorage.removeItem("lastFormSubmitTime");
       } else {
         // Error response
+        const errorText = await response.text().catch(() => "Unknown error");
+        console.error("Webhook error:", response.status, errorText);
         setError("Something went wrong. Please try again or email us directly.");
+        setSubmitAttempts((prev) => prev + 1);
+        localStorage.setItem("lastFormSubmitTime", Date.now().toString());
       }
     } catch (err) {
       console.error("Error submitting form:", err);
-      setError("Something went wrong. Please try again or email us directly.");
+      
+      // Track form submission error
+      trackFormSubmit("consultation_lead_form_error", {
+        error_type: err instanceof Error ? err.message : "unknown",
+      });
+      
+      // Check if it's a network error
+      if (err instanceof TypeError && err.message.includes("fetch")) {
+        setError("Network error. Please check your internet connection and try again.");
+      } else {
+        setError("Something went wrong. Please try again or email us directly.");
+      }
+      
+      // Increment submit attempts for rate limiting
+      setSubmitAttempts((prev) => prev + 1);
+      localStorage.setItem("lastFormSubmitTime", Date.now().toString());
     } finally {
       setLoading(false);
     }
