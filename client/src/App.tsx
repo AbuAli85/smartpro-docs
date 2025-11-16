@@ -20,6 +20,7 @@ const About = lazy(() => import("./pages/About"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Features = lazy(() => import("./pages/Features"));
 const Contact = lazy(() => import("./pages/Contact"));
+const Consultation = lazy(() => import("./pages/Consultation"));
 const HelpCenter = lazy(() => import("./pages/HelpCenter"));
 const Community = lazy(() => import("./pages/Community"));
 const Blog = lazy(() => import("./pages/Blog"));
@@ -91,6 +92,7 @@ function Router() {
         <Route path={"/pricing"} component={Pricing} />
         <Route path={"/features"} component={Features} />
         <Route path={"/contact"} component={Contact} />
+        <Route path={"/consultation"} component={Consultation} />
         <Route path={"/blog"} component={Blog} />
         <Route path={"/blog/:id"} component={BlogArticle} />
         <Route path={"/help"} component={HelpCenter} />
