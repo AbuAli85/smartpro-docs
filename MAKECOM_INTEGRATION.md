@@ -4,12 +4,23 @@ This document describes how the Smartpro consultation form integrates with the M
 
 ## 🔄 Automation Flow Overview
 
-Your Make.com scenario processes leads through 4 steps:
+Your Make.com scenario processes leads through an intelligent routing system:
 
 1. **Webhook** → Receives form submission from frontend
-2. **Google Sheets** → Saves lead data to spreadsheet
-3. **OpenAI GPT** → Generates personalized welcome email
-4. **Resend** → Sends email to the lead
+2. **Google Sheets** → Saves lead data to spreadsheet (initial save)
+3. **Router** → Routes leads based on service type
+4. **OpenAI GPT** → Generates service-specific personalized email (different prompts per service)
+5. **Resend** → Sends email to the lead
+6. **Google Sheets Update** → Updates row with email status and preview
+
+### Service-Specific Routing
+
+The automation uses a **BasicRouter** to send leads through different paths based on their selected service:
+
+- **Accounting** → Specialized accounting-focused email
+- **PRO Services** → PRO/government services-focused email
+- **Company Formation** → Business setup-focused email
+- **Other Services** → General business services email
 
 ## 📤 Frontend → Make.com Data Flow
 
@@ -62,24 +73,79 @@ Your automation saves leads to a Google Sheet with the following columns:
 
 ## 🤖 AI Email Generation
 
-The OpenAI module generates personalized emails using GPT-5.1 model:
+The automation uses **service-specific AI prompts** via a router system. Each service type gets a customized email:
 
-**System Prompt:**
+### Routing System
+
+**Module 8: BasicRouter** routes leads to different OpenAI modules based on `service_interested`:
+
+1. **Accounting Route** (Module 3)
+   - Filter: `service_interested` contains "Accounting"
+   - Focus: Bookkeeping, reporting, VAT, financial statements
+
+2. **PRO Services Route** (Module 10)
+   - Filter: `service_interested` contains "PRO Services"
+   - Focus: Government paperwork, visas, licenses, labor/immigration
+
+3. **Company Formation Route** (Module 13)
+   - Filter: `service_interested` contains "Company Formation"
+   - Focus: Business setup, licensing, structure, documentation
+
+4. **Other Services Route** (Module 16)
+   - Default route for VAT, consulting, advisory, or other services
+   - General business services focus
+
+### Service-Specific Prompts
+
+Each route uses GPT-5.1 model with customized system prompts:
+
+**System Prompt (CRITICAL - Update in Make.com):**
 ```
-- Acts as email assistant for Smartpro Business Hub & Services
-- Writes short, clear, professional emails (120-200 words)
-- Friendly, polite, professional tone
+You are an email assistant for Smartpro Business Hub & Services.
+
+CRITICAL RULES - FOLLOW EXACTLY:
+1. DO NOT include "Subject:" or any subject line - the email template handles this
+2. DO NOT include "Dear [Name]" or any greeting - the template already has "Dear {{client_name}},"
+3. DO NOT include signature blocks like "Best regards," "Warm regards," "Sincerely," etc. - template handles this
+4. DO NOT include contact information like "[Your Name]", "[Your Phone Number]", "[Your Email]" - template handles this
+5. DO NOT include "Smartpro Business Hub & Services" in the body - it's already in the template header and footer
+
+WHAT TO INCLUDE:
+- Thank the client for contacting Smartpro
+- Explain how Smartpro can help with their specific service request
+- Ask 1-3 relevant clarifying questions
+- Invite them to reply or schedule a call
+- Keep it 120-200 words
+- Use friendly, professional tone
 - No prices, timelines, or legal guarantees
-- Always includes clear next step
+
+OUTPUT FORMAT:
+Return ONLY the main body text. Start directly with thanking them. No greeting, no subject, no signature.
 ```
 
-**User Prompt:**
+**User Prompt (CRITICAL - Update in Make.com):**
 ```
-- Client name: {{1.client_name}}
+Write the main body content for a welcome email. DO NOT include greeting, subject, or signature.
+
+Client details:
+- Name: {{1.client_name}}
 - Email: {{1.email}}
 - Business: {{1.business_name}}
-- Service interested: {{1.service_interested}}
-- Extra details: {{1.notes}}
+- Service: {{1.service_interested}}
+- Notes: {{1.notes}}
+
+Requirements:
+1. Thank them for contacting Smartpro Business Hub & Services
+2. Explain how we can help with {{1.service_interested}}
+3. Ask 1-3 specific questions about their needs
+4. Invite them to reply or schedule a call
+
+CRITICAL: 
+- Start directly with "Thank you for..." (no "Dear" or greeting)
+- End with invitation to reply or call (no "Best regards" or signature)
+- Do NOT mention "Subject:" anywhere
+- Do NOT include placeholders like [Your Name]
+- Write as if you're continuing from "Dear {{1.client_name}}," which is already in the template
 ```
 
 **Model Configuration:**
@@ -95,17 +161,21 @@ The OpenAI module generates personalized emails using GPT-5.1 model:
 - 1-3 clarifying questions
 - Call to action (reply or book call)
 
-**Note:** The AI-generated content is inserted into the email template using:
-```
-{{replace(3.choices[1].message.content; "\n"; "<br>")}}
-```
-This converts newlines to HTML line breaks for proper email formatting.
+**Note:** The AI-generated content is inserted into the email template using different module references based on route:
+- Accounting: `{{3.choices[1].message.content}}`
+- PRO Services: `{{10.choices[1].message.content}}`
+- Company Formation: `{{13.choices[1].message.content}}`
+- Other: `{{16.choices[1].message.content}}`
+
+The content is wrapped in a `<div>` with `white-space:pre-wrap` to preserve formatting.
 
 ## 📧 Email Template
 
 The Resend module sends emails with:
 
 **From:** `Smartpro Business Hub <noreply@portal.thesmartpro.io>`
+
+**Reply-To:** `info@thesmartpro.io` (allows clients to reply directly)
 
 **Subject:** `Welcome to Smartpro – {{1.service_interested}}`
 
@@ -237,15 +307,18 @@ The OpenAI module generates content that:
 ✅ **Success Flow:**
 1. User submits form on `/consultation`
 2. Frontend sends POST to Make.com webhook
-3. Make.com saves to Google Sheets
-4. Make.com generates AI email
-5. Make.com sends email via Resend
-6. Lead receives personalized welcome email
+3. Make.com saves to Google Sheets (Status: "Pending")
+4. Router determines service type and routes to appropriate path
+5. Service-specific OpenAI module generates personalized email
+6. Make.com sends email via Resend (Reply-To: info@thesmartpro.io)
+7. Google Sheets row updated (Status: "Sent", Preview added)
+8. Lead receives service-specific personalized welcome email
 
 ❌ **Error Handling:**
 - Network errors: Frontend shows user-friendly message
 - Webhook errors: Make.com scenario handles errors
-- Email failures: Tracked in Google Sheets (Email Status column)
+- Email failures: Tracked in Google Sheets (Email Status remains "Pending")
+- Routing errors: Default route catches unmatched services
 
 ## 🔍 Service Types
 
