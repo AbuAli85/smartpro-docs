@@ -15,7 +15,12 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, CheckCircle, AlertCircle, User, Building2, Briefcase, MessageSquare } from "lucide-react";
 import { webhookClient, WebhookError } from "@/lib/webhookClient";
-import { MakeWebhookPayload, formatServicesForMake } from "@/types/webhook";
+import { 
+  MakeWebhookPayload, 
+  formatServicesForMake,
+  SERVICE_TO_MAKE_MAP,
+  MakeServiceType,
+} from "@/types/webhook";
 import { trackFormSubmit } from "@/lib/googleAnalytics";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -208,26 +213,30 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
 
   /**
    * Builds the webhook payload according to Make.com flow requirements
+   * CRITICAL: service_interested must be included for Make.com routing
    */
   const buildWebhookPayload = (): MakeWebhookPayload => {
-    // Convert services to Make.com format
+    // Convert services array to Make.com format (REQUIRED for routing)
     const serviceInterested = formatServicesForMake(formData.services);
     
     // Build notes with all additional information
     const notes = buildNotesField();
     
-    return {
-      // Required fields for Make.com flow routing
+    // Build the payload - ensuring all required fields are present
+    const payload: MakeWebhookPayload = {
+      // REQUIRED: These fields are essential for Make.com flow routing
       client_name: formData.name.trim(),
       email: formData.email.trim(),
       business_name: formData.company?.trim() || "",
-      service_interested: serviceInterested,
-      notes: notes,
+      service_interested: serviceInterested, // CRITICAL: Used for email routing
+      notes: notes || "", // Ensure it's never undefined
       
-      // Additional structured fields for future use
+      // Additional structured fields
       phone: formData.phone?.trim() || undefined,
       business_type: formData.businessType || undefined,
-      services: formData.services.join(", "),
+      services: formData.services.length > 0 
+        ? formData.services.map(s => SERVICE_TO_MAKE_MAP[s] || s).join(", ")
+        : undefined,
       budget: formData.budget || undefined,
       timeline: formData.timeline || undefined,
       preferred_contact: formData.preferredContact || undefined,
@@ -237,6 +246,14 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
       source: "smartpro-consultation-form",
       language: language,
     };
+    
+    // Validation: Ensure service_interested is never empty
+    if (!payload.service_interested || payload.service_interested.trim().length === 0) {
+      console.warn('Warning: service_interested is empty, using default');
+      payload.service_interested = MakeServiceType.OTHER;
+    }
+    
+    return payload;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
