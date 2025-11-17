@@ -412,35 +412,63 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('smartpro_language', language);
       // Set HTML dir attribute for RTL support
       const htmlElement = document.documentElement;
-      htmlElement.setAttribute('dir', language === 'ar' ? 'rtl' : 'ltr');
+      const dir = language === 'ar' ? 'rtl' : 'ltr';
+      
+      htmlElement.setAttribute('dir', dir);
       htmlElement.setAttribute('lang', language);
       
       // Also set on body for better compatibility
-      const bodyElement = document.body;
-      if (bodyElement) {
-        bodyElement.setAttribute('dir', language === 'ar' ? 'rtl' : 'ltr');
-      }
+      // Use requestAnimationFrame to ensure body exists
+      requestAnimationFrame(() => {
+        const bodyElement = document.body;
+        if (bodyElement) {
+          bodyElement.setAttribute('dir', dir);
+        }
+      });
+      
+      // Save to localStorage
+      localStorage.setItem('smartpro_language', language);
       
       // Force a reflow to ensure styles apply
       htmlElement.offsetHeight;
+      
+      console.log('🌐 Language effect: Set to', language, 'dir:', dir);
     }
   }, [language]);
 
   const setLanguage = useCallback((lang: Language) => {
     console.log('🔄 Setting language to:', lang);
-    setLanguageState(lang);
-    // Force immediate update
+    
+    // Update state first
+    setLanguageState((prevLang) => {
+      console.log('🔄 Current language before change:', prevLang);
+      return lang;
+    });
+    
+    // Force immediate DOM update
     if (typeof window !== 'undefined') {
       const htmlElement = document.documentElement;
       htmlElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
       htmlElement.setAttribute('lang', lang);
+      
       const bodyElement = document.body;
       if (bodyElement) {
         bodyElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
       }
+      
+      // Save to localStorage immediately
+      localStorage.setItem('smartpro_language', lang);
+      
+      // Force a reflow to ensure styles apply
+      htmlElement.offsetHeight;
+      
+      // Dispatch custom event for components that might be listening
+      window.dispatchEvent(new CustomEvent('languagechange', { detail: { language: lang } }));
+      
+      console.log('🔄 Language set to:', lang);
+      console.log('🔄 HTML dir attribute:', htmlElement.getAttribute('dir'));
     }
   }, []);
 

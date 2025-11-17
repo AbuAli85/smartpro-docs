@@ -14,12 +14,24 @@ export function LanguageSwitcher() {
   const handleLanguageChange = (lang: 'en' | 'ar') => {
     console.log('🌐 LanguageSwitcher: Changing language to', lang);
     console.log('🌐 Current language before change:', language);
+    
+    // Prevent if already selected
+    if (language === lang) {
+      console.log('🌐 Language already set to', lang);
+      return;
+    }
+    
+    // Update language
     setLanguage(lang);
-    // Force a small delay to ensure state updates
+    
+    // Force a small delay to ensure state updates and DOM changes
     setTimeout(() => {
       console.log('🌐 Language after change:', lang);
-      window.dispatchEvent(new Event('languagechange'));
-    }, 0);
+      // Verify the change took effect
+      const currentLang = document.documentElement.getAttribute('lang');
+      const currentDir = document.documentElement.getAttribute('dir');
+      console.log('🌐 Verified - HTML lang:', currentLang, 'dir:', currentDir);
+    }, 100);
   };
 
   return (
@@ -39,13 +51,13 @@ export function LanguageSwitcher() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem
-          onClick={() => handleLanguageChange('en')}
+          onSelect={() => handleLanguageChange('en')}
           className={language === 'en' ? 'bg-accent' : ''}
         >
           English
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() => handleLanguageChange('ar')}
+          onSelect={() => handleLanguageChange('ar')}
           className={language === 'ar' ? 'bg-accent' : ''}
         >
           العربية
