@@ -286,6 +286,21 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
       // Build payload
       const payload = buildWebhookPayload();
       
+      // Debug: Log payload to verify service_interested is included
+      if (import.meta.env.DEV) {
+        console.log('📤 Webhook Payload:', JSON.stringify(payload, null, 2));
+        console.log('🔑 service_interested:', payload.service_interested);
+        console.log('📋 services array:', formData.services);
+      }
+      
+      // Validate critical field before sending
+      if (!payload.service_interested || payload.service_interested.trim().length === 0) {
+        console.error('❌ CRITICAL: service_interested is missing or empty!');
+        setError('Please select at least one service.');
+        setLoading(false);
+        return;
+      }
+      
       // Send to Make.com webhook
       const response = await webhookClient.send(payload);
 

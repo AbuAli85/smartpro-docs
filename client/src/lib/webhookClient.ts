@@ -47,6 +47,70 @@ export class WebhookClient {
       };
     }
 
+    // CRITICAL: Ensure service_interested is always present
+    // If missing, try to derive it from services field
+    if (!payload.service_interested || payload.service_interested.trim().length === 0) {
+      console.warn('⚠️ service_interested missing, attempting to derive from services field');
+      
+      // Try to get from services field
+      if (payload.services) {
+        // If services is a string, try to map it
+        if (typeof payload.services === 'string') {
+          const serviceKey = payload.services.trim();
+          // Import the mapping (we'll need to make it available)
+          const serviceMap: Record<string, string> = {
+            'projectManagement': 'Project Management',
+            'employeeManagement': 'Employee Management',
+            'accounting': 'Accounting',
+            'proServices': 'PRO Services',
+            'companyFormation': 'Company Formation',
+            'vat': 'VAT',
+            'businessConsulting': 'Business Consulting',
+            'crm': 'CRM & Client Management',
+            'elearning': 'E-Learning Platform',
+            'contractManagement': 'Contract Management',
+            'workflowAutomation': 'Workflow Automation',
+            'analytics': 'Advanced Analytics',
+            'api': 'API & Integrations',
+            'support': '24/7 Support',
+            'other': 'Other',
+          };
+          payload.service_interested = serviceMap[serviceKey] || serviceKey;
+          console.log('✅ Derived service_interested:', payload.service_interested);
+        } else if (Array.isArray(payload.services)) {
+          // If services is an array, format it
+          const serviceMap: Record<string, string> = {
+            'projectManagement': 'Project Management',
+            'employeeManagement': 'Employee Management',
+            'accounting': 'Accounting',
+            'proServices': 'PRO Services',
+            'companyFormation': 'Company Formation',
+            'vat': 'VAT',
+            'businessConsulting': 'Business Consulting',
+            'crm': 'CRM & Client Management',
+            'elearning': 'E-Learning Platform',
+            'contractManagement': 'Contract Management',
+            'workflowAutomation': 'Workflow Automation',
+            'analytics': 'Advanced Analytics',
+            'api': 'API & Integrations',
+            'support': '24/7 Support',
+            'other': 'Other',
+          };
+          const servicesArray = payload.services as string[];
+          payload.service_interested = servicesArray
+            .map((s: string) => serviceMap[s] || s)
+            .join(', ');
+          console.log('✅ Derived service_interested from array:', payload.service_interested);
+        }
+      }
+      
+      // If still missing, use default
+      if (!payload.service_interested || payload.service_interested.trim().length === 0) {
+        payload.service_interested = 'Other';
+        console.warn('⚠️ Using default service_interested: Other');
+      }
+    }
+
     // Add metadata
     const enrichedPayload: MakeWebhookPayload = {
       ...payload,
@@ -88,10 +152,26 @@ export class WebhookClient {
    * Sends a single request to the webhook
    */
   private async sendRequest(payload: MakeWebhookPayload): Promise<MakeWebhookResponse> {
+    // Final validation: Ensure service_interested is present
+    if (!payload.service_interested || payload.service_interested.trim().length === 0) {
+      console.error('❌ WebhookClient: service_interested is missing in payload!', payload);
+      throw new WebhookError(
+        'Payload validation failed: service_interested is required',
+        400
+      );
+    }
+
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.options.timeout);
 
     try {
+      // Log payload in development for debugging
+      if (import.meta.env.DEV) {
+        console.log('🌐 Sending to webhook:', this.url);
+        console.log('📦 Payload includes service_interested:', !!payload.service_interested);
+        console.log('📦 service_interested value:', payload.service_interested);
+      }
+
       const response = await fetch(this.url, {
         method: 'POST',
         headers: {
