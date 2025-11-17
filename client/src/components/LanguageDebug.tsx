@@ -5,6 +5,11 @@ export function LanguageDebug() {
   const { language, t } = useLanguage();
 
   useEffect(() => {
+    // Only log in dev or when debug flag is set
+    const showDebug = import.meta.env.DEV || localStorage.getItem('debug_language') === 'true';
+    
+    if (!showDebug) return;
+    
     // Use a small delay to ensure DOM is ready
     const timer = setTimeout(() => {
       console.log('🌐 Language Debug:', {
