@@ -1,0 +1,32 @@
+{
+  "from": "drive",
+  "mode": "select",
+  "values": {
+    "0": "{{now}}",
+    "1": "{{1.client_name}}",
+    "2": "{{1.email}}",
+    "3": "{{1.phone}}",
+    "4": "{{1.business_name}}",
+    "5": "{{1.business_type}}",
+    "6": "{{1.service_interested}}",
+    "7": "{{1.services}}",
+    "8": "{{1.budget}}",
+    "9": "{{1.timeline}}",
+    "10": "{{1.preferred_contact}}",
+    "11": "{{1.preferred_time}}",
+    "12": "{{1.location}}",
+    "13": "{{1.message}}",
+    "14": "{{1.notes}}",
+    "15": "{{1.language}}",
+    "16": "{{1.source}}",
+    "17": "Pending",
+    "18": ""
+  },
+  "sheetId": "leads",
+  "spreadsheetId": "/1OAws5Z_vqlJIi0_4BtkzqLjzFre3e23h/1NVjl-yG95DLLjyF3HQ6qMBBCBQUQQe3HO_E6-MnVGeU",
+  "includesHeaders": true,
+  "insertDataOption": "INSERT_ROWS",
+  "valueInputOption": "USER_ENTERED",
+  "insertUnformatted": false
+}
+

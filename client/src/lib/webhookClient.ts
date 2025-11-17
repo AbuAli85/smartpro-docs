@@ -34,20 +34,7 @@ export class WebhookClient {
    * Sends payload to Make.com webhook with retry logic
    */
   async send(payload: MakeWebhookPayload): Promise<MakeWebhookResponse> {
-    // Validate payload before sending
-    const validation = validateWebhookPayload(payload);
-    if (!validation.valid) {
-      return {
-        success: false,
-        error: {
-          code: 'VALIDATION_ERROR',
-          message: 'Payload validation failed',
-          details: validation.errors,
-        },
-      };
-    }
-
-    // CRITICAL: Ensure service_interested is always present
+    // CRITICAL: Ensure service_interested is always present FIRST (before validation)
     // If missing, try to derive it from services field
     if (!payload.service_interested || payload.service_interested.trim().length === 0) {
       console.warn('⚠️ service_interested missing, attempting to derive from services field');
@@ -57,7 +44,7 @@ export class WebhookClient {
         // If services is a string, try to map it
         if (typeof payload.services === 'string') {
           const serviceKey = payload.services.trim();
-          // Import the mapping (we'll need to make it available)
+          // Service mapping - must match SERVICE_TO_MAKE_MAP
           const serviceMap: Record<string, string> = {
             'projectManagement': 'Project Management',
             'employeeManagement': 'Employee Management',
@@ -75,8 +62,16 @@ export class WebhookClient {
             'support': '24/7 Support',
             'other': 'Other',
           };
-          payload.service_interested = serviceMap[serviceKey] || serviceKey;
-          console.log('✅ Derived service_interested:', payload.service_interested);
+          // Check if it's already formatted (contains space or &)
+          if (serviceKey.includes(' ') || serviceKey.includes('&')) {
+            // Already formatted, use as-is
+            payload.service_interested = serviceKey;
+            console.log('✅ service_interested already formatted:', payload.service_interested);
+          } else {
+            // Raw key, need to format it
+            payload.service_interested = serviceMap[serviceKey] || serviceKey;
+            console.log('✅ Derived service_interested from raw key:', payload.service_interested);
+          }
         } else if (Array.isArray(payload.services)) {
           // If services is an array, format it
           const serviceMap: Record<string, string> = {
@@ -111,6 +106,26 @@ export class WebhookClient {
       }
     }
 
+    // Final check: Ensure service_interested is set (should never be empty at this point)
+    if (!payload.service_interested || payload.service_interested.trim().length === 0) {
+      console.error('❌ CRITICAL: service_interested is still empty after fallback! Using default.');
+      payload.service_interested = 'Other';
+    }
+
+    // Validate payload (after ensuring service_interested is present)
+    const validation = validateWebhookPayload(payload);
+    if (!validation.valid) {
+      console.error('❌ Payload validation failed:', validation.errors);
+      return {
+        success: false,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Payload validation failed',
+          details: validation.errors,
+        },
+      };
+    }
+
     // Add metadata
     const enrichedPayload: MakeWebhookPayload = {
       ...payload,
@@ -118,6 +133,15 @@ export class WebhookClient {
       user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
       referrer: typeof document !== 'undefined' ? document.referrer : undefined,
     };
+
+    // Log final payload in development
+    if (import.meta.env.DEV) {
+      console.log('📦 Final payload being sent:', {
+        service_interested: enrichedPayload.service_interested,
+        services: enrichedPayload.services,
+        has_service_interested: !!enrichedPayload.service_interested,
+      });
+    }
 
     // Attempt with retries
     let lastError: Error | null = null;
