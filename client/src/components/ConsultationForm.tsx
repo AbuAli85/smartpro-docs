@@ -14,7 +14,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, CheckCircle, AlertCircle, User, Building2, Briefcase, MessageSquare } from "lucide-react";
-import { MAKE_WEBHOOK_URL } from "@/config/webhook";
+import { webhookClient, WebhookError } from "@/lib/webhookClient";
+import { MakeWebhookPayload, formatServicesForMake } from "@/types/webhook";
 import { trackFormSubmit } from "@/lib/googleAnalytics";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -155,26 +156,87 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
     return true;
   };
 
-  // Map service keys to Make.com expected service names
-  const mapServiceToMakeFormat = (serviceKey: string): string => {
-    const serviceMap: Record<string, string> = {
-      'companyFormation': 'Company Formation',
-      'proServices': 'PRO Services',
-      'accounting': 'Accounting',
-      'vat': 'VAT',
-      'businessConsulting': 'Business Consulting',
-      'employeeManagement': 'Employee Management',
-      'crm': 'CRM & Client Management',
-      'projectManagement': 'Project Management',
-      'elearning': 'E-Learning Platform',
-      'contractManagement': 'Contract Management',
-      'workflowAutomation': 'Workflow Automation',
-      'analytics': 'Advanced Analytics',
-      'api': 'API & Integrations',
-      'support': '24/7 Support',
-      'other': 'Other',
+  /**
+   * Builds comprehensive notes field with all additional information
+   * This ensures all data is captured in Google Sheets even if Make.com flow
+   * doesn't use all fields directly
+   */
+  const buildNotesField = (): string => {
+    const notesParts: string[] = [];
+    
+    // Primary message
+    if (formData.message) {
+      notesParts.push(formData.message);
+    }
+    
+    // Contact information
+    if (formData.phone) {
+      notesParts.push(`Phone: ${formData.phone}`);
+    }
+    if (formData.location) {
+      notesParts.push(`Location: ${formData.location}`);
+    }
+    
+    // Business details
+    if (formData.businessType) {
+      notesParts.push(`Business Type: ${t(`businessType.${formData.businessType}`)}`);
+    }
+    
+    // Project details
+    if (formData.budget) {
+      notesParts.push(`Budget: ${t(`budget.${formData.budget}`)}`);
+    }
+    if (formData.timeline) {
+      notesParts.push(`Timeline: ${t(`timeline.${formData.timeline}`)}`);
+    }
+    
+    // Preferences
+    if (formData.preferredContact) {
+      notesParts.push(`Preferred Contact: ${t(`contact.${formData.preferredContact}`)}`);
+    }
+    if (formData.preferredTime) {
+      notesParts.push(`Preferred Time: ${t(`time.${formData.preferredTime}`)}`);
+    }
+    
+    // Metadata
+    if (language) {
+      notesParts.push(`Language: ${language === 'ar' ? 'Arabic' : 'English'}`);
+    }
+    
+    return notesParts.join("\n");
+  };
+
+  /**
+   * Builds the webhook payload according to Make.com flow requirements
+   */
+  const buildWebhookPayload = (): MakeWebhookPayload => {
+    // Convert services to Make.com format
+    const serviceInterested = formatServicesForMake(formData.services);
+    
+    // Build notes with all additional information
+    const notes = buildNotesField();
+    
+    return {
+      // Required fields for Make.com flow routing
+      client_name: formData.name.trim(),
+      email: formData.email.trim(),
+      business_name: formData.company?.trim() || "",
+      service_interested: serviceInterested,
+      notes: notes,
+      
+      // Additional structured fields for future use
+      phone: formData.phone?.trim() || undefined,
+      business_type: formData.businessType || undefined,
+      services: formData.services.join(", "),
+      budget: formData.budget || undefined,
+      timeline: formData.timeline || undefined,
+      preferred_contact: formData.preferredContact || undefined,
+      preferred_time: formData.preferredTime || undefined,
+      location: formData.location?.trim() || undefined,
+      message: formData.message?.trim() || undefined,
+      source: "smartpro-consultation-form",
+      language: language,
     };
-    return serviceMap[serviceKey] || serviceKey;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -204,60 +266,23 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
     setLoading(true);
 
     try {
-      // Convert services array to comma-separated string with proper names
-      const serviceInterested = formData.services
-        .map(mapServiceToMakeFormat)
-        .join(", ");
-
-      // Build notes field with all additional information
-      const notesParts: string[] = [];
-      if (formData.message) notesParts.push(formData.message);
-      if (formData.phone) notesParts.push(`Phone: ${formData.phone}`);
-      if (formData.location) notesParts.push(`Location: ${formData.location}`);
-      if (formData.businessType) notesParts.push(`Business Type: ${t(`businessType.${formData.businessType}`)}`);
-      if (formData.budget) notesParts.push(`Budget: ${t(`budget.${formData.budget}`)}`);
-      if (formData.timeline) notesParts.push(`Timeline: ${t(`timeline.${formData.timeline}`)}`);
-      if (formData.preferredContact) notesParts.push(`Preferred Contact: ${t(`contact.${formData.preferredContact}`)}`);
-      if (formData.preferredTime) notesParts.push(`Preferred Time: ${t(`time.${formData.preferredTime}`)}`);
-      if (language) notesParts.push(`Language: ${language === 'ar' ? 'Arabic' : 'English'}`);
+      // Build payload
+      const payload = buildWebhookPayload();
       
-      const notes = notesParts.join("\n");
+      // Send to Make.com webhook
+      const response = await webhookClient.send(payload);
 
-      const response = await fetch(MAKE_WEBHOOK_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          // Required fields for Make.com flow
-          client_name: formData.name,
-          email: formData.email,
-          business_name: formData.company || "",
-          service_interested: serviceInterested,
-          notes: notes,
-          // Additional fields for future use
-          phone: formData.phone || "",
-          business_type: formData.businessType || "",
-          services: formData.services.join(", "),
-          budget: formData.budget || "",
-          timeline: formData.timeline || "",
-          preferred_contact: formData.preferredContact || "",
-          preferred_time: formData.preferredTime || "",
-          location: formData.location || "",
-          message: formData.message || "",
-          source: "smartpro-consultation-form",
-          language: language,
-        }),
-      });
-
-      if (response.ok) {
+      if (response.success) {
+        // Track successful submission
         trackFormSubmit("consultation_form", {
           services_count: formData.services.length,
           has_budget: !!formData.budget,
           has_timeline: !!formData.timeline,
           language: language,
+          execution_id: response.data?.execution_id,
         });
 
+        // Reset form
         setFormData({
           name: "",
           email: "",
@@ -272,24 +297,36 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
           location: "",
           message: "",
         });
+        
         setSuccess(true);
         setSubmitAttempts(0);
         localStorage.removeItem("lastFormSubmitTime");
       } else {
-        const errorText = await response.text().catch(() => "Unknown error");
-        console.error("Webhook error:", response.status, errorText);
-        setError(t('message.error'));
+        // Handle webhook error response
+        const errorMessage = response.error?.message || t('message.error');
+        setError(errorMessage);
         setSubmitAttempts((prev) => prev + 1);
         localStorage.setItem("lastFormSubmitTime", Date.now().toString());
       }
     } catch (err) {
       console.error("Error submitting form:", err);
       
+      // Track error
       trackFormSubmit("consultation_form_error", {
         error_type: err instanceof Error ? err.message : "unknown",
+        error_code: err instanceof WebhookError ? err.statusCode : undefined,
       });
       
-      if (err instanceof TypeError && err.message.includes("fetch")) {
+      // Handle different error types
+      if (err instanceof WebhookError) {
+        if (err.statusCode === 408) {
+          setError(t('message.error.network'));
+        } else if (err.statusCode >= 400 && err.statusCode < 500) {
+          setError(t('message.error'));
+        } else {
+          setError(t('message.error.network'));
+        }
+      } else if (err instanceof TypeError && err.message.includes("fetch")) {
         setError(t('message.error.network'));
       } else {
         setError(t('message.error'));
