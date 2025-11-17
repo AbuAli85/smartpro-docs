@@ -414,8 +414,18 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     if (typeof window !== 'undefined') {
       localStorage.setItem('smartpro_language', language);
       // Set HTML dir attribute for RTL support
-      document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-      document.documentElement.lang = language;
+      const htmlElement = document.documentElement;
+      htmlElement.setAttribute('dir', language === 'ar' ? 'rtl' : 'ltr');
+      htmlElement.setAttribute('lang', language);
+      
+      // Also set on body for better compatibility
+      const bodyElement = document.body;
+      if (bodyElement) {
+        bodyElement.setAttribute('dir', language === 'ar' ? 'rtl' : 'ltr');
+      }
+      
+      // Force a reflow to ensure styles apply
+      htmlElement.offsetHeight;
     }
   }, [language]);
 

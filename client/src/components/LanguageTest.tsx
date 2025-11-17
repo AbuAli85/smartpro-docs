@@ -14,7 +14,7 @@ export function LanguageTest() {
       <h3 className="font-bold mb-2">Language Test</h3>
       <div className="space-y-2 text-sm">
         <div>Current: <strong>{language}</strong></div>
-        <div>HTML dir: <strong>{document.documentElement.dir}</strong></div>
+        <div>HTML dir: <strong>{document.documentElement.getAttribute('dir') || document.documentElement.dir || 'NOT SET'}</strong></div>
         <div>Test translation: <strong>{t('nav.home')}</strong></div>
         <div className="flex gap-2">
           <Button 
