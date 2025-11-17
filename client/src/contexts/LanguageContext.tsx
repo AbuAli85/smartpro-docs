@@ -109,7 +109,7 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.whoItem2': 'Founders who need support with company formation and PRO services',
     'consultation.whoItem3': 'Finance and operations teams looking for reliable accounting and VAT support',
     'consultation.whoItem4': 'Decision-makers who want a long-term, professional business partner',
-    'consultation.outcomesTitle': 'What You'll Walk Away With',
+    'consultation.outcomesTitle': "What You'll Walk Away With",
     'consultation.outcomesIntro': 'The goal of this session is to give you clarity and a concrete next step, not just a sales call.',
     'consultation.outcome1': 'A clearer picture of your current situation and priorities',
     'consultation.outcome2': '2–3 practical recommendations tailored to your business',
