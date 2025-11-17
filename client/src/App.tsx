@@ -58,6 +58,7 @@ import { ToastContainer } from "./components/ToastContainer";
 // Lazy load non-critical widgets to improve INP/LCP
 const LiveChat = lazy(() => import("./components/LiveChat"));
 const EmailCapture = lazy(() => import("./components/EmailCapture"));
+import { LanguageDebug } from "./components/LanguageDebug";
 
 // Loading fallback component
 function PageLoader() {
@@ -169,6 +170,7 @@ function App() {
               <Suspense fallback={null}>
                 <EmailCapture />
               </Suspense>
+              {import.meta.env.DEV && <LanguageDebug />}
               {(import.meta.env.DEV || (typeof window !== 'undefined' && localStorage.getItem('debug_webvitals') === 'true')) && (
                 <CoreWebVitalsMonitor />
               )}

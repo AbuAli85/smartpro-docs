@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, ReactNode } from 'react';
 
 type Language = 'en' | 'ar';
 
@@ -423,23 +423,33 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     setLanguageState(lang);
   };
 
-  const t = (key: string): string => {
-    const translation = translations[language]?.[key];
-    if (!translation) {
-      // Fallback to English if translation is missing
-      const fallback = translations['en']?.[key];
-      if (fallback) {
-        console.warn(`Translation missing for key "${key}" in language "${language}", using English fallback`);
-        return fallback;
+  // Memoize the translation function to prevent recreation on every render
+  const t = useMemo(() => {
+    return (key: string): string => {
+      const translation = translations[language]?.[key];
+      if (!translation) {
+        // Fallback to English if translation is missing
+        const fallback = translations['en']?.[key];
+        if (fallback) {
+          console.warn(`Translation missing for key "${key}" in language "${language}", using English fallback`);
+          return fallback;
+        }
+        console.warn(`Translation missing for key "${key}" in all languages`);
+        return key;
       }
-      console.warn(`Translation missing for key "${key}" in all languages`);
-      return key;
-    }
-    return translation;
-  };
+      return translation;
+    };
+  }, [language]);
+
+  // Memoize the context value to prevent unnecessary re-renders
+  const contextValue = useMemo(() => ({
+    language,
+    setLanguage,
+    t,
+  }), [language, t]);
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={contextValue}>
       {children}
     </LanguageContext.Provider>
   );
