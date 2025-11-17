@@ -248,7 +248,7 @@ This document defines the **single source of truth** for the Smartpro consultati
 **Module Name:** Resend Send Email
 
 **Configuration:**
-- **To:** `{{2.email}}`
+- **To:** `{{1.email}}` ⚠️ **Must be a string** (use `{{1.email}}` from webhook, NOT `{{2.email}}`)
 - **From:** `Smartpro Business Hub <noreply@portal.thesmartpro.io>`
 - **Reply-To:** `info@thesmartpro.io`
 - **Subject:** Based on language:
@@ -256,8 +256,8 @@ This document defines the **single source of truth** for the Smartpro consultati
   - Arabic: `تم استلام طلب الاستشارة الخاص بك – مركز سمارت برو للأعمال والخدمات`
 
 **Template Selection:**
-- Use **If** module to check `{{2.language}}`
-- If `{{2.language}} === "ar"` → Use Arabic template
+- Use **Filter** on Resend module to check `{{1.language}}` or `{{25.language}}`
+- If `{{1.language}} === "ar"` → Use Arabic template
 - Else → Use English template
 
 **Template Variables:**

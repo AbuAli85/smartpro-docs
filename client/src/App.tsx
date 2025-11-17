@@ -23,6 +23,7 @@ const Features = lazy(() => import("./pages/Features"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Consultation = lazy(() => import("./pages/Consultation"));
 const ConsultationThankYou = lazy(() => import("./pages/ConsultationThankYou"));
+const Book = lazy(() => import("./pages/Book"));
 const HelpCenter = lazy(() => import("./pages/HelpCenter"));
 const Community = lazy(() => import("./pages/Community"));
 const Blog = lazy(() => import("./pages/Blog"));
@@ -104,6 +105,7 @@ function Router() {
         <Route path={"/contact"} component={Contact} />
         <Route path={"/consultation"} component={Consultation} />
         <Route path={"/consultation/thanks"} component={ConsultationThankYou} />
+        <Route path={"/book"} component={Book} />
         <Route path={"/blog"} component={Blog} />
         <Route path={"/blog/:id"} component={BlogArticle} />
         <Route path={"/help"} component={HelpCenter} />

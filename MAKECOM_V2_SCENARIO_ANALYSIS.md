@@ -213,6 +213,29 @@ Complete analysis of the actual Make.com scenario structure based on exported JS
 
 ---
 
+## 📧 Resend Email Modules (5, 11, 14, 17)
+
+**Type:** `resend:sendEmail`  
+**Module IDs:** 5 (Accounting), 11 (PRO Services), 14 (Company Formation), 17 (Default)
+
+**Configuration:**
+- **To:** `{{1.email}}` ⚠️ **Must be a string** (from webhook Module 1)
+- **From:** `Smartpro Business Hub <noreply@portal.thesmartpro.io>`
+- **Reply-To:** `info@thesmartpro.io`
+- **Subject:** Language-based (see templates guide)
+
+**⚠️ Common Error:**
+- ❌ **Wrong:** `{{2.email}}` - Module 2 (Google Sheets) doesn't output email
+- ✅ **Correct:** `{{1.email}}` - From webhook payload
+
+**Template Variables:**
+- Client name: `{{1.client_name}}`
+- Service: `{{1.service_interested}}`
+- AI content: `{{3.choices[1].message.content}}` (Accounting), `{{10.*}}` (PRO), `{{13.*}}` (Company Formation), `{{16.*}}` (Default)
+- Language: `{{1.language}}` or `{{25.language}}`
+
+---
+
 ## ⚠️ Critical Field Mappings
 
 ### 1. `primary_message` (not `message`)
