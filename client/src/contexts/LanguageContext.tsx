@@ -100,12 +100,12 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.form.subtitle': 'Fill out the form below and our team will contact you within 24 hours.',
     
     // Consultation extras
-    'consultation.heroBadge': 'Business & Corporate Services – UAE',
+    'consultation.heroBadge': 'Business & Corporate Services – Oman',
     'consultation.primaryCta': 'Request Your Consultation',
     'consultation.heroNote': 'No obligation • 30–45 minutes • Online or phone',
     'consultation.whoTitle': 'Is This Consultation Right for You?',
-    'consultation.whoIntro': 'We work with entrepreneurs and organizations who want clarity, structure, and a professional partner in the UAE.',
-    'consultation.whoItem1': 'Small business owners setting up or restructuring in the UAE',
+    'consultation.whoIntro': 'We work with entrepreneurs and organizations who want clarity, structure, and a professional partner in Oman.',
+    'consultation.whoItem1': 'Small business owners setting up or restructuring in Oman',
     'consultation.whoItem2': 'Founders who need support with company formation and PRO services',
     'consultation.whoItem3': 'Finance and operations teams looking for reliable accounting and VAT support',
     'consultation.whoItem4': 'Decision-makers who want a long-term, professional business partner',
@@ -338,12 +338,12 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.form.subtitle': 'املأ النموذج أدناه وسيتصل بك فريقنا خلال 24 ساعة.',
     
     // Consultation extras
-    'consultation.heroBadge': 'خدمات الأعمال والشركات – الإمارات',
+    'consultation.heroBadge': 'خدمات الأعمال والشركات – عمان',
     'consultation.primaryCta': 'اطلب استشارتك',
     'consultation.heroNote': 'بدون التزام • 30–45 دقيقة • عبر الإنترنت أو الهاتف',
     'consultation.whoTitle': 'هل هذه الاستشارة مناسبة لك؟',
-    'consultation.whoIntro': 'نعمل مع رواد الأعمال والمنظمات الذين يريدون الوضوح والهيكلة وشريكاً مهنياً في الإمارات.',
-    'consultation.whoItem1': 'أصحاب الأعمال الصغيرة الذين يؤسسون أو يعيدون هيكلة أعمالهم في الإمارات',
+    'consultation.whoIntro': 'نعمل مع رواد الأعمال والمنظمات الذين يريدون الوضوح والهيكلة وشريكاً مهنياً في عمان.',
+    'consultation.whoItem1': 'أصحاب الأعمال الصغيرة الذين يؤسسون أو يعيدون هيكلة أعمالهم في عمان',
     'consultation.whoItem2': 'المؤسسون الذين يحتاجون الدعم في تأسيس الشركات وخدمات الـ PRO',
     'consultation.whoItem3': 'فرق المالية والعمليات التي تبحث عن دعم موثوق في المحاسبة وضريبة القيمة المضافة',
     'consultation.whoItem4': 'صانعو القرار الذين يريدون شريكاً تجارياً مهنياً طويل الأمد',
