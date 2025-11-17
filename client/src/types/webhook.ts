@@ -4,31 +4,43 @@
  */
 
 /**
- * Base payload structure expected by Make.com webhook
- * This matches the Make.com flow configuration
+ * Canonical webhook payload structure for Make.com integration
+ * 
+ * This is the single source of truth for the webhook payload contract.
+ * All components (frontend, Make.com, Google Sheets) must align with this structure.
+ * 
+ * @see INTEGRATION_CANONICAL.md for complete integration documentation
  */
 export interface MakeWebhookPayload {
   // Required fields for Make.com flow routing
   client_name: string;
   email: string;
-  business_name: string;
-  service_interested: string;
-  notes: string;
+  service_interested: string; // Primary service (first selected) - used for email routing
+  notes: string; // Comprehensive structured notes (auto-generated)
   
-  // Additional fields for enhanced processing
+  // Contact information
   phone?: string;
-  business_type?: string;
-  services?: string;
-  budget?: string;
-  timeline?: string;
+  location?: string;
   preferred_contact?: string;
   preferred_time?: string;
-  location?: string;
-  message?: string;
-  source?: string;
-  language?: 'en' | 'ar';
+  
+  // Business information
+  business_name?: string;
+  business_type?: string; // Human-readable business type
+  
+  // Service details
+  services?: string[]; // All selected services (array - Make.com Module 25 joins them to string)
+  budget?: string;
+  timeline?: string;
+  
+  // Client message
+  primary_message?: string; // Client's typed message/notes (maps to Sheets column N via Module 25)
   
   // Metadata
+  language?: 'en' | 'ar'; // Form language (default: "en")
+  source?: string; // Source identifier (default: "smartpro-consultation-form")
+  
+  // Optional metadata (not sent by default, but can be included)
   timestamp?: string;
   user_agent?: string;
   referrer?: string;

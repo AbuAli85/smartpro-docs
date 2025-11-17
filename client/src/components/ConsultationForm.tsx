@@ -402,7 +402,9 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
   };
 
   /**
-   * Builds the webhook payload according to Make.com flow requirements
+   * Builds the webhook payload according to canonical integration contract
+   * 
+   * @see INTEGRATION_CANONICAL.md for complete payload specification
    * CRITICAL: service_interested must be a SINGLE service name for proper email routing
    * Make.com routes emails based on service_interested matching specific service names
    */
@@ -411,37 +413,58 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
     // This ensures Make.com routes to the correct email template
     const primaryService = getPrimaryServiceForRouting(formData.services);
     
-    // Format ALL services for reference (kept in notes and services field)
-    const allServicesFormatted = formatAllServicesForMake(formData.services);
+    // Format ALL services as array of human-readable names
+    const allServicesArray = formData.services.length > 0
+      ? formData.services.map((service) => SERVICE_TO_MAKE_MAP[service] || service)
+      : undefined;
     
     // Build notes with all additional information
     const notes = buildNotesField();
     
-    // Build the payload - ensuring all required fields are present
+    // Get business type as human-readable string
+    const businessTypeFormatted = formData.businessType
+      ? t(`businessType.${formData.businessType}`)
+      : undefined;
+    
+    // Build the payload - matching canonical structure
     const payload: MakeWebhookPayload = {
       // REQUIRED: These fields are essential for Make.com flow routing
       client_name: formData.name.trim(),
       email: formData.email.trim(),
-      business_name: formData.company?.trim() || "",
       // CRITICAL: Use PRIMARY service (first selected) for email routing
       // Make.com routes emails based on this single service name matching
-      // If multiple services selected, first one determines email template
       service_interested: primaryService,
       notes: notes || "", // Ensure it's never undefined
       
-      // Additional structured fields
+      // Contact information
       phone: formData.phone?.trim() || undefined,
-      business_type: formData.businessType || undefined,
-      // Keep ALL services for reference (comma-separated)
-      services: formData.services.length > 0 ? allServicesFormatted : undefined,
-      budget: formData.budget || undefined,
-      timeline: formData.timeline || undefined,
-      preferred_contact: formData.preferredContact || undefined,
-      preferred_time: formData.preferredTime || undefined,
       location: formData.location?.trim() || undefined,
-      message: formData.message?.trim() || undefined,
-      source: "smartpro-consultation-form",
+      preferred_contact: formData.preferredContact
+        ? t(`contact.${formData.preferredContact}`)
+        : undefined,
+      preferred_time: formData.preferredTime
+        ? t(`time.${formData.preferredTime}`)
+        : undefined,
+      
+      // Business information
+      business_name: formData.company?.trim() || undefined,
+      business_type: businessTypeFormatted,
+      
+      // Service details
+      // Note: Make.com Module 25 expects services as array and joins them: join(1.services; ", ")
+      // Send as array - Make.com will handle the string conversion
+      services: allServicesArray && allServicesArray.length > 0
+        ? allServicesArray
+        : undefined,
+      budget: formData.budget ? t(`budget.${formData.budget}`) : undefined,
+      timeline: formData.timeline ? t(`timeline.${formData.timeline}`) : undefined,
+      
+      // Client message (Make.com Module 25 expects primary_message, maps to column N)
+      primary_message: formData.message?.trim() || undefined,
+      
+      // Metadata
       language: language,
+      source: "smartpro-consultation-form",
     };
     
     // Validation: Ensure service_interested is never empty
@@ -458,6 +481,7 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
         selectedCount: formData.services.length,
         note: 'Email will be routed based on primaryService (first selected service)',
       });
+      console.log('📤 Canonical Payload:', JSON.stringify(payload, null, 2));
     }
     
     return payload;
