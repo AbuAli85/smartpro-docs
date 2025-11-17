@@ -12,7 +12,7 @@ export default function Header() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [openDesktopDropdown, setOpenDesktopDropdown] = useState<string | null>(null);
   const { theme, toggleTheme, switchable } = useTheme();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const getDropdownId = (label: string) =>
     `desktop-menu-${label.toLowerCase().replace(/\s+/g, "-")}`;
@@ -83,7 +83,8 @@ export default function Header() {
         { label: t('nav.comparison'), href: "/comparison" },
         { label: t('nav.caseStudies'), href: "/case-studies" }
       ]
-    };
+    }
+  ];
   }, [t, language]);
 
   return (
