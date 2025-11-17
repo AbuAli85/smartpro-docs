@@ -72,6 +72,8 @@ export default function Search() {
           setTimeout(() => inputRef.current?.focus(), 0);
         }}
         className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm transition-colors"
+        aria-label="Open search"
+        title="Open search"
       >
         <SearchIcon className="w-4 h-4" />
         <span>Search...</span>
@@ -87,6 +89,8 @@ export default function Search() {
           setTimeout(() => inputRef.current?.focus(), 0);
         }}
         className="md:hidden p-2 hover:bg-slate-100 rounded-lg transition-colors"
+        aria-label="Open search"
+        title="Open search"
       >
         <SearchIcon className="w-5 h-5 text-slate-600" />
       </button>
@@ -113,6 +117,8 @@ export default function Search() {
                       setIsOpen(false);
                       setQuery("");
                     }}
+                    aria-label="Close search"
+                    title="Close search"
                     className="p-1 hover:bg-slate-100 rounded transition-colors"
                   >
                     <X className="w-5 h-5 text-slate-400" />
