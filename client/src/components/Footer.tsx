@@ -1,44 +1,46 @@
 import { Link } from "wouter";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Github, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const { t } = useLanguage();
 
   const footerSections = [
     {
-      title: "Product",
+      title: t('footer.product'),
       links: [
-        { label: "Features", href: "/features" },
-        { label: "Pricing", href: "/pricing" },
-        { label: "Security", href: "/security" },
-        { label: "Integrations", href: "/docs" }
+        { label: t('footer.features'), href: "/features" },
+        { label: t('nav.pricing'), href: "/pricing" },
+        { label: t('footer.security'), href: "/security" },
+        { label: t('footer.integrations'), href: "/docs" }
       ]
     },
     {
-      title: "Company",
+      title: t('footer.company'),
       links: [
-        { label: "About Us", href: "/about" },
-        { label: "Blog", href: "/blog" },
-        { label: "Careers", href: "/careers" },
-        { label: "Contact", href: "/contact" }
+        { label: t('nav.aboutUs'), href: "/about" },
+        { label: t('nav.blog'), href: "/blog" },
+        { label: t('footer.careers'), href: "/careers" },
+        { label: t('nav.contact'), href: "/contact" }
       ]
     },
     {
-      title: "Resources",
+      title: t('footer.resources'),
       links: [
-        { label: "Documentation", href: "/docs" },
-        { label: "API Reference", href: "/docs/api" },
-        { label: "Help Center", href: "/help" },
-        { label: "Community", href: "/community" }
+        { label: t('footer.documentation'), href: "/docs" },
+        { label: t('footer.apiReference'), href: "/docs/api" },
+        { label: t('footer.helpCenter'), href: "/help" },
+        { label: t('footer.community'), href: "/community" }
       ]
     },
     {
-      title: "Legal",
+      title: t('footer.legal'),
       links: [
-        { label: "Privacy Policy", href: "/privacy" },
-        { label: "Terms of Service", href: "/terms" },
-        { label: "Cookie Policy", href: "/cookies" },
-        { label: "Compliance", href: "/security" }
+        { label: t('footer.privacyPolicy'), href: "/privacy" },
+        { label: t('footer.termsOfService'), href: "/terms" },
+        { label: t('footer.cookiePolicy'), href: "/cookies" },
+        { label: t('footer.compliance'), href: "/security" }
       ]
     }
   ];
@@ -60,26 +62,26 @@ export default function Footer() {
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                 <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
-              <span>SOC 2 Type II Certified</span>
+              <span>{t('footer.soc2Certified')}</span>
             </div>
             <div className="flex items-center gap-2">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                 <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
               </svg>
-              <span>GDPR Compliant</span>
+              <span>{t('footer.gdprCompliant')}</span>
             </div>
             <div className="flex items-center gap-2">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                 <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
-              <span>ISO 27001 Certified</span>
+              <span>{t('footer.iso27001Certified')}</span>
             </div>
             <div className="flex items-center gap-2">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                 <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
                 <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clipRule="evenodd" />
               </svg>
-              <span>99.9% Uptime SLA</span>
+              <span>{t('footer.uptimeSLA')}</span>
             </div>
           </div>
         </div>
@@ -99,7 +101,7 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-sm text-slate-400 mb-6">
-              Unified business platform for mid-market companies.
+              {t('footer.unifiedBusinessPlatform')}
             </p>
             <div className="space-y-3">
               <div className="flex items-center gap-2 text-sm">
@@ -126,7 +128,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
               >
-                Visit Main Platform
+                {t('nav.visitMainPlatform')}
                 <ArrowRight className="w-4 h-4" />
               </a>
             </div>
@@ -172,22 +174,22 @@ export default function Footer() {
           {/* Bottom Info */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-400">
             <p>
-              &copy; {currentYear} TheSmartPro.io. All rights reserved.
+              &copy; {currentYear} TheSmartPro.io. {t('footer.allRightsReserved')}
             </p>
             <div className="flex items-center gap-6">
               <Link href="/privacy">
                 <div className="hover:text-blue-400 cursor-pointer">
-                  Privacy Policy
+                  {t('footer.privacyPolicy')}
                 </div>
               </Link>
               <Link href="/terms">
                 <div className="hover:text-blue-400 cursor-pointer">
-                  Terms of Service
+                  {t('footer.termsOfService')}
                 </div>
               </Link>
               <Link href="/security">
                 <div className="hover:text-blue-400 cursor-pointer">
-                  Security
+                  {t('footer.security')}
                 </div>
               </Link>
             </div>
@@ -201,10 +203,10 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <h3 className="text-white font-bold text-lg mb-1">
-                Subscribe to Our Newsletter
+                {t('footer.subscribeNewsletter')}
               </h3>
               <p className="text-blue-100">
-                Get the latest updates and insights delivered to your inbox.
+                {t('footer.newsletterDescription')}
               </p>
             </div>
             <form className="flex gap-2 w-full md:w-auto" onSubmit={(e) => e.preventDefault()}>
@@ -212,7 +214,7 @@ export default function Footer() {
               <input
                 id="newsletter-email"
                 type="email"
-                placeholder="Enter your email"
+                placeholder={t('footer.enterEmail')}
                 aria-label="Email address for newsletter"
                 required
                 className="px-4 py-2 rounded-lg flex-1 md:flex-none focus:outline-none focus:ring-2 focus:ring-white"
@@ -220,9 +222,9 @@ export default function Footer() {
               <button 
                 type="submit"
                 className="px-6 py-2 bg-white text-blue-600 font-semibold rounded-lg hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white"
-                aria-label="Subscribe to newsletter"
+                aria-label={t('footer.subscribe')}
               >
-                Subscribe
+                {t('footer.subscribe')}
               </button>
             </form>
           </div>

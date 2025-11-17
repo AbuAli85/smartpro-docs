@@ -13,8 +13,11 @@ import { setSEOTags } from "@/lib/seoUtils";
 import { generateOrganizationSchema, generateSoftwareSchema, insertMultipleSchemas } from "@/lib/schemaUtils";
 import { motion } from "framer-motion";
 import { fadeInUp, staggerContainer, staggerItem } from "@/lib/animationUtils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function HomeNew() {
+  const { t } = useLanguage();
+  
   useEffect(() => {
     setSEOTags({
       title: "TheSmartPro.io - Enterprise Professional Services Marketplace",
@@ -84,21 +87,21 @@ export default function HomeNew() {
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/20 text-blue-200 text-sm font-medium border border-blue-400/30"
               >
                 <Shield className="w-4 h-4" />
-                <span>Enterprise-Grade Marketplace</span>
+                <span>{t('home.enterpriseMarketplace')}</span>
               </motion.div>
               
               <motion.h1 
                 variants={staggerItem}
                 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight"
               >
-                The Professional Services Marketplace Built for Enterprise
+                {t('home.heroTitle')}
               </motion.h1>
               
               <motion.p 
                 variants={staggerItem}
                 className="text-xl md:text-2xl text-slate-300 leading-relaxed"
               >
-                Connect with verified professionals, manage contracts, and scale your business with enterprise-grade features that serious service providers and organizations demand.
+                {t('home.heroSubtitleFull')}
               </motion.p>
               
               <motion.div 
@@ -107,13 +110,13 @@ export default function HomeNew() {
               >
                 <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white text-lg h-12 px-8" asChild>
                   <Link href="/get-started-providers">
-                    For Service Providers
+                    {t('home.forServiceProviders')}
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10 text-lg h-12 px-8" asChild>
                   <Link href="/clients">
-                    For Organizations
+                    {t('home.forOrganizations')}
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Link>
                 </Button>
@@ -124,16 +127,16 @@ export default function HomeNew() {
                 className="grid grid-cols-3 gap-6 pt-8 border-t border-white/10"
               >
                 <div>
-                  <div className="text-3xl font-bold">10K+</div>
-                  <div className="text-sm text-slate-400">Verified Professionals</div>
+                  <div className="text-3xl font-bold">{t('home.professionals')}</div>
+                  <div className="text-sm text-slate-400">{t('home.verifiedProfessionals')}</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold">$50M+</div>
-                  <div className="text-sm text-slate-400">Transactions Processed</div>
+                  <div className="text-3xl font-bold">{t('home.processed')}</div>
+                  <div className="text-sm text-slate-400">{t('home.transactionsProcessed')}</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold">98%</div>
-                  <div className="text-sm text-slate-400">Satisfaction Rate</div>
+                  <div className="text-sm text-slate-400">{t('home.satisfactionRate')}</div>
                 </div>
               </motion.div>
             </motion.div>
@@ -150,29 +153,29 @@ export default function HomeNew() {
                   <div className="flex items-center gap-3 p-4 bg-slate-700/50 rounded-lg">
                     <FileText className="w-6 h-6 text-blue-400" />
                     <div className="flex-1">
-                      <div className="text-sm font-semibold">Contract Management</div>
-                      <div className="text-xs text-slate-400">Automated workflows & approvals</div>
+                      <div className="text-sm font-semibold">{t('home.contractManagement')}</div>
+                      <div className="text-xs text-slate-400">{t('home.contractManagementDesc')}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-4 bg-slate-700/50 rounded-lg">
                     <Calendar className="w-6 h-6 text-green-400" />
                     <div className="flex-1">
-                      <div className="text-sm font-semibold">Booking System</div>
-                      <div className="text-xs text-slate-400">Integrated scheduling & reminders</div>
+                      <div className="text-sm font-semibold">{t('home.bookingSystem')}</div>
+                      <div className="text-xs text-slate-400">{t('home.bookingSystemDesc')}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-4 bg-slate-700/50 rounded-lg">
                     <DollarSign className="w-6 h-6 text-yellow-400" />
                     <div className="flex-1">
-                      <div className="text-sm font-semibold">Secure Payments</div>
-                      <div className="text-xs text-slate-400">Stripe integration with escrow</div>
+                      <div className="text-sm font-semibold">{t('home.securePayments')}</div>
+                      <div className="text-xs text-slate-400">{t('home.securePaymentsDesc')}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-4 bg-slate-700/50 rounded-lg">
                     <Shield className="w-6 h-6 text-purple-400" />
                     <div className="flex-1">
-                      <div className="text-sm font-semibold">Enterprise Security</div>
-                      <div className="text-xs text-slate-400">MFA, RLS, audit logging</div>
+                      <div className="text-sm font-semibold">{t('home.enterpriseSecurity')}</div>
+                      <div className="text-xs text-slate-400">{t('home.enterpriseSecurityDesc')}</div>
                     </div>
                   </div>
                 </div>

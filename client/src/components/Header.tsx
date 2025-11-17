@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import Search from "@/components/Search";
 import { useTheme } from "@/contexts/ThemeContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [openDesktopDropdown, setOpenDesktopDropdown] = useState<string | null>(null);
   const { theme, toggleTheme, switchable } = useTheme();
+  const { t } = useLanguage();
 
   const getDropdownId = (label: string) =>
     `desktop-menu-${label.toLowerCase().replace(/\s+/g, "-")}`;
@@ -42,41 +44,41 @@ export default function Header() {
   };
 
   const navItems = [
-    { label: "Home", href: "/" },
+    { label: t('nav.home'), href: "/" },
     {
-      label: "For Providers",
+      label: t('nav.forProviders'),
       href: "#",
       submenu: [
-        { label: "Get Started", href: "/get-started-providers" },
-        { label: "How It Works", href: "/how-it-works" },
-        { label: "Earn More", href: "/providers" }
+        { label: t('nav.getStarted'), href: "/get-started-providers" },
+        { label: t('nav.howItWorks'), href: "/how-it-works" },
+        { label: t('nav.earnMore'), href: "/providers" }
       ]
     },
     {
-      label: "For Clients",
+      label: t('nav.forClients'),
       href: "#",
       submenu: [
-        { label: "Find Professionals", href: "/clients" },
-        { label: "Pricing", href: "/pricing" },
-        { label: "ROI Calculator", href: "/roi-calculator" }
+        { label: t('nav.findProfessionals'), href: "/clients" },
+        { label: t('nav.pricing'), href: "/pricing" },
+        { label: t('nav.roiCalculator'), href: "/roi-calculator" }
       ]
     },
     {
-      label: "Company",
+      label: t('nav.company'),
       href: "#",
       submenu: [
-        { label: "About Us", href: "/about" },
-        { label: "Blog", href: "/blog" },
-        { label: "Contact", href: "/contact" }
+        { label: t('nav.aboutUs'), href: "/about" },
+        { label: t('nav.blog'), href: "/blog" },
+        { label: t('nav.contact'), href: "/contact" }
       ]
     },
     {
-      label: "Resources",
+      label: t('nav.resources'),
       href: "#",
       submenu: [
-        { label: "How It Works", href: "/how-it-works" },
-        { label: "Comparison", href: "/comparison" },
-        { label: "Case Studies", href: "/case-studies" }
+        { label: t('nav.howItWorks'), href: "/how-it-works" },
+        { label: t('nav.comparison'), href: "/comparison" },
+        { label: t('nav.caseStudies'), href: "/case-studies" }
       ]
     }
   ];
@@ -158,8 +160,8 @@ export default function Header() {
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-md text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
-                aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-                title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                aria-label={theme === "dark" ? t('common.open') : t('common.close')}
+                title={theme === "dark" ? t('common.open') : t('common.close')}
               >
                 {theme === "dark" ? (
                   <Sun className="w-5 h-5" />
@@ -174,16 +176,16 @@ export default function Header() {
               rel="noopener noreferrer"
               className="text-sm font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 transition-colors"
             >
-              Visit Main Platform
+              {t('nav.visitMainPlatform')}
             </a>
             <Link href="/pricing">
               <div className="text-sm font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 cursor-pointer">
-                Pricing
+                {t('nav.pricing')}
               </div>
             </Link>
             <Link href="/get-started-providers">
               <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                Start Free Trial
+                {t('nav.startFreeTrial')}
               </Button>
             </Link>
           </div>
@@ -192,7 +194,7 @@ export default function Header() {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="lg:hidden p-2 rounded-md text-slate-700 hover:bg-slate-100"
-            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-label={isOpen ? t('common.close') : t('common.menu')}
             aria-expanded={isOpen}
             aria-controls="mobile-navigation"
           >
@@ -281,14 +283,14 @@ export default function Header() {
                 className="block px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md"
                 onClick={() => setIsOpen(false)}
               >
-                Visit Main Platform
+                {t('nav.visitMainPlatform')}
               </a>
               <Link href="/pricing">
                 <div
                   className="block px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md cursor-pointer"
                   onClick={() => setIsOpen(false)}
                 >
-                  Pricing
+                  {t('nav.pricing')}
                 </div>
               </Link>
               <Link href="/contact">
@@ -296,11 +298,11 @@ export default function Header() {
                   className="block px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md cursor-pointer"
                   onClick={() => setIsOpen(false)}
                 >
-                  Contact
+                  {t('nav.contact')}
                 </div>
               </Link>
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" aria-label="Start free trial">
-                Start Free Trial
+              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" aria-label={t('nav.startFreeTrial')}>
+                {t('nav.startFreeTrial')}
               </Button>
             </div>
           </nav>
