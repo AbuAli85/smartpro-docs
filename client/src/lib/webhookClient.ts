@@ -8,7 +8,7 @@ import {
   MakeWebhookPayload, 
   MakeWebhookResponse,
   validateWebhookPayload,
-  formatServicesForMake,
+  getPrimaryServiceForRouting,
 } from '@/types/webhook';
 
 export interface WebhookClientOptions {
@@ -73,29 +73,11 @@ export class WebhookClient {
             console.log('✅ Derived service_interested from raw key:', payload.service_interested);
           }
         } else if (Array.isArray(payload.services)) {
-          // If services is an array, format it
-          const serviceMap: Record<string, string> = {
-            'projectManagement': 'Project Management',
-            'employeeManagement': 'Employee Management',
-            'accounting': 'Accounting',
-            'proServices': 'PRO Services',
-            'companyFormation': 'Company Formation',
-            'vat': 'VAT',
-            'businessConsulting': 'Business Consulting',
-            'crm': 'CRM & Client Management',
-            'elearning': 'E-Learning Platform',
-            'contractManagement': 'Contract Management',
-            'workflowAutomation': 'Workflow Automation',
-            'analytics': 'Advanced Analytics',
-            'api': 'API & Integrations',
-            'support': '24/7 Support',
-            'other': 'Other',
-          };
+          // If services is an array, use PRIMARY service (first one) for routing
+          // This ensures correct email routing in Make.com
           const servicesArray = payload.services as string[];
-          payload.service_interested = servicesArray
-            .map((s: string) => serviceMap[s] || s)
-            .join(', ');
-          console.log('✅ Derived service_interested from array:', payload.service_interested);
+          payload.service_interested = getPrimaryServiceForRouting(servicesArray);
+          console.log('✅ Derived service_interested from array (using primary service):', payload.service_interested);
         }
       }
       

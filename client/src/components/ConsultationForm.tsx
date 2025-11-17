@@ -17,7 +17,8 @@ import { Loader2, CheckCircle, AlertCircle, User, Building2, Briefcase, MessageS
 import { webhookClient, WebhookError } from "@/lib/webhookClient";
 import { 
   MakeWebhookPayload, 
-  formatServicesForMake,
+  getPrimaryServiceForRouting,
+  formatAllServicesForMake,
   SERVICE_TO_MAKE_MAP,
   MakeServiceType,
 } from "@/types/webhook";
@@ -397,11 +398,16 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
 
   /**
    * Builds the webhook payload according to Make.com flow requirements
-   * CRITICAL: service_interested must be included for Make.com routing
+   * CRITICAL: service_interested must be a SINGLE service name for proper email routing
+   * Make.com routes emails based on service_interested matching specific service names
    */
   const buildWebhookPayload = (): MakeWebhookPayload => {
-    // Convert services array to Make.com format (REQUIRED for routing)
-    const serviceInterested = formatServicesForMake(formData.services);
+    // Get PRIMARY service (first selected) for email routing
+    // This ensures Make.com routes to the correct email template
+    const primaryService = getPrimaryServiceForRouting(formData.services);
+    
+    // Format ALL services for reference (kept in notes and services field)
+    const allServicesFormatted = formatAllServicesForMake(formData.services);
     
     // Build notes with all additional information
     const notes = buildNotesField();
@@ -412,15 +418,17 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
       client_name: formData.name.trim(),
       email: formData.email.trim(),
       business_name: formData.company?.trim() || "",
-      service_interested: serviceInterested, // CRITICAL: Used for email routing
+      // CRITICAL: Use PRIMARY service (first selected) for email routing
+      // Make.com routes emails based on this single service name matching
+      // If multiple services selected, first one determines email template
+      service_interested: primaryService,
       notes: notes || "", // Ensure it's never undefined
       
       // Additional structured fields
       phone: formData.phone?.trim() || undefined,
       business_type: formData.businessType || undefined,
-      services: formData.services.length > 0 
-        ? formData.services.map(s => SERVICE_TO_MAKE_MAP[s] || s).join(", ")
-        : undefined,
+      // Keep ALL services for reference (comma-separated)
+      services: formData.services.length > 0 ? allServicesFormatted : undefined,
       budget: formData.budget || undefined,
       timeline: formData.timeline || undefined,
       preferred_contact: formData.preferredContact || undefined,
@@ -435,6 +443,16 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
     if (!payload.service_interested || payload.service_interested.trim().length === 0) {
       console.warn('Warning: service_interested is empty, using default');
       payload.service_interested = MakeServiceType.OTHER;
+    }
+    
+    // Debug logging in development
+    if (import.meta.env.DEV) {
+      console.log('📧 Email Routing Info:', {
+        primaryService: payload.service_interested,
+        allServices: payload.services,
+        selectedCount: formData.services.length,
+        note: 'Email will be routed based on primaryService (first selected service)',
+      });
     }
     
     return payload;

@@ -122,9 +122,26 @@ export function validateWebhookPayload(payload: MakeWebhookPayload): {
 }
 
 /**
- * Formats service array to Make.com expected format
+ * Gets the PRIMARY service for email routing
+ * Uses the first selected service to ensure correct email routing in Make.com
+ * Make.com routes emails based on a single service name, not comma-separated lists
  */
-export function formatServicesForMake(services: string[]): string {
+export function getPrimaryServiceForRouting(services: string[]): string {
+  if (services.length === 0) {
+    return MakeServiceType.OTHER;
+  }
+
+  // Use the FIRST service as primary for routing
+  // This ensures Make.com routes to the correct email template
+  const firstService = services[0];
+  return SERVICE_TO_MAKE_MAP[firstService] || MakeServiceType.OTHER;
+}
+
+/**
+ * Formats ALL services for reference/notes
+ * This keeps all selected services in a readable format
+ */
+export function formatAllServicesForMake(services: string[]): string {
   if (services.length === 0) {
     return MakeServiceType.OTHER;
   }
@@ -132,5 +149,15 @@ export function formatServicesForMake(services: string[]): string {
   return services
     .map((service) => SERVICE_TO_MAKE_MAP[service] || service)
     .join(', ');
+}
+
+/**
+ * @deprecated Use getPrimaryServiceForRouting() instead
+ * Formats service array to Make.com expected format
+ * NOTE: This was causing routing issues - use getPrimaryServiceForRouting() for email routing
+ */
+export function formatServicesForMake(services: string[]): string {
+  // For backward compatibility, return primary service
+  return getPrimaryServiceForRouting(services);
 }
 
