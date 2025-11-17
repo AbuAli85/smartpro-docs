@@ -45,7 +45,8 @@ export default function Footer() {
         { label: t('footer.cookiePolicy'), href: "/cookies" },
         { label: t('footer.compliance'), href: "/security" }
       ]
-    };
+    }
+  ];
   }, [t, language]);
 
   const socialLinks = [
