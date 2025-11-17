@@ -11,6 +11,14 @@ import { useLanguage } from '@/contexts/LanguageContext';
 export function LanguageSwitcher() {
   const { language, setLanguage, t } = useLanguage();
 
+  const handleLanguageChange = (lang: 'en' | 'ar') => {
+    setLanguage(lang);
+    // Force a small delay to ensure state updates
+    setTimeout(() => {
+      window.dispatchEvent(new Event('languagechange'));
+    }, 0);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -28,13 +36,13 @@ export function LanguageSwitcher() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem
-          onClick={() => setLanguage('en')}
+          onClick={() => handleLanguageChange('en')}
           className={language === 'en' ? 'bg-accent' : ''}
         >
           English
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() => setLanguage('ar')}
+          onClick={() => handleLanguageChange('ar')}
           className={language === 'ar' ? 'bg-accent' : ''}
         >
           العربية

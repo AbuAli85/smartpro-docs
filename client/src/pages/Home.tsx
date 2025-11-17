@@ -109,15 +109,15 @@ export default function HomeNew() {
                 className="flex flex-col sm:flex-row gap-4 pt-4"
               >
                 <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white text-lg h-12 px-8" asChild>
-                  <Link href="/get-started-providers">
+                  <Link href="/get-started-providers" className="flex items-center gap-2">
                     {t('home.forServiceProviders')}
-                    <ArrowRight className="ml-2 w-5 h-5" />
+                    <ArrowRight className="w-5 h-5" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10 text-lg h-12 px-8" asChild>
-                  <Link href="/clients">
+                  <Link href="/clients" className="flex items-center gap-2">
                     {t('home.forOrganizations')}
-                    <ArrowRight className="ml-2 w-5 h-5" />
+                    <ArrowRight className="w-5 h-5" />
                   </Link>
                 </Button>
               </motion.div>

@@ -403,15 +403,20 @@ const translations: Record<Language, Record<string, string>> = {
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
     // Get from localStorage or default to English
-    const saved = localStorage.getItem('smartpro_language') as Language;
-    return saved && (saved === 'en' || saved === 'ar') ? saved : 'en';
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('smartpro_language') as Language;
+      return saved && (saved === 'en' || saved === 'ar') ? saved : 'en';
+    }
+    return 'en';
   });
 
   useEffect(() => {
-    localStorage.setItem('smartpro_language', language);
-    // Set HTML dir attribute for RTL support
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('smartpro_language', language);
+      // Set HTML dir attribute for RTL support
+      document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = language;
+    }
   }, [language]);
 
   const setLanguage = (lang: Language) => {
@@ -419,7 +424,18 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   const t = (key: string): string => {
-    return translations[language][key] || key;
+    const translation = translations[language]?.[key];
+    if (!translation) {
+      // Fallback to English if translation is missing
+      const fallback = translations['en']?.[key];
+      if (fallback) {
+        console.warn(`Translation missing for key "${key}" in language "${language}", using English fallback`);
+        return fallback;
+      }
+      console.warn(`Translation missing for key "${key}" in all languages`);
+      return key;
+    }
+    return translation;
   };
 
   return (

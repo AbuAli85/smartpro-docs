@@ -500,6 +500,34 @@
 }
 
 /* RTL for buttons with icons */
-[dir="rtl"] button .lucide {
+[dir="rtl"] button .lucide,
+[dir="rtl"] a .lucide {
   transform: scaleX(-1);
+}
+
+/* RTL for ArrowRight icons specifically */
+[dir="rtl"] .lucide-arrow-right {
+  transform: scaleX(-1);
+}
+
+/* Ensure RTL layout applies to body */
+[dir="rtl"] body {
+  direction: rtl;
+  text-align: right;
+}
+
+/* RTL for specific flex containers that need reversal */
+[dir="rtl"] .flex-row-reverse {
+  flex-direction: row-reverse;
+}
+
+/* RTL adjustments for navigation items */
+[dir="rtl"] nav .flex {
+  flex-direction: row-reverse;
+}
+
+/* RTL for buttons with text and icons */
+[dir="rtl"] button.flex,
+[dir="rtl"] a.flex {
+  flex-direction: row-reverse;
 }

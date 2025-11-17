@@ -61,6 +61,8 @@ const EmailCapture = lazy(() => import("./components/EmailCapture"));
 
 // Loading fallback component
 function PageLoader() {
+  // Note: Can't use useLanguage here as it's outside LanguageProvider
+  // This is fine as it's just a loading state
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="text-center">
