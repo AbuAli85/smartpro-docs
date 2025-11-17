@@ -1,12 +1,13 @@
 import { Link } from "wouter";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Github, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useMemo } from "react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const { t } = useLanguage();
 
-  const footerSections = [
+  const footerSections = useMemo(() => [
     {
       title: t('footer.product'),
       links: [
@@ -43,7 +44,7 @@ export default function Footer() {
         { label: t('footer.compliance'), href: "/security" }
       ]
     }
-  ];
+  ], [t]);
 
   const socialLinks = [
     { icon: Twitter, href: "https://twitter.com/thesmartpro", label: "Twitter" },

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "wouter";
 import { Menu, X, ChevronDown, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -43,7 +43,8 @@ export default function Header() {
     }
   };
 
-  const navItems = [
+  // Use useMemo to ensure navItems updates when language changes
+  const navItems = useMemo(() => [
     { label: t('nav.home'), href: "/" },
     {
       label: t('nav.forProviders'),
@@ -81,7 +82,7 @@ export default function Header() {
         { label: t('nav.caseStudies'), href: "/case-studies" }
       ]
     }
-  ];
+  ], [t]);
 
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm" role="banner">
