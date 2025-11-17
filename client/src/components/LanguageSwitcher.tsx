@@ -7,10 +7,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export function LanguageSwitcher() {
   const { language, setLanguage, t } = useLanguage();
+  const [open, setOpen] = useState(false);
   
   // Debug: Log when language prop changes
   useEffect(() => {
@@ -27,10 +28,14 @@ export function LanguageSwitcher() {
     // Prevent if already selected
     if (language === lang) {
       console.log('🌐 Language already set to', lang, '- skipping');
+      setOpen(false);
       return;
     }
     
     console.log('🌐 Calling setLanguage with', lang);
+    // Close dropdown first
+    setOpen(false);
+    
     // Update language - this should trigger re-renders
     setLanguage(lang);
     
@@ -66,7 +71,7 @@ export function LanguageSwitcher() {
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
@@ -80,10 +85,10 @@ export function LanguageSwitcher() {
           </span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" onCloseAutoFocus={(e) => e.preventDefault()}>
+      <DropdownMenuContent align="end">
         <DropdownMenuItem
-          onSelect={() => {
-            console.log('🌐 English selected via onSelect');
+          onSelect={(e) => {
+            console.log('🌐 English selected via onSelect, event:', e);
             handleLanguageChange('en');
           }}
           className={language === 'en' ? 'bg-accent' : ''}
@@ -91,8 +96,8 @@ export function LanguageSwitcher() {
           English
         </DropdownMenuItem>
         <DropdownMenuItem
-          onSelect={() => {
-            console.log('🌐 Arabic selected via onSelect');
+          onSelect={(e) => {
+            console.log('🌐 Arabic selected via onSelect, event:', e);
             handleLanguageChange('ar');
           }}
           className={language === 'ar' ? 'bg-accent' : ''}
