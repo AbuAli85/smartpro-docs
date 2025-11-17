@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect } from "react";
 import { NotificationProvider } from "./contexts/NotificationContext";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch, useLocation } from "wouter";
@@ -154,23 +155,25 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <NotificationProvider>
-        <ThemeProvider defaultTheme="light" switchable={true}>
-          <TooltipProvider>
-            <Router />
-            <ToastContainer />
-            <Suspense fallback={null}>
-              <LiveChat />
-            </Suspense>
-            <Suspense fallback={null}>
-              <EmailCapture />
-            </Suspense>
-            {(import.meta.env.DEV || (typeof window !== 'undefined' && localStorage.getItem('debug_webvitals') === 'true')) && (
-              <CoreWebVitalsMonitor />
-            )}
-          </TooltipProvider>
-        </ThemeProvider>
-      </NotificationProvider>
+      <LanguageProvider>
+        <NotificationProvider>
+          <ThemeProvider defaultTheme="light" switchable={true}>
+            <TooltipProvider>
+              <Router />
+              <ToastContainer />
+              <Suspense fallback={null}>
+                <LiveChat />
+              </Suspense>
+              <Suspense fallback={null}>
+                <EmailCapture />
+              </Suspense>
+              {(import.meta.env.DEV || (typeof window !== 'undefined' && localStorage.getItem('debug_webvitals') === 'true')) && (
+                <CoreWebVitalsMonitor />
+              )}
+            </TooltipProvider>
+          </ThemeProvider>
+        </NotificationProvider>
+      </LanguageProvider>
     </ErrorBoundary>
   );
 }

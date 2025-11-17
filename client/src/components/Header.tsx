@@ -4,6 +4,7 @@ import { Menu, X, ChevronDown, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Search from "@/components/Search";
 import { useTheme } from "@/contexts/ThemeContext";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -152,6 +153,7 @@ export default function Header() {
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
             <Search />
+            <LanguageSwitcher />
             {switchable && toggleTheme && (
               <button
                 onClick={toggleTheme}
@@ -252,6 +254,9 @@ export default function Header() {
               </div>
             ))}
             <div className="pt-4 border-t border-slate-200 dark:border-slate-700 space-y-2">
+              <div className="px-3 py-2">
+                <LanguageSwitcher />
+              </div>
               {switchable && toggleTheme && (
                 <button
                   onClick={() => {
