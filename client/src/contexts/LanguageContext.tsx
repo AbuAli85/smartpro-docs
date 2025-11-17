@@ -137,11 +137,11 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.successBody': 'Thank you, {name}. Our team will review your details and contact you within 24 business hours to confirm the consultation time and share next steps.',
     'consultation.successPrivacy': 'We respect your time and privacy. Your information is used only to respond to your request and is not shared with third parties.',
     'consultation.thanks.title': 'Thank you for your request',
-    'consultation.thanks.subtitle': 'We've received your consultation request at Smartpro Business Hub & Services.',
+    'consultation.thanks.subtitle': "We've received your consultation request at Smartpro Business Hub & Services.",
     'consultation.thanks.body': 'Our team will review your details and contact you within 24 business hours to confirm the consultation time and share next steps.',
     'consultation.thanks.point1': 'Check your email (and spam folder) for a confirmation message.',
     'consultation.thanks.point2': 'If you provided a WhatsApp number, we may also contact you there.',
-    'consultation.thanks.point3': 'You can prepare any documents or questions you'd like to discuss during the session.',
+    'consultation.thanks.point3': "You can prepare any documents or questions you'd like to discuss during the session.",
     'consultation.thanks.backToHome': 'Back to homepage',
     
     // Form fields
