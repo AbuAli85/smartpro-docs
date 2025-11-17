@@ -8,7 +8,9 @@ export default function Footer() {
   const { t, language } = useLanguage();
 
   const footerSections = useMemo(() => {
-    console.log('🔄 Footer: Recomputing footerSections, language:', language);
+    if (import.meta.env.DEV) {
+      console.log('🔄 Footer: Recomputing footerSections, language:', language);
+    }
     return [
     {
       title: t('footer.product'),

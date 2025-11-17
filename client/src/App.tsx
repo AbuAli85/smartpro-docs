@@ -60,6 +60,7 @@ const LiveChat = lazy(() => import("./components/LiveChat"));
 const EmailCapture = lazy(() => import("./components/EmailCapture"));
 import { LanguageDebug } from "./components/LanguageDebug";
 import { LanguageTest } from "./components/LanguageTest";
+import LanguageRouteRedirect from "./components/LanguageRouteRedirect";
 
 // Loading fallback component
 function PageLoader() {
@@ -87,6 +88,9 @@ function Router() {
   return (
     <Suspense fallback={<PageLoader />}>
       <Switch>
+        {/* Language route redirects - must come before other routes */}
+        <Route path={"/ar"} component={LanguageRouteRedirect} />
+        <Route path={"/en"} component={LanguageRouteRedirect} />
         <Route path={"/"} component={Home} />
         <Route path={"/providers"} component={ProvidersPage} />
         <Route path={"/clients"} component={ClientsPage} />

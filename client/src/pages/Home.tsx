@@ -19,7 +19,9 @@ export default function HomeNew() {
   const { t, language } = useLanguage();
   
   useEffect(() => {
-    console.log('🔄 Home: Language changed to', language);
+    if (import.meta.env.DEV) {
+      console.log('🔄 Home: Language changed to', language);
+    }
     setSEOTags({
       title: "TheSmartPro.io - Enterprise Professional Services Marketplace",
       description: "Connect with verified professionals, manage contracts, and scale your business. Enterprise-grade marketplace for service providers and organizations. 10K+ professionals, $50M+ processed.",

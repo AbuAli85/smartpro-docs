@@ -402,26 +402,42 @@ const translations: Record<Language, Record<string, string>> = {
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
-    // Get from URL parameter, localStorage, or default to English
+    // Get from URL (pathname or query param), localStorage, or default to English
     if (typeof window !== 'undefined') {
-      // Check URL parameter first (e.g., ?lang=ar)
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlLang = urlParams.get('lang') as Language;
-      if (urlLang && (urlLang === 'en' || urlLang === 'ar')) {
-        localStorage.setItem('smartpro_language', urlLang);
-        const htmlElement = document.documentElement;
-        const dir = urlLang === 'ar' ? 'rtl' : 'ltr';
-        htmlElement.setAttribute('dir', dir);
-        htmlElement.setAttribute('lang', urlLang);
-        if (document.body) {
-          document.body.setAttribute('dir', dir);
-        }
-        return urlLang;
+      let detectedLang: Language | null = null;
+      
+      // Priority 1: Check pathname (e.g., /ar or /en)
+      const pathname = window.location.pathname;
+      if (pathname === '/ar' || pathname.startsWith('/ar/')) {
+        detectedLang = 'ar';
+      } else if (pathname === '/en' || pathname.startsWith('/en/')) {
+        detectedLang = 'en';
       }
       
-      // Fallback to localStorage
-      const saved = localStorage.getItem('smartpro_language') as Language;
-      const lang = saved && (saved === 'en' || saved === 'ar') ? saved : 'en';
+      // Priority 2: Check URL query parameter (e.g., ?lang=ar)
+      if (!detectedLang) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlLang = urlParams.get('lang') as Language;
+        if (urlLang && (urlLang === 'en' || urlLang === 'ar')) {
+          detectedLang = urlLang;
+        }
+      }
+      
+      // Priority 3: Check localStorage
+      if (!detectedLang) {
+        const saved = localStorage.getItem('smartpro_language') as Language;
+        if (saved && (saved === 'en' || saved === 'ar')) {
+          detectedLang = saved;
+        }
+      }
+      
+      // Default to English
+      const lang = detectedLang || 'en';
+      
+      // Persist to localStorage if we detected it from URL
+      if (detectedLang && (pathname.includes('/ar') || pathname.includes('/en') || window.location.search.includes('lang='))) {
+        localStorage.setItem('smartpro_language', lang);
+      }
       
       // Set HTML attributes immediately on initialization
       const htmlElement = document.documentElement;
@@ -475,17 +491,25 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       // Force a reflow to ensure styles apply
       void htmlElement.offsetHeight;
       
-      console.log('🌐 Language effect: Set to', language, 'dir:', dir);
+      // Only log in development
+      if (import.meta.env.DEV) {
+        console.log('🌐 Language effect: Set to', language, 'dir:', dir);
+      }
     }
   }, [language]);
 
   const setLanguage = useCallback((lang: Language) => {
-    console.log('🔄 Setting language to:', lang);
-    console.log('🔄 Current language before change:', languageRef.current);
+    const isDev = import.meta.env.DEV;
+    if (isDev) {
+      console.log('🔄 Setting language to:', lang);
+      console.log('🔄 Current language before change:', languageRef.current);
+    }
     
     // Prevent unnecessary updates using ref to avoid stale closure
     if (languageRef.current === lang) {
-      console.log('🔄 Language already set to', lang);
+      if (isDev) {
+        console.log('🔄 Language already set to', lang);
+      }
       return;
     }
     
@@ -514,9 +538,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       // Dispatch custom event for components that might be listening
       window.dispatchEvent(new CustomEvent('languagechange', { detail: { language: lang } }));
       
-      console.log('🔄 Language set to:', lang);
-      console.log('🔄 HTML dir attribute:', htmlElement.getAttribute('dir'));
-      console.log('🔄 HTML lang attribute:', htmlElement.getAttribute('lang'));
+      if (isDev) {
+        console.log('🔄 Language set to:', lang);
+        console.log('🔄 HTML dir attribute:', htmlElement.getAttribute('dir'));
+        console.log('🔄 HTML lang attribute:', htmlElement.getAttribute('lang'));
+      }
     }
   }, []);
 
@@ -540,18 +566,15 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   // Memoize the context value to prevent unnecessary re-renders
   const contextValue = useMemo(() => {
-    console.log('🔄 LanguageContext: Creating new context value, language:', language);
+    if (import.meta.env.DEV) {
+      console.log('🔄 LanguageContext: Creating new context value, language:', language);
+    }
     return {
       language,
       setLanguage,
       t,
     };
   }, [language, t, setLanguage]);
-  
-  // Debug: Log when context value changes
-  useEffect(() => {
-    console.log('🔄 LanguageContext: Context value updated, language:', language);
-  }, [contextValue, language]);
 
   return (
     <LanguageContext.Provider value={contextValue}>

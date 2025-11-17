@@ -45,7 +45,9 @@ export default function Header() {
 
   // Use useMemo to ensure navItems updates when language changes
   const navItems = useMemo(() => {
-    console.log('🔄 Header: Recomputing navItems, language:', language);
+    if (import.meta.env.DEV) {
+      console.log('🔄 Header: Recomputing navItems, language:', language);
+    }
     return [
     { label: t('nav.home'), href: "/" },
     {
