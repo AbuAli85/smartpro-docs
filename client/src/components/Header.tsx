@@ -125,9 +125,11 @@ export default function Header() {
                 >
                 <button 
                   className="px-3 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors flex items-center gap-1"
-                  aria-haspopup={hasSubmenu ? "menu" : undefined}
-                  aria-expanded={hasSubmenu ? isOpen : undefined}
-                  aria-controls={dropdownId}
+                  {...(hasSubmenu && {
+                    'aria-haspopup': 'menu',
+                    'aria-expanded': isOpen ? 'true' : 'false',
+                    'aria-controls': dropdownId
+                  })}
                   onKeyDown={(event) => handleDesktopMenuKeydown(event, item.label, hasSubmenu)}
                 >
                   {item.label}
@@ -142,7 +144,7 @@ export default function Header() {
                       isOpen ? "opacity-100 visible" : "opacity-0 invisible"
                     }`}
                     role="menu"
-                    aria-hidden={isOpen ? undefined : "true"}
+                    aria-hidden={isOpen ? 'false' : 'true'}
                   >
                     {item.submenu!.map((subitem) => (
                       <Link key={subitem.label} href={subitem.href}>
@@ -201,7 +203,7 @@ export default function Header() {
             onClick={() => setIsOpen(!isOpen)}
             className="lg:hidden p-2 rounded-md text-slate-700 hover:bg-slate-100"
             aria-label={isOpen ? t('common.close') : t('common.menu')}
-            aria-expanded={isOpen}
+            aria-expanded={isOpen ? 'true' : 'false'}
             aria-controls="mobile-navigation"
           >
             {isOpen ? (
@@ -229,8 +231,10 @@ export default function Header() {
                     )
                   }
                   className="w-full text-left px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-md flex items-center justify-between"
-                  aria-haspopup={item.submenu ? "true" : "false"}
-                  aria-expanded={item.submenu ? openDropdown === item.label : undefined}
+                  {...(item.submenu && {
+                    'aria-haspopup': 'true',
+                    'aria-expanded': openDropdown === item.label ? 'true' : 'false'
+                  })}
                 >
                   {item.label}
                   {item.submenu && (
