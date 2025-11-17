@@ -402,8 +402,24 @@ const translations: Record<Language, Record<string, string>> = {
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(() => {
-    // Get from localStorage or default to English
+    // Get from URL parameter, localStorage, or default to English
     if (typeof window !== 'undefined') {
+      // Check URL parameter first (e.g., ?lang=ar)
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlLang = urlParams.get('lang') as Language;
+      if (urlLang && (urlLang === 'en' || urlLang === 'ar')) {
+        localStorage.setItem('smartpro_language', urlLang);
+        const htmlElement = document.documentElement;
+        const dir = urlLang === 'ar' ? 'rtl' : 'ltr';
+        htmlElement.setAttribute('dir', dir);
+        htmlElement.setAttribute('lang', urlLang);
+        if (document.body) {
+          document.body.setAttribute('dir', dir);
+        }
+        return urlLang;
+      }
+      
+      // Fallback to localStorage
       const saved = localStorage.getItem('smartpro_language') as Language;
       const lang = saved && (saved === 'en' || saved === 'ar') ? saved : 'en';
       

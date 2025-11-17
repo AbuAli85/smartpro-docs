@@ -76,33 +76,44 @@ export function LanguageSwitcher() {
         <Button
           variant="ghost"
           size="sm"
-          className="gap-2"
+          className="gap-2 cursor-pointer"
           aria-label={t('button.changeLanguage')}
+          title={t('button.changeLanguage')}
+          onClick={(e) => {
+            // Ensure the entire button is clickable
+            console.log('🌐 Language switcher button clicked');
+          }}
         >
-          <Globe className="h-4 w-4" />
-          <span className="hidden sm:inline">
+          <Globe className="h-4 w-4 flex-shrink-0" />
+          <span className="hidden sm:inline whitespace-nowrap">
             {language === 'en' ? 'English' : 'العربية'}
           </span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="min-w-[120px]">
         <DropdownMenuItem
-          onSelect={(e) => {
-            console.log('🌐 English selected via onSelect, event:', e);
+          onSelect={() => {
+            console.log('🌐 English selected via onSelect');
             handleLanguageChange('en');
           }}
-          className={language === 'en' ? 'bg-accent' : ''}
+          className={`cursor-pointer ${language === 'en' ? 'bg-accent font-semibold' : ''}`}
         >
-          English
+          <span className="flex items-center justify-between w-full">
+            English
+            {language === 'en' && <span className="text-xs">✓</span>}
+          </span>
         </DropdownMenuItem>
         <DropdownMenuItem
-          onSelect={(e) => {
-            console.log('🌐 Arabic selected via onSelect, event:', e);
+          onSelect={() => {
+            console.log('🌐 Arabic selected via onSelect');
             handleLanguageChange('ar');
           }}
-          className={language === 'ar' ? 'bg-accent' : ''}
+          className={`cursor-pointer ${language === 'ar' ? 'bg-accent font-semibold' : ''}`}
         >
-          العربية
+          <span className="flex items-center justify-between w-full">
+            العربية
+            {language === 'ar' && <span className="text-xs">✓</span>}
+          </span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
