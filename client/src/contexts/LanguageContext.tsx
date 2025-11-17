@@ -405,7 +405,29 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     // Get from localStorage or default to English
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('smartpro_language') as Language;
-      return saved && (saved === 'en' || saved === 'ar') ? saved : 'en';
+      const lang = saved && (saved === 'en' || saved === 'ar') ? saved : 'en';
+      
+      // Set HTML attributes immediately on initialization
+      const htmlElement = document.documentElement;
+      const dir = lang === 'ar' ? 'rtl' : 'ltr';
+      htmlElement.setAttribute('dir', dir);
+      htmlElement.setAttribute('lang', lang);
+      
+      // Set body attribute when available
+      if (document.body) {
+        document.body.setAttribute('dir', dir);
+      } else {
+        // If body doesn't exist yet, wait for it
+        const observer = new MutationObserver(() => {
+          if (document.body) {
+            document.body.setAttribute('dir', dir);
+            observer.disconnect();
+          }
+        });
+        observer.observe(document.documentElement, { childList: true });
+      }
+      
+      return lang;
     }
     return 'en';
   });
@@ -426,19 +448,16 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       htmlElement.setAttribute('lang', language);
       
       // Also set on body for better compatibility
-      // Use requestAnimationFrame to ensure body exists
-      requestAnimationFrame(() => {
-        const bodyElement = document.body;
-        if (bodyElement) {
-          bodyElement.setAttribute('dir', dir);
-        }
-      });
+      const bodyElement = document.body;
+      if (bodyElement) {
+        bodyElement.setAttribute('dir', dir);
+      }
       
       // Save to localStorage
       localStorage.setItem('smartpro_language', language);
       
       // Force a reflow to ensure styles apply
-      htmlElement.offsetHeight;
+      void htmlElement.offsetHeight;
       
       console.log('🌐 Language effect: Set to', language, 'dir:', dir);
     }
