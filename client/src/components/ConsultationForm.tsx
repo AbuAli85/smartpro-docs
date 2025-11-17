@@ -155,6 +155,28 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
     return true;
   };
 
+  // Map service keys to Make.com expected service names
+  const mapServiceToMakeFormat = (serviceKey: string): string => {
+    const serviceMap: Record<string, string> = {
+      'companyFormation': 'Company Formation',
+      'proServices': 'PRO Services',
+      'accounting': 'Accounting',
+      'vat': 'VAT',
+      'businessConsulting': 'Business Consulting',
+      'employeeManagement': 'Employee Management',
+      'crm': 'CRM & Client Management',
+      'projectManagement': 'Project Management',
+      'elearning': 'E-Learning Platform',
+      'contractManagement': 'Contract Management',
+      'workflowAutomation': 'Workflow Automation',
+      'analytics': 'Advanced Analytics',
+      'api': 'API & Integrations',
+      'support': '24/7 Support',
+      'other': 'Other',
+    };
+    return serviceMap[serviceKey] || serviceKey;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -182,16 +204,39 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
     setLoading(true);
 
     try {
+      // Convert services array to comma-separated string with proper names
+      const serviceInterested = formData.services
+        .map(mapServiceToMakeFormat)
+        .join(", ");
+
+      // Build notes field with all additional information
+      const notesParts: string[] = [];
+      if (formData.message) notesParts.push(formData.message);
+      if (formData.phone) notesParts.push(`Phone: ${formData.phone}`);
+      if (formData.location) notesParts.push(`Location: ${formData.location}`);
+      if (formData.businessType) notesParts.push(`Business Type: ${t(`businessType.${formData.businessType}`)}`);
+      if (formData.budget) notesParts.push(`Budget: ${t(`budget.${formData.budget}`)}`);
+      if (formData.timeline) notesParts.push(`Timeline: ${t(`timeline.${formData.timeline}`)}`);
+      if (formData.preferredContact) notesParts.push(`Preferred Contact: ${t(`contact.${formData.preferredContact}`)}`);
+      if (formData.preferredTime) notesParts.push(`Preferred Time: ${t(`time.${formData.preferredTime}`)}`);
+      if (language) notesParts.push(`Language: ${language === 'ar' ? 'Arabic' : 'English'}`);
+      
+      const notes = notesParts.join("\n");
+
       const response = await fetch(MAKE_WEBHOOK_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          // Required fields for Make.com flow
           client_name: formData.name,
           email: formData.email,
-          phone: formData.phone || "",
           business_name: formData.company || "",
+          service_interested: serviceInterested,
+          notes: notes,
+          // Additional fields for future use
+          phone: formData.phone || "",
           business_type: formData.businessType || "",
           services: formData.services.join(", "),
           budget: formData.budget || "",
@@ -199,7 +244,7 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
           preferred_contact: formData.preferredContact || "",
           preferred_time: formData.preferredTime || "",
           location: formData.location || "",
-          notes: formData.message || "",
+          message: formData.message || "",
           source: "smartpro-consultation-form",
           language: language,
         }),
