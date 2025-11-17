@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useMemo, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, useCallback, useRef, ReactNode } from 'react';
 
 type Language = 'en' | 'ar';
 
@@ -409,6 +409,12 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     }
     return 'en';
   });
+  
+  // Use ref to track current language for setLanguage callback
+  const languageRef = useRef(language);
+  useEffect(() => {
+    languageRef.current = language;
+  }, [language]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -440,35 +446,42 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const setLanguage = useCallback((lang: Language) => {
     console.log('🔄 Setting language to:', lang);
+    console.log('🔄 Current language before change:', languageRef.current);
     
-    // Update state first
-    setLanguageState((prevLang) => {
-      console.log('🔄 Current language before change:', prevLang);
-      return lang;
-    });
+    // Prevent unnecessary updates using ref to avoid stale closure
+    if (languageRef.current === lang) {
+      console.log('🔄 Language already set to', lang);
+      return;
+    }
     
-    // Force immediate DOM update
+    // Update state - this will trigger useEffect and re-renders
+    setLanguageState(lang);
+    
+    // Force immediate DOM update (don't wait for useEffect)
     if (typeof window !== 'undefined') {
       const htmlElement = document.documentElement;
-      htmlElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+      const dir = lang === 'ar' ? 'rtl' : 'ltr';
+      
+      htmlElement.setAttribute('dir', dir);
       htmlElement.setAttribute('lang', lang);
       
       const bodyElement = document.body;
       if (bodyElement) {
-        bodyElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+        bodyElement.setAttribute('dir', dir);
       }
       
       // Save to localStorage immediately
       localStorage.setItem('smartpro_language', lang);
       
       // Force a reflow to ensure styles apply
-      htmlElement.offsetHeight;
+      void htmlElement.offsetHeight;
       
       // Dispatch custom event for components that might be listening
       window.dispatchEvent(new CustomEvent('languagechange', { detail: { language: lang } }));
       
       console.log('🔄 Language set to:', lang);
       console.log('🔄 HTML dir attribute:', htmlElement.getAttribute('dir'));
+      console.log('🔄 HTML lang attribute:', htmlElement.getAttribute('lang'));
     }
   }, []);
 
@@ -499,6 +512,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       t,
     };
   }, [language, t, setLanguage]);
+  
+  // Debug: Log when context value changes
+  useEffect(() => {
+    console.log('🔄 LanguageContext: Context value updated, language:', language);
+  }, [contextValue, language]);
 
   return (
     <LanguageContext.Provider value={contextValue}>

@@ -21,17 +21,26 @@ export function LanguageSwitcher() {
       return;
     }
     
-    // Update language
+    // Update language - use React.startTransition for better performance
     setLanguage(lang);
     
-    // Force a small delay to ensure state updates and DOM changes
-    setTimeout(() => {
-      console.log('🌐 Language after change:', lang);
-      // Verify the change took effect
+    // Force immediate verification
+    requestAnimationFrame(() => {
       const currentLang = document.documentElement.getAttribute('lang');
       const currentDir = document.documentElement.getAttribute('dir');
       console.log('🌐 Verified - HTML lang:', currentLang, 'dir:', currentDir);
-    }, 100);
+      console.log('🌐 Context language:', language);
+      
+      // If attributes don't match, force update
+      if (currentLang !== lang || currentDir !== (lang === 'ar' ? 'rtl' : 'ltr')) {
+        console.warn('🌐 Mismatch detected! Forcing update...');
+        document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+        document.documentElement.setAttribute('lang', lang);
+        if (document.body) {
+          document.body.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+        }
+      }
+    });
   };
 
   return (
