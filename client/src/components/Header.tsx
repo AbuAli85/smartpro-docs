@@ -44,7 +44,9 @@ export default function Header() {
   };
 
   // Use useMemo to ensure navItems updates when language changes
-  const navItems = useMemo(() => [
+  const navItems = useMemo(() => {
+    console.log('🔄 Header: Recomputing navItems, language:', language);
+    return [
     { label: t('nav.home'), href: "/" },
     {
       label: t('nav.forProviders'),
@@ -81,8 +83,8 @@ export default function Header() {
         { label: t('nav.comparison'), href: "/comparison" },
         { label: t('nav.caseStudies'), href: "/case-studies" }
       ]
-    }
-  ], [t]);
+    };
+  }, [t, language]);
 
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm" role="banner">

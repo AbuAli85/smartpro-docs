@@ -12,9 +12,12 @@ export function LanguageSwitcher() {
   const { language, setLanguage, t } = useLanguage();
 
   const handleLanguageChange = (lang: 'en' | 'ar') => {
+    console.log('🌐 LanguageSwitcher: Changing language to', lang);
+    console.log('🌐 Current language before change:', language);
     setLanguage(lang);
     // Force a small delay to ensure state updates
     setTimeout(() => {
+      console.log('🌐 Language after change:', lang);
       window.dispatchEvent(new Event('languagechange'));
     }, 0);
   };

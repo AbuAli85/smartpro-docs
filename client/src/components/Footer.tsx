@@ -5,9 +5,11 @@ import { useMemo } from "react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
-  const footerSections = useMemo(() => [
+  const footerSections = useMemo(() => {
+    console.log('🔄 Footer: Recomputing footerSections, language:', language);
+    return [
     {
       title: t('footer.product'),
       links: [
@@ -43,8 +45,8 @@ export default function Footer() {
         { label: t('footer.cookiePolicy'), href: "/cookies" },
         { label: t('footer.compliance'), href: "/security" }
       ]
-    }
-  ], [t]);
+    };
+  }, [t, language]);
 
   const socialLinks = [
     { icon: Twitter, href: "https://twitter.com/thesmartpro", label: "Twitter" },

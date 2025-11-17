@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useMemo, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, useCallback, ReactNode } from 'react';
 
 type Language = 'en' | 'ar';
 
@@ -429,9 +429,20 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     }
   }, [language]);
 
-  const setLanguage = (lang: Language) => {
+  const setLanguage = useCallback((lang: Language) => {
+    console.log('🔄 Setting language to:', lang);
     setLanguageState(lang);
-  };
+    // Force immediate update
+    if (typeof window !== 'undefined') {
+      const htmlElement = document.documentElement;
+      htmlElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+      htmlElement.setAttribute('lang', lang);
+      const bodyElement = document.body;
+      if (bodyElement) {
+        bodyElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+      }
+    }
+  }, []);
 
   // Memoize the translation function to prevent recreation on every render
   const t = useMemo(() => {
@@ -452,11 +463,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, [language]);
 
   // Memoize the context value to prevent unnecessary re-renders
-  const contextValue = useMemo(() => ({
-    language,
-    setLanguage,
-    t,
-  }), [language, t]);
+  const contextValue = useMemo(() => {
+    console.log('🔄 LanguageContext: Creating new context value, language:', language);
+    return {
+      language,
+      setLanguage,
+      t,
+    };
+  }, [language, t, setLanguage]);
 
   return (
     <LanguageContext.Provider value={contextValue}>
