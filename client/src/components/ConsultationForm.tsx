@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
+// Optional: Uncomment to enable redirect to thank-you page after successful submission
+// import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -107,6 +109,8 @@ const CONTACT_TIMES = ['morning', 'afternoon', 'evening', 'flexible'] as const;
 
 export function ConsultationForm({ className }: ConsultationFormProps) {
   const { t, language } = useLanguage();
+  // Optional: Uncomment to enable redirect to thank-you page after successful submission
+  // const [, navigate] = useLocation();
   const [formData, setFormData] = useState<ConsultationFormData>({
     name: "",
     email: "",
@@ -539,6 +543,12 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
         setSuccess(true);
         setSubmitAttempts(0);
         localStorage.removeItem("lastFormSubmitTime");
+        
+        // Optional: Redirect to thank-you page after successful submission
+        // Uncomment the lines below to enable redirect (and uncomment the import above)
+        // setTimeout(() => {
+        //   navigate("/consultation/thanks");
+        // }, 2000); // 2 second delay to show success message first
       } else {
         // Handle webhook error response
         const errorMessage = response.error?.message || t('message.error');

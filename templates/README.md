@@ -8,6 +8,7 @@ Professional post-submission templates for the Smartpro consultation form.
    - Sent to the lead after form submission
    - Professional, reassuring tone
    - Includes summary of their request and next steps
+   - **✅ Includes both English and Arabic versions**
 
 2. **Internal Notification Email** (`email-internal-notification.md`)
    - Sent to your team when a new lead comes in
@@ -18,6 +19,7 @@ Professional post-submission templates for the Smartpro consultation form.
    - Template for manual or automated WhatsApp follow-up
    - Concise and friendly
    - Can be integrated with Make.com WhatsApp API
+   - **✅ Includes both English and Arabic versions**
 
 ## 🚀 How to Use
 
@@ -74,9 +76,18 @@ These templates are designed to work seamlessly with your existing Make.com flow
 
 1. **Webhook** receives form data
 2. **Google Sheets** stores the data
-3. **Resend/SendGrid** sends client confirmation email
+3. **Resend/SendGrid** sends client confirmation email (English or Arabic based on `{{language}}` field)
 4. **Resend/SendGrid** sends internal notification email
-5. **WhatsApp API** (optional) sends WhatsApp message
+5. **WhatsApp API** (optional) sends WhatsApp message (English or Arabic based on `{{language}}` field)
 
 All templates align with your current field structure, so no mapping changes needed!
+
+### Language Detection
+
+Both email and WhatsApp templates include language detection instructions. Use the `{{language}}` field from your webhook payload:
+
+- If `{{language}} === "ar"` → Send Arabic version
+- If `{{language}} === "en"` or empty → Send English version
+
+Use Make.com's "If" module to route to the appropriate template.
 

@@ -68,3 +68,68 @@ Map these fields from your webhook payload / Google Sheets:
 
 **Note:** For optional fields (location, timeline, budget), use conditional logic in Make.com to only include them if they have values.
 
+---
+
+## Arabic Version (العربية)
+
+### Subject Line (Arabic)
+
+```
+تم استلام طلب الاستشارة الخاص بك – مركز سمارت برو للأعمال والخدمات
+```
+
+### Email Body (Arabic)
+
+Use the same placeholders as the English version.
+
+---
+
+مرحباً {{client_name}}،
+
+شكراً لتواصلك مع مركز سمارت برو للأعمال والخدمات.
+
+لقد استلمنا طلب الاستشارة الخاص بك، وسيقوم فريقنا بمراجعة التفاصيل التي أرسلتها.
+
+ملخص سريع لما قمت بمشاركته:
+
+- **اسم النشاط/الشركة:** {{business_name}}
+- **الخدمات التي تهتم بها:** {{service_interested}}
+- **الموقع** (إن وُجد): {{location}}
+- **الإطار الزمني للمشروع** (إن وُجد): {{timeline}}
+- **الميزانية المتوقعة** (إن وُجد): {{budget}}
+
+في جلسة الاستشارة سنقوم بـ:
+
+1. فهم وضعك الحالي وأولوياتك بشكل أوضح،
+2. تقديم 2–3 توصيات عملية مناسبة لعملك،
+3. توضيح الخطوات التالية، وكيف يمكن لسمارت برو مساعدتك (عند الحاجة).
+
+⏰ **ماذا سيحدث بعد ذلك؟**
+
+خلال مدة أقصاها 24 ساعة عمل، سنقوم بالتواصل معك عبر {{preferred_contact}} من أجل:
+
+- تأكيد موعد جلسة الاستشارة، و
+- مشاركة رابط الاجتماع أو تفاصيل الاتصال.
+
+**للاستفادة القصوى من الجلسة، يُفضَّل تجهيز:**
+
+- أي تراخيص أو مستندات خاصة بالشركة،
+- الوصول إلى الأنظمة الحالية (المحاسبة، ضريبة القيمة المضافة، خدمات PRO، إلخ)،
+- قائمة قصيرة بأهم الأسئلة أو القرارات التي ترغب في توضيحها.
+
+إذا احتجت إلى تعديل أي معلومات، يمكنك الرد على هذه الرسالة في أي وقت.
+
+مع أطيب التحيات،  
+مركز سمارت برو للأعمال والخدمات
+
+---
+
+## Language Detection in Make.com
+
+In your Make.com flow, use the `{{language}}` field from the webhook payload to determine which template to send:
+
+- If `{{language}} === "ar"` → Send Arabic version
+- If `{{language}} === "en"` or empty → Send English version
+
+Use an "If" module to route to the appropriate email template.
+

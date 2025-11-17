@@ -136,6 +136,13 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.successTitle': 'Your request has been sent',
     'consultation.successBody': 'Thank you, {name}. Our team will review your details and contact you within 24 business hours to confirm the consultation time and share next steps.',
     'consultation.successPrivacy': 'We respect your time and privacy. Your information is used only to respond to your request and is not shared with third parties.',
+    'consultation.thanks.title': 'Thank you for your request',
+    'consultation.thanks.subtitle': 'We've received your consultation request at Smartpro Business Hub & Services.',
+    'consultation.thanks.body': 'Our team will review your details and contact you within 24 business hours to confirm the consultation time and share next steps.',
+    'consultation.thanks.point1': 'Check your email (and spam folder) for a confirmation message.',
+    'consultation.thanks.point2': 'If you provided a WhatsApp number, we may also contact you there.',
+    'consultation.thanks.point3': 'You can prepare any documents or questions you'd like to discuss during the session.',
+    'consultation.thanks.backToHome': 'Back to homepage',
     
     // Form fields
     'form.name': 'Full Name',
@@ -367,6 +374,13 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.successTitle': 'تم إرسال طلبك',
     'consultation.successBody': 'شكراً لك، {name}. سيراجع فريقنا تفاصيلك وسيتصل بك خلال 24 ساعة عمل لتأكيد وقت الاستشارة ومشاركة الخطوات التالية.',
     'consultation.successPrivacy': 'نحترم وقتك وخصوصيتك. تُستخدم معلوماتك فقط للرد على طلبك ولا يتم مشاركتها مع أطراف ثالثة.',
+    'consultation.thanks.title': 'شكراً لطلبك',
+    'consultation.thanks.subtitle': 'تم استلام طلب الاستشارة الخاص بك في مركز سمارت برو للأعمال والخدمات.',
+    'consultation.thanks.body': 'سيقوم فريقنا بمراجعة البيانات التي أرسلتها والتواصل معك خلال مدة أقصاها 24 ساعة عمل لتأكيد موعد الجلسة ومشاركة الخطوات التالية.',
+    'consultation.thanks.point1': 'يرجى التحقق من بريدك الإلكتروني (وصندوق الرسائل غير المرغوب فيها) للتأكد من استلام رسالة التأكيد.',
+    'consultation.thanks.point2': 'إذا قمت بإدخال رقم واتساب، قد نقوم بالتواصل معك من خلاله أيضاً.',
+    'consultation.thanks.point3': 'يمكنك تجهيز أي مستندات أو أسئلة ترغب في مناقشتها خلال جلسة الاستشارة.',
+    'consultation.thanks.backToHome': 'العودة إلى الصفحة الرئيسية',
     
     // Form fields
     'form.name': 'الاسم الكامل',
