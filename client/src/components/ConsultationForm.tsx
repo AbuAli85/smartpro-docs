@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2, CheckCircle, AlertCircle, User, Building2, Briefcase, MessageSquare } from "lucide-react";
+import { Loader2, CheckCircle, AlertCircle, User, Building2, Briefcase, MessageSquare, XCircle } from "lucide-react";
 import { webhookClient, WebhookError } from "@/lib/webhookClient";
 import { 
   MakeWebhookPayload, 
@@ -23,6 +23,19 @@ import {
 } from "@/types/webhook";
 import { trackFormSubmit } from "@/lib/googleAnalytics";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { 
+  validateEmail, 
+  validateName, 
+  validatePhone, 
+  validateCompany,
+  validateLocation,
+  validateMessage,
+  validateServices,
+  ValidationError,
+} from "@/lib/validation";
+import { FormProgressIndicator } from "@/components/FormProgressIndicator";
+import { verifyWebhookEndpoint } from "@/lib/webhookVerification";
+import { cn } from "@/lib/utils";
 
 export interface ConsultationFormData {
   name: string;
@@ -112,17 +125,106 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [submitAttempts, setSubmitAttempts] = useState(0);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
+  const [webhookStatus, setWebhookStatus] = useState<"checking" | "ok" | "error" | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    // Mark field as touched
+    setTouchedFields((prev) => new Set(prev).add(name));
+    
+    // Clear field error when user starts typing
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+    
+    // Real-time validation will happen on blur
+    
     if (error) setError("");
+  };
+  
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setTouchedFields((prev) => new Set(prev).add(name));
+    validateField(name, value);
+  };
+  
+  const validateField = (name: string, value: string | string[]) => {
+    let error = "";
+    
+    switch (name) {
+      case "name":
+        if (!validateName(value as string)) {
+          error = t('message.error.required');
+        }
+        break;
+      case "email":
+        if (!value || (value as string).trim().length === 0) {
+          error = t('message.error.required');
+        } else if (!validateEmail(value as string)) {
+          error = t('message.error.email');
+        }
+        break;
+      case "phone":
+        if (value && !validatePhone(value as string)) {
+          error = "Invalid phone number format";
+        }
+        break;
+      case "company":
+        if (value && !validateCompany(value as string)) {
+          error = "Company name must be between 2 and 200 characters";
+        }
+        break;
+      case "location":
+        if (value && !validateLocation(value as string)) {
+          error = "Location must be between 2 and 200 characters";
+        }
+        break;
+      case "message":
+        if (value && !validateMessage(value as string)) {
+          error = "Message must not exceed 5000 characters";
+        }
+        break;
+      case "services":
+        if (!validateServices(value as string[])) {
+          error = t('message.error.required');
+        }
+        break;
+    }
+    
+    if (error) {
+      setFieldErrors((prev) => ({ ...prev, [name]: error }));
+    } else {
+      setFieldErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   };
 
   const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setTouchedFields((prev) => new Set(prev).add(name));
+    
+    // Clear field error
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+    
     if (error) setError("");
   };
 
@@ -133,33 +235,115 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
         : [...prev.services, service];
       return { ...prev, services };
     });
+    setTouchedFields((prev) => new Set(prev).add("services"));
+    
+    // Validate services
+    setTimeout(() => {
+      setFormData((current) => {
+        validateField("services", current.services);
+        return current;
+      });
+    }, 0);
+    
     if (error) setError("");
   };
 
+  // Validate all fields and set field errors
   const validateForm = (): boolean => {
-    if (!formData.name.trim()) {
-      setError(t('message.error.required'));
-      return false;
+    const errors: Record<string, string> = {};
+    
+    // Validate all required fields
+    if (!validateName(formData.name)) {
+      errors.name = t('message.error.required');
     }
-
+    
     if (!formData.email.trim()) {
-      setError(t('message.error.required'));
+      errors.email = t('message.error.required');
+    } else if (!validateEmail(formData.email)) {
+      errors.email = t('message.error.email');
+    }
+    
+    if (!validateServices(formData.services)) {
+      errors.services = t('message.error.required');
+    }
+    
+    // Validate optional fields if provided
+    if (formData.phone && !validatePhone(formData.phone)) {
+      errors.phone = "Invalid phone number format";
+    }
+    
+    if (formData.company && !validateCompany(formData.company)) {
+      errors.company = "Company name must be between 2 and 200 characters";
+    }
+    
+    if (formData.location && !validateLocation(formData.location)) {
+      errors.location = "Location must be between 2 and 200 characters";
+    }
+    
+    if (formData.message && !validateMessage(formData.message)) {
+      errors.message = "Message must not exceed 5000 characters";
+    }
+    
+    setFieldErrors(errors);
+    
+    if (Object.keys(errors).length > 0) {
+      // Set general error to first field error
+      const firstError = Object.values(errors)[0];
+      setError(firstError);
       return false;
     }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setError(t('message.error.email'));
-      return false;
-    }
-
-    if (formData.services.length === 0) {
-      setError(t('message.error.required'));
-      return false;
-    }
-
+    
     return true;
   };
+  
+  // Calculate form progress
+  const formProgress = useMemo(() => {
+    const sections = [
+      {
+        id: "contact",
+        label: t('section.contactInfo'),
+        completed: !!(
+          validateName(formData.name) &&
+          validateEmail(formData.email)
+        ),
+      },
+      {
+        id: "business",
+        label: t('section.businessInfo'),
+        completed: !!(formData.company || formData.businessType),
+      },
+      {
+        id: "services",
+        label: t('section.serviceDetails'),
+        completed: validateServices(formData.services),
+      },
+      {
+        id: "additional",
+        label: t('section.additionalInfo'),
+        completed: !!(formData.message || formData.budget || formData.timeline),
+      },
+    ];
+    
+    return sections;
+  }, [formData, t]);
+  
+  // Verify webhook on mount
+  useEffect(() => {
+    const checkWebhook = async () => {
+      setWebhookStatus("checking");
+      try {
+        const result = await verifyWebhookEndpoint();
+        setWebhookStatus(result.success ? "ok" : "error");
+      } catch {
+        setWebhookStatus("error");
+      }
+    };
+    
+    // Only check in development or if explicitly enabled
+    if (import.meta.env.DEV) {
+      checkWebhook();
+    }
+  }, []);
 
   /**
    * Builds comprehensive notes field with all additional information
@@ -376,6 +560,26 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
   return (
     <Card className={`p-6 md:p-8 ${className || ""}`}>
       <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Webhook Status Indicator (Development Only) */}
+        {import.meta.env.DEV && webhookStatus && (
+          <Alert 
+            className={cn(
+              webhookStatus === "ok" && "bg-green-50 border-green-200",
+              webhookStatus === "error" && "bg-yellow-50 border-yellow-200",
+              webhookStatus === "checking" && "bg-blue-50 border-blue-200"
+            )}
+          >
+            <AlertDescription className="text-sm">
+              {webhookStatus === "checking" && "Checking webhook endpoint..."}
+              {webhookStatus === "ok" && "✓ Webhook endpoint is operational"}
+              {webhookStatus === "error" && "⚠ Webhook endpoint check failed - verify configuration"}
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        {/* Progress Indicator */}
+        <FormProgressIndicator sections={formProgress} />
+        
         {/* Success Alert */}
         {success && (
           <Alert className="bg-green-50 border-green-200">
@@ -415,11 +619,21 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
                 type="text"
                 value={formData.name}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 placeholder={t('placeholder.name')}
                 disabled={loading}
                 required
                 dir={isRTL ? 'rtl' : 'ltr'}
+                className={cn(
+                  fieldErrors.name && "border-red-500 focus:border-red-500 focus:ring-red-500"
+                )}
               />
+              {fieldErrors.name && (
+                <p className="text-sm text-red-500 flex items-center gap-1">
+                  <XCircle className="h-3 w-3" />
+                  {fieldErrors.name}
+                </p>
+              )}
             </div>
 
             {/* Email */}
@@ -433,11 +647,21 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 placeholder={t('placeholder.email')}
                 disabled={loading}
                 required
                 dir="ltr"
+                className={cn(
+                  fieldErrors.email && "border-red-500 focus:border-red-500 focus:ring-red-500"
+                )}
               />
+              {fieldErrors.email && (
+                <p className="text-sm text-red-500 flex items-center gap-1">
+                  <XCircle className="h-3 w-3" />
+                  {fieldErrors.email}
+                </p>
+              )}
             </div>
 
             {/* Phone */}
@@ -451,10 +675,20 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
                 type="tel"
                 value={formData.phone}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 placeholder={t('placeholder.phone')}
                 disabled={loading}
                 dir="ltr"
+                className={cn(
+                  fieldErrors.phone && "border-red-500 focus:border-red-500 focus:ring-red-500"
+                )}
               />
+              {fieldErrors.phone && (
+                <p className="text-sm text-red-500 flex items-center gap-1">
+                  <XCircle className="h-3 w-3" />
+                  {fieldErrors.phone}
+                </p>
+              )}
             </div>
 
             {/* Location */}
@@ -468,10 +702,20 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
                 type="text"
                 value={formData.location}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 placeholder={t('placeholder.location')}
                 disabled={loading}
                 dir={isRTL ? 'rtl' : 'ltr'}
+                className={cn(
+                  fieldErrors.location && "border-red-500 focus:border-red-500 focus:ring-red-500"
+                )}
               />
+              {fieldErrors.location && (
+                <p className="text-sm text-red-500 flex items-center gap-1">
+                  <XCircle className="h-3 w-3" />
+                  {fieldErrors.location}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -497,10 +741,20 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
                 type="text"
                 value={formData.company}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 placeholder={t('placeholder.company')}
                 disabled={loading}
                 dir={isRTL ? 'rtl' : 'ltr'}
+                className={cn(
+                  fieldErrors.company && "border-red-500 focus:border-red-500 focus:ring-red-500"
+                )}
               />
+              {fieldErrors.company && (
+                <p className="text-sm text-red-500 flex items-center gap-1">
+                  <XCircle className="h-3 w-3" />
+                  {fieldErrors.company}
+                </p>
+              )}
             </div>
 
             {/* Business Type */}
@@ -560,6 +814,12 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
                 </div>
               ))}
             </div>
+            {fieldErrors.services && (
+              <p className="text-sm text-red-500 flex items-center gap-1 mt-2">
+                <XCircle className="h-3 w-3" />
+                {fieldErrors.services}
+              </p>
+            )}
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -676,11 +936,21 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
               name="message"
               value={formData.message}
               onChange={handleChange}
+              onBlur={handleBlur}
               placeholder={t('placeholder.message')}
               rows={5}
               disabled={loading}
               dir={isRTL ? 'rtl' : 'ltr'}
+              className={cn(
+                fieldErrors.message && "border-red-500 focus:border-red-500 focus:ring-red-500"
+              )}
             />
+            {fieldErrors.message && (
+              <p className="text-sm text-red-500 flex items-center gap-1">
+                <XCircle className="h-3 w-3" />
+                {fieldErrors.message}
+              </p>
+            )}
           </div>
         </div>
 
