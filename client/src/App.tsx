@@ -171,12 +171,9 @@ function App() {
               <Suspense fallback={null}>
                 <EmailCapture />
               </Suspense>
-              {import.meta.env.DEV && (
-                <>
-                  <LanguageDebug />
-                  <LanguageTest />
-                </>
-              )}
+              {/* Language debug components - show in dev or when debug_language flag is set */}
+              <LanguageDebug />
+              <LanguageTest />
               {(import.meta.env.DEV || (typeof window !== 'undefined' && localStorage.getItem('debug_webvitals') === 'true')) && (
                 <CoreWebVitalsMonitor />
               )}

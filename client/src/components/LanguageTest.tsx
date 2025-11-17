@@ -3,6 +3,11 @@ import { Button } from "@/components/ui/button";
 
 export function LanguageTest() {
   const { language, setLanguage, t } = useLanguage();
+  
+  // Always show in dev, or if debug flag is set
+  const showTest = import.meta.env.DEV || localStorage.getItem('debug_language') === 'true';
+  
+  if (!showTest) return null;
 
   return (
     <div className="fixed top-20 right-4 bg-yellow-200 p-4 rounded-lg shadow-lg z-50 border-2 border-yellow-400">
