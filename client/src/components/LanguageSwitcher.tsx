@@ -21,26 +21,30 @@ export function LanguageSwitcher() {
       return;
     }
     
-    // Update language - use React.startTransition for better performance
+    // Update language
     setLanguage(lang);
     
-    // Force immediate verification
-    requestAnimationFrame(() => {
+    // Force immediate verification after a short delay to allow state/DOM updates
+    setTimeout(() => {
       const currentLang = document.documentElement.getAttribute('lang');
       const currentDir = document.documentElement.getAttribute('dir');
-      console.log('🌐 Verified - HTML lang:', currentLang, 'dir:', currentDir);
-      console.log('🌐 Context language:', language);
+      const expectedDir = lang === 'ar' ? 'rtl' : 'ltr';
+      
+      console.log('🌐 Verified - Expected lang:', lang, 'dir:', expectedDir);
+      console.log('🌐 Verified - Actual HTML lang:', currentLang, 'dir:', currentDir);
       
       // If attributes don't match, force update
-      if (currentLang !== lang || currentDir !== (lang === 'ar' ? 'rtl' : 'ltr')) {
+      if (currentLang !== lang || currentDir !== expectedDir) {
         console.warn('🌐 Mismatch detected! Forcing update...');
-        document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+        document.documentElement.setAttribute('dir', expectedDir);
         document.documentElement.setAttribute('lang', lang);
         if (document.body) {
-          document.body.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+          document.body.setAttribute('dir', expectedDir);
         }
+        // Force a re-render by dispatching a custom event
+        window.dispatchEvent(new CustomEvent('languagechange', { detail: { language: lang } }));
       }
-    });
+    }, 50);
   };
 
   return (
