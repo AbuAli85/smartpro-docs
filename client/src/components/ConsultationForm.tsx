@@ -129,6 +129,7 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
   const [webhookStatus, setWebhookStatus] = useState<"checking" | "ok" | "error" | null>(null);
+  const [submittedName, setSubmittedName] = useState<string>("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -516,6 +517,9 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
           execution_id: response.data?.execution_id,
         });
 
+        // Store submitted name for personalized success message
+        setSubmittedName(formData.name.trim());
+
         // Reset form
         setFormData({
           name: "",
@@ -602,8 +606,16 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
         {success && (
           <Alert className="bg-green-50 border-green-200">
             <CheckCircle className="h-4 w-4 text-green-600" />
-            <AlertDescription className="text-green-800">
-              {t('message.success')}
+            <AlertDescription className="text-green-800 space-y-2">
+              <p className="font-semibold text-base">
+                {t('consultation.successTitle')}
+              </p>
+              <p className="text-sm text-emerald-700">
+                {t('consultation.successBody', { name: submittedName || 'there' })}
+              </p>
+              <p className="mt-2 text-xs text-gray-500">
+                {t('consultation.successPrivacy')}
+              </p>
             </AlertDescription>
           </Alert>
         )}

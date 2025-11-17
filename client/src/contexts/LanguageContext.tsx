@@ -5,7 +5,7 @@ type Language = 'en' | 'ar';
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string>) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -133,6 +133,9 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.faq3Answer': 'We usually respond within 24 business hours to confirm the details and share the meeting link or call time.',
     'consultation.faq4Question': 'What should I prepare before the call?',
     'consultation.faq4Answer': 'Any licenses, company information, or questions you have. If you have existing documents, you can share them during or after the session.',
+    'consultation.successTitle': 'Your request has been sent',
+    'consultation.successBody': 'Thank you, {name}. Our team will review your details and contact you within 24 business hours to confirm the consultation time and share next steps.',
+    'consultation.successPrivacy': 'We respect your time and privacy. Your information is used only to respond to your request and is not shared with third parties.',
     
     // Form fields
     'form.name': 'Full Name',
@@ -361,6 +364,9 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.faq3Answer': 'عادةً ما نرد خلال 24 ساعة عمل لتأكيد التفاصيل ومشاركة رابط الاجتماع أو وقت المكالمة.',
     'consultation.faq4Question': 'ماذا يجب أن أعد قبل المكالمة؟',
     'consultation.faq4Answer': 'أي تراخيص أو معلومات عن الشركة أو أسئلة لديك. إذا كان لديك مستندات موجودة، يمكنك مشاركتها أثناء الجلسة أو بعدها.',
+    'consultation.successTitle': 'تم إرسال طلبك',
+    'consultation.successBody': 'شكراً لك، {name}. سيراجع فريقنا تفاصيلك وسيتصل بك خلال 24 ساعة عمل لتأكيد وقت الاستشارة ومشاركة الخطوات التالية.',
+    'consultation.successPrivacy': 'نحترم وقتك وخصوصيتك. تُستخدم معلوماتك فقط للرد على طلبك ولا يتم مشاركتها مع أطراف ثالثة.',
     
     // Form fields
     'form.name': 'الاسم الكامل',
@@ -618,17 +624,31 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   // Memoize the translation function to prevent recreation on every render
   const t = useMemo(() => {
-    return (key: string): string => {
+    return (key: string, params?: Record<string, string>): string => {
       const translation = translations[language]?.[key];
       if (!translation) {
         // Fallback to English if translation is missing
         const fallback = translations['en']?.[key];
         if (fallback) {
           console.warn(`Translation missing for key "${key}" in language "${language}", using English fallback`);
+          // Apply params to fallback if provided
+          if (params) {
+            return Object.entries(params).reduce(
+              (str, [paramKey, paramValue]) => str.replace(new RegExp(`\\{${paramKey}\\}`, 'g'), paramValue),
+              fallback
+            );
+          }
           return fallback;
         }
         console.warn(`Translation missing for key "${key}" in all languages`);
         return key;
+      }
+      // Apply parameter replacements if provided
+      if (params) {
+        return Object.entries(params).reduce(
+          (str, [paramKey, paramValue]) => str.replace(new RegExp(`\\{${paramKey}\\}`, 'g'), paramValue),
+          translation
+        );
       }
       return translation;
     };
