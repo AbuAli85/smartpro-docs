@@ -7,35 +7,50 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useEffect } from 'react';
 
 export function LanguageSwitcher() {
   const { language, setLanguage, t } = useLanguage();
+  
+  // Debug: Log when language prop changes
+  useEffect(() => {
+    console.log('🌐 LanguageSwitcher: Language prop changed to', language);
+    const htmlLang = document.documentElement.getAttribute('lang');
+    const htmlDir = document.documentElement.getAttribute('dir');
+    console.log('🌐 LanguageSwitcher: HTML attributes - lang:', htmlLang, 'dir:', htmlDir);
+  }, [language]);
 
   const handleLanguageChange = (lang: 'en' | 'ar') => {
-    console.log('🌐 LanguageSwitcher: Changing language to', lang);
-    console.log('🌐 Current language before change:', language);
+    console.log('🌐 LanguageSwitcher: handleLanguageChange called with', lang);
+    console.log('🌐 Current language in component:', language);
     
     // Prevent if already selected
     if (language === lang) {
-      console.log('🌐 Language already set to', lang);
+      console.log('🌐 Language already set to', lang, '- skipping');
       return;
     }
     
-    // Update language
+    console.log('🌐 Calling setLanguage with', lang);
+    // Update language - this should trigger re-renders
     setLanguage(lang);
     
-    // Force immediate verification after a short delay to allow state/DOM updates
+    // Log immediately after calling setLanguage
+    console.log('🌐 setLanguage called, waiting for state update...');
+    
+    // Verify after React has had a chance to update
     setTimeout(() => {
       const currentLang = document.documentElement.getAttribute('lang');
       const currentDir = document.documentElement.getAttribute('dir');
       const expectedDir = lang === 'ar' ? 'rtl' : 'ltr';
       
-      console.log('🌐 Verified - Expected lang:', lang, 'dir:', expectedDir);
-      console.log('🌐 Verified - Actual HTML lang:', currentLang, 'dir:', currentDir);
+      console.log('🌐 Verification after 100ms:');
+      console.log('  - Expected lang:', lang, 'dir:', expectedDir);
+      console.log('  - Actual HTML lang:', currentLang, 'dir:', currentDir);
+      console.log('  - Component language state:', language);
       
       // If attributes don't match, force update
       if (currentLang !== lang || currentDir !== expectedDir) {
-        console.warn('🌐 Mismatch detected! Forcing update...');
+        console.warn('🌐 ⚠️ MISMATCH DETECTED! Forcing DOM update...');
         document.documentElement.setAttribute('dir', expectedDir);
         document.documentElement.setAttribute('lang', lang);
         if (document.body) {
@@ -43,8 +58,11 @@ export function LanguageSwitcher() {
         }
         // Force a re-render by dispatching a custom event
         window.dispatchEvent(new CustomEvent('languagechange', { detail: { language: lang } }));
+        console.log('🌐 ✅ DOM attributes forced to:', lang, expectedDir);
+      } else {
+        console.log('🌐 ✅ DOM attributes match expected values');
       }
-    }, 50);
+    }, 100);
   };
 
   return (
@@ -62,15 +80,21 @@ export function LanguageSwitcher() {
           </span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" onCloseAutoFocus={(e) => e.preventDefault()}>
         <DropdownMenuItem
-          onSelect={() => handleLanguageChange('en')}
+          onSelect={() => {
+            console.log('🌐 English selected via onSelect');
+            handleLanguageChange('en');
+          }}
           className={language === 'en' ? 'bg-accent' : ''}
         >
           English
         </DropdownMenuItem>
         <DropdownMenuItem
-          onSelect={() => handleLanguageChange('ar')}
+          onSelect={() => {
+            console.log('🌐 Arabic selected via onSelect');
+            handleLanguageChange('ar');
+          }}
           className={language === 'ar' ? 'bg-accent' : ''}
         >
           العربية
