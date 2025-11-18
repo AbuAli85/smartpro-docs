@@ -1,55 +1,3 @@
-# Make.com Internal Notification Email Setup
-
-## 🎯 Problem
-
-**Current Issue:** Providers/team members are **NOT receiving emails** when clients submit consultation requests.
-
-**Root Cause:** The Make.com scenario only sends emails to **clients** (Modules 5, 11, 14, 17) but has **NO internal notification** module to alert the team.
-
----
-
-## ✅ Solution: Add Internal Notification Module
-
-Add a **Resend Email** module **after** the Google Sheets Add Row (Module 2) to notify your team immediately when a new consultation request is submitted.
-
----
-
-## 📋 Step-by-Step Setup
-
-### Step 1: Add Resend Email Module
-
-1. **Open your Make.com scenario:** `smartpro-website-consultation-v2`
-2. **After Module 2 (Google Sheets Add Row)**, click **"+"** to add a new module
-3. **Search for:** `Resend`
-4. **Select:** `Resend > Send an Email`
-5. **Position:** Place it **between Module 2 and Module 8 (Router)**
-
-**Module Flow After Adding:**
-```
-[1] Webhook → [25] Set Variables → [2] Sheets AddRow → [NEW] Internal Email → [8] Router
-```
-
----
-
-### Step 2: Configure Internal Notification Module
-
-**Module Settings:**
-
-| Field | Value | Notes |
-|-------|-------|-------|
-| **Module Name** | `Internal Notification - New Consultation` | For easy identification |
-| **To** | `consultations@thesmartpro.io` | ⚠️ **Change to your team email** |
-| **From** | `Smartpro Automation <noreply@portal.thesmartpro.io>` | |
-| **Reply-To** | `info@thesmartpro.io` | |
-| **Subject** | `New Consultation Request: {{1.client_name}} - {{1.service_interested}}` | |
-
----
-
-### Step 3: Configure Email Template
-
-**HTML Body Template:**
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -129,11 +77,26 @@ Add a **Resend Email** module **after** the Google Sheets Add Row (Module 2) to 
                 </table>
               </div>
 
-              <!-- Additional Details - Client Message (only if exists) -->
-              {{if(1.primary_message; "<div style=\"background:#fff7ed;border-left:4px solid #f59e0b;padding:20px;margin:20px 0;border-radius:6px;\"><h3 style=\"margin:0 0 15px 0;font-size:16px;font-weight:600;color:#f59e0b;\">💬 Client Message</h3><p style=\"margin:0;color:#1a202c;white-space:pre-wrap;font-size:14px;line-height:1.6;\">" + 1.primary_message + "</p></div>"; "")}}
+              <!-- Client Message (Always show section - will be empty if no message) -->
+              <div style="background:#fff7ed;border-left:4px solid #f59e0b;padding:20px;margin:20px 0;border-radius:6px;">
+                <h3 style="margin:0 0 15px 0;font-size:16px;font-weight:600;color:#f59e0b;">💬 Client Message</h3>
+                <p style="margin:0;color:#1a202c;white-space:pre-wrap;font-size:14px;line-height:1.6;">{{1.primary_message}}</p>
+              </div>
 
-              <!-- Contact Preferences (only if exists) -->
-              {{if(1.preferred_contact; "<div style=\"background:#f5f5f5;padding:20px;margin:20px 0;border-radius:6px;\"><h3 style=\"margin:0 0 15px 0;font-size:16px;font-weight:600;color:#1a202c;\">📞 Contact Preferences</h3><table width=\"100%\" cellpadding=\"8\" cellspacing=\"0\" style=\"font-size:14px;\"><tr><td style=\"padding:6px 0;color:#64748b;width:140px;font-weight:500;\">Preferred Contact:</td><td style=\"padding:6px 0;color:#1a202c;\">" + 1.preferred_contact + "</td></tr>" + if(1.preferred_time; "<tr><td style=\"padding:6px 0;color:#64748b;\">Preferred Time:</td><td style=\"padding:6px 0;color:#1a202c;\">" + 1.preferred_time + "</td></tr>"; "") + "</table></div>"; "")}}
+              <!-- Contact Preferences (Always show section - will be empty if no preferences) -->
+              <div style="background:#f5f5f5;padding:20px;margin:20px 0;border-radius:6px;">
+                <h3 style="margin:0 0 15px 0;font-size:16px;font-weight:600;color:#1a202c;">📞 Contact Preferences</h3>
+                <table width="100%" cellpadding="8" cellspacing="0" style="font-size:14px;">
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;width:140px;font-weight:500;">Preferred Contact:</td>
+                    <td style="padding:6px 0;color:#1a202c;">{{1.preferred_contact}}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Preferred Time:</td>
+                    <td style="padding:6px 0;color:#1a202c;">{{1.preferred_time}}</td>
+                  </tr>
+                </table>
+              </div>
 
               <!-- Metadata -->
               <div style="background:#f8fafc;padding:20px;margin:20px 0;border-radius:6px;border:1px solid #e2e8f0;">
@@ -188,149 +151,4 @@ Add a **Resend Email** module **after** the Google Sheets Add Row (Module 2) to 
   </table>
 </body>
 </html>
-```
-
-**⚠️ Important Notes:**
-- Replace `YOUR_SHEET_ID` with your actual Google Sheets ID
-- Replace `consultations@thesmartpro.io` with your actual team email
-- The template uses Make.com functions like `{{if()}}` and `{{join()}}` - these will be processed by Make.com
-- **IMPORTANT:** If you see "NaN" or broken HTML in the email, use the **FIXED template** from `MAKECOM_INTERNAL_EMAIL_TEMPLATE_FIXED.html` instead
-
----
-
-### Step 4: Connect Module Flow
-
-1. **Module 2 (Google Sheets Add Row)** → **Connect to** → **New Internal Email Module**
-2. **New Internal Email Module** → **Connect to** → **Module 8 (Router)**
-
-**Final Flow:**
-```
-[1] Webhook 
-  → [25] Set Variables 
-  → [2] Google Sheets Add Row 
-  → [NEW] Internal Email (to team)
-  → [8] Router 
-    → [3/10/13/16] GPT 
-    → [5/11/14/17] Client Email 
-    → [7/12/15/18] Sheets Update
-```
-
----
-
-### Step 5: Test the Setup
-
-1. **Save** the scenario
-2. **Run** a test execution with a sample consultation form submission
-3. **Verify:**
-   - ✅ Internal email is sent to your team email
-   - ✅ Email contains all client information
-   - ✅ Email is formatted correctly
-   - ✅ Links work (Reply to Client, View in Sheets)
-
----
-
-## 🔧 Alternative: Multiple Recipients
-
-If you want to send to **multiple team members**, you can:
-
-### Option 1: Multiple "To" Addresses (Comma-separated)
-```
-To: consultations@thesmartpro.io, sales@thesmartpro.io, support@thesmartpro.io
-```
-
-### Option 2: Use Make.com's "Multiple Recipients" Format
-In the Resend module, select **"Multiple recipients"** and add:
-```
-consultations@thesmartpro.io
-sales@thesmartpro.io
-support@thesmartpro.io
-```
-
----
-
-## 📊 Module Configuration Summary
-
-| Setting | Value |
-|---------|-------|
-| **Module Type** | Resend > Send an Email |
-| **Position** | After Module 2, Before Module 8 |
-| **To** | `consultations@thesmartpro.io` (or your team email) |
-| **From** | `Smartpro Automation <noreply@portal.thesmartpro.io>` |
-| **Reply-To** | `info@thesmartpro.io` |
-| **Subject** | `New Consultation Request: {{1.client_name}} - {{1.service_interested}}` |
-| **Body** | HTML template (see above) |
-
----
-
-## ✅ Verification Checklist
-
-After setup, verify:
-
-- [ ] Internal email module is added after Module 2
-- [ ] Module is connected: Module 2 → Internal Email → Module 8
-- [ ] "To" field is set to your team email
-- [ ] HTML template is pasted correctly
-- [ ] Test submission triggers internal email
-- [ ] Email contains all client information
-- [ ] Email is received by team members
-- [ ] Links in email work correctly
-
----
-
-## 🚨 Troubleshooting
-
-### Issue: Internal email not sending
-
-**Possible Causes:**
-1. Module not connected properly
-2. Email address invalid
-3. Resend API key not configured
-4. Error in HTML template syntax
-
-**Solution:**
-1. Check module connections in Make.com
-2. Verify email address is correct
-3. Check Resend module settings for API key
-4. Test with simple text first, then add HTML
-
-### Issue: Template variables not populating
-
-**Solution:**
-- Use `{{1.field_name}}` for webhook data
-- Use `{{2.field_name}}` for Google Sheets data
-- Use `{{25.field_name}}` for Set Variables data
-- Check Make.com execution log for variable values
-
-### Issue: Date formatting errors (`formatDate` or `now()` not found)
-
-**Error:** `Function 'formatDate' finished with error! Function 'now' not found!`
-
-**Solution:**
-- Use `{{now}}` (without parentheses) for current timestamp
-- `now` is a variable, not a function, so use `{{now}}` not `{{now()}}`
-- If you need formatted date, use `{{now}}` and it will display in Make.com's default format
-- Alternative: Remove the date field if not critical
-
----
-
-## 📝 Next Steps
-
-1. **Add the internal notification module** following the steps above
-2. **Test with a real submission** to verify it works
-3. **Customize the email template** to match your brand
-4. **Set up email filters/rules** in your email client to organize notifications
-5. **Consider adding SMS notifications** for urgent requests (optional)
-
----
-
-## 📚 Related Documentation
-
-- `INTEGRATION_CANONICAL.md` - Full integration guide
-- `MAKECOM_V2_SCENARIO_ANALYSIS.md` - Scenario structure
-- `MAKECOM_EMAIL_TROUBLESHOOTING.md` - Email troubleshooting
-
----
-
-**Last Updated:** 2024-12-19  
-**Status:** ✅ Ready to implement
 
