@@ -32,7 +32,6 @@ import { webhookClient, WebhookError } from "@/lib/webhookClient";
 import { 
   MakeWebhookPayload, 
   getPrimaryServiceForRouting,
-  formatAllServicesForMake,
   SERVICE_TO_MAKE_MAP,
   MakeServiceType,
 } from "@/types/webhook";
@@ -46,7 +45,6 @@ import {
   validateLocation,
   validateMessage,
   validateServices,
-  ValidationError,
 } from "@/lib/validation";
 import { FormProgressIndicator } from "@/components/FormProgressIndicator";
 import { verifyWebhookEndpoint } from "@/lib/webhookVerification";
@@ -127,7 +125,6 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
   const { t, language } = useLanguage();
   const [, navigate] = useLocation();
   const formRef = useRef<HTMLFormElement>(null);
-  const errorFieldRefs = useRef<Record<string, HTMLElement | null>>({});
   
   const [formData, setFormData] = useState<ConsultationFormData>({
     name: "",
@@ -366,20 +363,23 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
   // Scroll to first error field
   const scrollToFirstError = () => {
     const firstErrorField = Object.keys(fieldErrors)[0];
-    if (firstErrorField && errorFieldRefs.current[firstErrorField]) {
-      errorFieldRefs.current[firstErrorField]?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-      // Focus the field
+    if (firstErrorField) {
+      // Focus the field by ID
       const element = document.getElementById(firstErrorField);
-      if (element && (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement)) {
-        element.focus();
+      if (element) {
+        element.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+        // Focus if it's an input/textarea
+        if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement || element instanceof HTMLButtonElement) {
+          setTimeout(() => element.focus(), 100);
+        }
+        return;
       }
-    } else {
-      // Scroll to form top if no specific field
-      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+    // Scroll to form top if no specific field found
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const validateForm = (): boolean => {

@@ -98,6 +98,10 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.description': "Tell us what you need and we'll get back to you with a tailored plan.",
     'consultation.form.title': 'Get Your Free Consultation',
     'consultation.form.subtitle': 'Fill out the form below and our team will contact you within 24 hours.',
+    'consultation.form.successTitle': 'Thank you, {name}!',
+    'consultation.form.successMessage': 'Your consultation request has been received. We\'ll contact you within 24 hours.',
+    'consultation.form.dearCustomer': 'Dear Customer',
+    'consultation.form.redirecting': 'Redirecting to confirmation page...',
     
     // Consultation extras
     'consultation.heroBadge': 'Business & Corporate Services – Oman',
@@ -348,6 +352,10 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.description': 'أخبرنا بما تحتاجه وسنعود إليك بخطة مخصصة.',
     'consultation.form.title': 'احصل على استشارتك المجانية',
     'consultation.form.subtitle': 'املأ النموذج أدناه وسيتصل بك فريقنا خلال 24 ساعة.',
+    'consultation.form.successTitle': 'شكراً لك، {name}!',
+    'consultation.form.successMessage': 'تم استلام طلب الاستشارة الخاص بك. سنتواصل معك خلال 24 ساعة.',
+    'consultation.form.dearCustomer': 'عزيزي العميل',
+    'consultation.form.redirecting': 'جاري التوجيه إلى صفحة التأكيد...',
     
     // Consultation extras
     'consultation.heroBadge': 'خدمات الأعمال والشركات – عمان',
