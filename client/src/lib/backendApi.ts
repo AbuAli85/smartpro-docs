@@ -272,6 +272,43 @@ export const preferencesApi = {
 };
 
 /**
+ * Consultation Form API
+ */
+export interface ConsultationFormData {
+  name: string;
+  email: string;
+  phone?: string;
+  location?: string;
+  company?: string;
+  businessType?: string;
+  services: string[];
+  budget?: string;
+  timeline?: string;
+  preferredContact?: string;
+  preferredTime?: string;
+  message?: string;
+  language: 'en' | 'ar';
+}
+
+export interface ConsultationResponse {
+  success: boolean;
+  message: string;
+  submissionId?: string;
+  executionId?: string;
+  duplicate?: boolean;
+  warning?: string;
+}
+
+export const consultationApi = {
+  submit: async (formData: ConsultationFormData): Promise<ConsultationResponse> => {
+    return apiRequest<ConsultationResponse>('/consultation', {
+      method: 'POST',
+      body: JSON.stringify(formData),
+    });
+  },
+};
+
+/**
  * Health check
  */
 export const healthCheck = async (): Promise<{

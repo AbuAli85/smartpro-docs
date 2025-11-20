@@ -123,28 +123,54 @@ Make.com Scenario Processing:
 
 ### Potential Duplicate Scenarios
 
-#### ❌ Issue 1: Multiple Webhook Calls
+#### ✅ Issue 1: Multiple Webhook Calls - RESOLVED
 **Risk:** If frontend submits form multiple times (user double-clicks, network retry, etc.)
 
 **Current Protection:**
 - ✅ Frontend has loading state (disables submit button)
 - ✅ Backend has rate limiting (`formLimiter`: 10 requests/hour)
-- ⚠️ **No database deduplication** - Could create multiple database records
-- ⚠️ **No Make.com deduplication** - Could send multiple emails
+- ✅ **Database deduplication IMPLEMENTED** - Checks for duplicate email within 5 minutes (lines 64-98 in `server/routes/consultationRoutes.ts`)
+- ✅ **Returns existing submission ID** - Prevents duplicate database records and webhook calls
 
-#### ❌ Issue 2: Make.com Scenario Re-execution
+#### ⚠️ Issue 2: Make.com Scenario Re-execution
 **Risk:** If Make.com scenario is triggered multiple times for same submission
 
 **Current Protection:**
 - ⚠️ **No deduplication in Make.com** - Scenario doesn't check if email already sent
-- ⚠️ **No unique identifier check** - Should check `submission_id` before sending
+- ⚠️ **No unique identifier check** - Should check `submission_id` before sending emails
 
-#### ❌ Issue 3: Multiple Email Modules in Same Flow
-**Risk:** If Make.com scenario has duplicate email modules
+**Recommendation:**
+- Add filter before email modules to check Google Sheets for existing `email_sent` status
+- Use `submission_id` from backend to track processed submissions
 
-**Current Protection:**
-- ⚠️ **Need to verify Make.com scenario** - Should only have ONE client email module per route
-- ⚠️ **Need to verify internal email** - Should only be sent ONCE after Sheets Add Row
+#### ❌ Issue 3: Multiple Email Modules in Same Flow - CRITICAL ISSUE FOUND
+**Risk:** Make.com scenario has duplicate email modules that send multiple emails
+
+**Current Problem:**
+- ❌ **DUPLICATE EMAIL MODULES DETECTED** in Make.com scenario:
+  - Module 5: Sends Arabic email to client ✅
+  - Module 17: **DUPLICATE** - Also sends Arabic email to client ❌
+  - Module 16: **DUPLICATE** - Another GPT completion (seems redundant) ❌
+  - Module 35: **DUPLICATE** - Another language router (redundant) ❌
+
+**Flow Analysis:**
+```
+[8] Router (Accounting service)
+  └─ [26] Router (Language: Arabic/English)
+      ├─ [5] Client Email (Arabic) ✅ CORRECT
+      └─ [16] GPT Completion ❌ DUPLICATE (Module 3 already does this)
+          └─ [35] Router (Language again) ❌ DUPLICATE ROUTER
+              └─ [17] Client Email (Arabic) ❌ DUPLICATE EMAIL
+```
+
+**Impact:**
+- Client receives **2 Arabic emails** for same submission (Modules 5 and 17)
+- Unnecessary GPT API calls (Modules 3 and 16)
+- Wasted resources and poor user experience
+
+**Fix Required:**
+- **REMOVE Modules 16, 35, and 17** - They are duplicates
+- Keep only one path: Module 8 → Module 26 → Module 5 (Arabic) or Module 11 (English)
 
 ---
 
@@ -242,19 +268,43 @@ Use Make.com's "Ignore duplicate bundles" feature:
 - [x] Prevent re-submission when success state is true
 - [x] Rate limiting feedback to user
 
-### Backend ⚠️ NEEDS IMPROVEMENT
+### Backend ✅ COMPLETE
 - [x] Rate limiting (10 requests/hour)
-- [ ] **Add database deduplication check** (same email within 5 minutes)
-- [ ] **Return existing submission ID** if duplicate detected
-- [ ] **Log duplicate attempts** for monitoring
+- [x] **Database deduplication check** (same email within 5 minutes) - **IMPLEMENTED**
+- [x] **Return existing submission ID** if duplicate detected - **IMPLEMENTED**
+- [x] **Log duplicate attempts** for monitoring - **IMPLEMENTED**
 
-### Make.com Scenario ⚠️ NEEDS IMPROVEMENT
-- [ ] **Add deduplication filter** before email modules
-- [ ] **Check Google Sheets** for existing email status before sending
-- [ ] **Update status** after email sent (to prevent re-sending)
+**Location:** `server/routes/consultationRoutes.ts` (lines 64-98)
+
+### Make.com Scenario ❌ CRITICAL ISSUES FOUND
+- [ ] **REMOVE duplicate email modules** (Modules 16, 35, 17) - **URGENT**
+- [ ] **Simplify routing structure** - Remove redundant routers
+- [ ] **Add deduplication filter** before email modules (check Google Sheets for `email_sent` status)
+- [ ] **Update status** after email sent (set `email_sent = "Sent"` in Google Sheets)
 - [ ] **Enable "Ignore duplicate bundles"** in scenario settings
-- [ ] **Verify single email module** per route (no duplicates)
-- [ ] **Verify internal email** sent only once after Sheets Add Row
+- [x] **Verify internal email** - Module 39 sends ONE email to provider ✅
+
+**Current Flow Problems:**
+1. **Duplicate Email Modules:** Modules 5 and 17 both send Arabic emails → Client receives 2 emails ❌
+2. **Redundant GPT Calls:** Modules 3 and 16 both call GPT API → Wasted API calls ❌
+3. **Nested Redundant Routers:** Module 35 is a duplicate language router ❌
+
+**Required Fix:**
+```
+CURRENT (WRONG):
+[8] Router (Accounting)
+  └─ [26] Router (Language)
+      ├─ [5] Email (Arabic) ✅
+      └─ [16] GPT ❌ DUPLICATE
+          └─ [35] Router ❌ DUPLICATE
+              └─ [17] Email (Arabic) ❌ DUPLICATE
+
+SHOULD BE:
+[8] Router (Accounting)
+  └─ [26] Router (Language)
+      ├─ [5] Email (Arabic) ✅
+      └─ [11] Email (English) ✅
+```
 
 ### Database Schema ⚠️ NEEDS IMPROVEMENT
 - [x] Has `emailSent` field in `ConsultationSubmission`
@@ -266,11 +316,12 @@ Use Make.com's "Ignore duplicate bundles" feature:
 
 ## 🎯 Action Items
 
-### High Priority
-1. **Add backend deduplication** - Check for duplicate submissions within 5 minutes
-2. **Add Make.com deduplication** - Filter before email modules
-3. **Verify Make.com scenario** - Ensure single email module per route
-4. **Add database index** - For faster duplicate detection
+### High Priority - URGENT
+1. ✅ **Backend deduplication** - ✅ ALREADY IMPLEMENTED (lines 64-98 in `consultationRoutes.ts`)
+2. ❌ **REMOVE duplicate email modules in Make.com** - **CRITICAL** - Modules 16, 35, 17 must be removed
+3. ❌ **Fix Make.com routing** - Simplify to single email path per language
+4. ⚠️ **Add Make.com deduplication filter** - Check Google Sheets before sending emails
+5. ⚠️ **Enable "Ignore duplicate bundles"** in Make.com scenario settings
 
 ### Medium Priority
 1. **Monitor email sending** - Track if duplicates are occurring
@@ -300,12 +351,13 @@ Form Submit → Backend API → Make.com Webhook →
 **Expected:** 1 email per submission ✅
 
 ### Current Issues
-- ⚠️ No deduplication check in backend
-- ⚠️ No deduplication check in Make.com
-- ⚠️ Could send multiple emails if:
-  - User double-clicks submit button
-  - Network retry sends duplicate request
-  - Make.com scenario re-executes
+- ✅ **Backend deduplication** - ✅ IMPLEMENTED (prevents duplicate webhook calls)
+- ❌ **Make.com duplicate modules** - ❌ CRITICAL - Modules 16, 35, 17 send duplicate emails
+- ❌ **No deduplication in Make.com** - Scenario doesn't check if email already sent
+- ⚠️ **Risk of multiple emails:**
+  - ✅ User double-clicks: Prevented by backend deduplication
+  - ✅ Network retry: Prevented by backend deduplication  
+  - ❌ Make.com duplicate modules: **Client receives 2 emails per submission** (Modules 5 + 17)
 
 ---
 
@@ -313,12 +365,64 @@ Form Submit → Backend API → Make.com Webhook →
 
 1. **Client Template:** ✅ Good - No changes needed
 2. **Provider Template:** ✅ Good - No changes needed
-3. **Duplicate Prevention:** ⚠️ **Add deduplication logic** in:
-   - Backend API (check database for recent submission)
-   - Make.com scenario (filter before email modules)
-4. **Monitoring:** Add logging to track email sends and detect duplicates
+3. **Backend Deduplication:** ✅ **ALREADY IMPLEMENTED** - Prevents duplicate submissions and webhook calls
+4. **Make.com Scenario:** ❌ **CRITICAL FIX REQUIRED**:
+   - **REMOVE duplicate modules** (16, 35, 17) - **URGENT**
+   - Simplify routing structure (remove nested redundant routers)
+   - Add deduplication filter before email modules (check Google Sheets `email_sent` status)
+   - Enable "Ignore duplicate bundles" in scenario settings
+   - Use `submission_id` from backend to track processed submissions
+5. **Monitoring:** Add logging in Make.com to track email sends and detect duplicates
 
 ---
 
-**Status:** Templates reviewed ✅ | Duplicate prevention needs implementation ⚠️
+## 🚨 Action Required - Make.com Scenario Fix
+
+### Step 1: Remove Duplicate Modules (URGENT)
+1. Open Make.com scenario: `smartpro-website-consultation-v2`
+2. **DELETE Module 16** (duplicate GPT completion)
+3. **DELETE Module 35** (duplicate language router)
+4. **DELETE Module 17** (duplicate Arabic email)
+
+### Step 2: Verify Correct Flow
+The flow should be:
+```
+[1] Webhook (Custom)
+  ↓
+[25] Set Variables
+  ↓
+[2] Google Sheets (Add Row)
+  ↓
+[38] Set Variable (email_validated)
+  ↓
+[39] Email to Provider (support@thesmartpro.io) ✅ ONE EMAIL
+  ↓
+[8] Router (Service: Accounting)
+  ↓
+[3] GPT (Generate email content)
+  ↓
+[26] Router (Language: Arabic/English)
+  ├─ [5] Email to Client (Arabic) ✅ ONE EMAIL PER SUBMISSION
+  └─ [11] Email to Client (English) ✅ ONE EMAIL PER SUBMISSION
+  ↓
+[37] Google Sheets (Update Row: email_sent = "Sent")
+```
+
+### Step 3: Add Deduplication Filter
+Add a filter before Module 39 and Module 5/11:
+- Check Google Sheets: `email_sent = "Pending"` or empty
+- Only proceed if email not already sent
+- Update `email_sent = "Sent"` after sending
+
+### Step 4: Enable Make.com Built-in Deduplication
+1. Go to Scenario Settings → Execution
+2. Enable "Ignore duplicate bundles"
+3. Set deduplication key: `{{1.email}}` + `{{1.timestamp}}`
+
+---
+
+**Status:** 
+- Templates reviewed ✅
+- Backend deduplication ✅ IMPLEMENTED
+- Make.com duplicate modules ❌ **CRITICAL FIX REQUIRED**
 

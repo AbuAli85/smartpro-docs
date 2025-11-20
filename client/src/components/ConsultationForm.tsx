@@ -28,13 +28,7 @@ import {
   MapPin,
   Save
 } from "lucide-react";
-import { webhookClient, WebhookError } from "@/lib/webhookClient";
-import { 
-  MakeWebhookPayload, 
-  getPrimaryServiceForRouting,
-  SERVICE_TO_MAKE_MAP,
-  MakeServiceType,
-} from "@/types/webhook";
+import { consultationApi, ConsultationResponse } from "@/lib/backendApi";
 import { trackFormSubmit } from "@/lib/googleAnalytics";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { 
@@ -47,7 +41,6 @@ import {
   validateServices,
 } from "@/lib/validation";
 import { FormProgressIndicator } from "@/components/FormProgressIndicator";
-import { verifyWebhookEndpoint } from "@/lib/webhookVerification";
 import { cn } from "@/lib/utils";
 
 export interface ConsultationFormData {
@@ -146,7 +139,6 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
-  const [webhookStatus, setWebhookStatus] = useState<"checking" | "ok" | "error" | null>(null);
   const [submittedName, setSubmittedName] = useState<string | null>(null);
   const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -202,28 +194,6 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
     };
   }, [formData, success]);
 
-  // Verify webhook on mount (non-blocking - runs in background)
-  useEffect(() => {
-    const checkWebhook = async () => {
-      // Only show checking status in development
-      if (import.meta.env.DEV) {
-        setWebhookStatus("checking");
-      }
-      try {
-        const result = await verifyWebhookEndpoint();
-        setWebhookStatus(result?.success ? "ok" : "error");
-      } catch {
-        // Silently fail in production, show warning in dev only
-        if (import.meta.env.DEV) {
-          setWebhookStatus("error");
-        } else {
-          setWebhookStatus(null); // Don't show error in production
-        }
-      }
-    };
-    // Run check in background without blocking form rendering
-    checkWebhook();
-  }, []);
 
   // Form sections for progress indicator
   const formSections = useMemo(() => {
@@ -438,35 +408,21 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
     return true;
   };
 
-  const buildWebhookPayload = (): MakeWebhookPayload => {
-    const primaryService = getPrimaryServiceForRouting(formData.services as MakeServiceType[]);
-    const allServicesFormatted = formData.services.map((service) => 
-      SERVICE_TO_MAKE_MAP[service] || service
-    );
-    
+  const buildApiPayload = () => {
     return {
-      client_name: formData.name.trim(),
+      name: formData.name.trim(),
       email: formData.email.trim(),
       phone: formData.phone?.trim() || undefined,
-      business_name: formData.company?.trim() || undefined,
-      business_type: formData.businessType
-        ? t(`businessType.${formData.businessType}`)
-        : undefined,
-      services: allServicesFormatted.length > 0 ? allServicesFormatted : undefined,
-      service_interested: primaryService,
-      notes: formData.message?.trim() || "",
-      budget: formData.budget ? t(`budget.${formData.budget}`) : undefined,
-      timeline: formData.timeline ? t(`timeline.${formData.timeline}`) : undefined,
-      preferred_contact: formData.preferredContact
-        ? t(`contact.${formData.preferredContact}`)
-        : undefined,
-      preferred_time: formData.preferredTime
-        ? t(`time.${formData.preferredTime}`)
-        : undefined,
+      company: formData.company?.trim() || undefined,
+      businessType: formData.businessType || undefined,
+      services: formData.services,
+      budget: formData.budget || undefined,
+      timeline: formData.timeline || undefined,
+      preferredContact: formData.preferredContact || undefined,
+      preferredTime: formData.preferredTime || undefined,
       location: formData.location?.trim() || undefined,
-      primary_message: formData.message?.trim() || undefined,
-      language: language,
-      timestamp: new Date().toISOString(),
+      message: formData.message?.trim() || undefined,
+      language: language as 'en' | 'ar',
     };
   };
 
@@ -498,17 +454,9 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
     setLoading(true);
 
     try {
-      const payload = buildWebhookPayload();
+      const payload = buildApiPayload();
       
-      // Validate critical field
-      if (!payload.service_interested || payload.service_interested.trim().length === 0) {
-        console.error("CRITICAL: service_interested is missing or empty!");
-        setError(t("message.error.services"));
-        setLoading(false);
-        return;
-      }
-      
-      const response = await webhookClient.send(payload);
+      const response: ConsultationResponse = await consultationApi.submit(payload);
 
       if (response.success) {
         trackFormSubmit("consultation_form", {
@@ -516,7 +464,8 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
           has_budget: !!formData.budget,
           has_timeline: !!formData.timeline,
           language: language,
-          execution_id: response.data?.execution_id,
+          submission_id: response.submissionId,
+          execution_id: response.executionId,
         });
 
         setSubmittedName(formData.name.trim());
@@ -549,7 +498,7 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
           navigate("/consultation/thanks");
         }, 2000);
       } else {
-        const errorMessage = response.error?.message || t("message.error");
+        const errorMessage = response.message || t("message.error");
         setError(errorMessage);
         localStorage.setItem("submitAttempts", (submitAttempts + 1).toString());
         localStorage.setItem("lastFormSubmitTime", Date.now().toString());
@@ -559,16 +508,16 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
       
       trackFormSubmit("consultation_form_error", {
         error_type: err instanceof Error ? err.message : "unknown",
-        error_code: err instanceof WebhookError ? err.statusCode : undefined,
       });
       
-      if (err instanceof WebhookError) {
-        if (err.statusCode === 408) {
+      // Handle different error types
+      if (err instanceof Error) {
+        if (err.message.includes("timeout") || err.message.includes("network")) {
           setError(t("message.error.network"));
-        } else if (err.statusCode >= 400 && err.statusCode < 500) {
-          setError(t("message.error"));
+        } else if (err.message.includes("rate limit") || err.message.includes("too many")) {
+          setError(t("message.error.rateLimit"));
         } else {
-          setError(t("message.error.network"));
+          setError(err.message || t("message.error.network"));
         }
       } else {
         setError(t("message.error.network"));
@@ -619,9 +568,6 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
     );
   };
 
-  // Don't block form rendering - webhook check runs in background
-  // Form will always be visible, with optional warning if webhook check fails
-
   if (success) {
     return (
       <div className="text-center p-8">
@@ -670,24 +616,6 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
 
         {/* Progress Indicator */}
         <FormProgressIndicator sections={formSections} />
-
-        {/* Webhook Status Warning (Non-blocking) */}
-        {webhookStatus === "checking" && import.meta.env.DEV && (
-          <Alert className="bg-blue-50 border-blue-200">
-            <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
-            <AlertDescription className="text-sm text-blue-800">
-              {t("message.progress")} - Checking webhook endpoint...
-            </AlertDescription>
-          </Alert>
-        )}
-        {webhookStatus === "error" && import.meta.env.DEV && (
-          <Alert className="bg-yellow-50 border-yellow-200">
-            <AlertCircle className="h-4 w-4 text-yellow-600" />
-            <AlertDescription className="text-sm text-yellow-800">
-              ⚠️ Webhook endpoint check failed - form will still work but verify configuration
-            </AlertDescription>
-          </Alert>
-        )}
 
         {/* Error Alert */}
         {error && (
