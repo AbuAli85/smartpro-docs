@@ -1,0 +1,221 @@
+// Prisma Schema for SmartPro Platform
+// Database: PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Model
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  password      String   // Hashed password
+  name          String
+  role          String   @default("provider") // provider, client, admin
+  emailVerified Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  notifications         Notification[]
+  notificationPreferences NotificationPreferences?
+  consultationSubmissions ConsultationSubmission[]
+
+  @@map("users")
+}
+
+// Notification Model
+model Notification {
+  id             String   @id @default(cuid())
+  userId         String
+  type           String   // new_message, booking_request, etc.
+  priority       String   @default("normal") // critical, high, normal, low
+  title          String
+  message        String
+  description    String?
+  icon           String?
+  actionUrl      String?
+  actionLabel    String?
+  read           Boolean  @default(false)
+  archived       Boolean  @default(false)
+  deliveryStatus String   @default("pending") // pending, sent, delivered, failed
+  sentAt         DateTime?
+  deliveredAt    DateTime?
+  readAt         DateTime?
+  relatedId      String?  // Reference to related entity (booking, message, etc.)
+  data           Json?    // Additional metadata
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  analyticsEvents AnalyticsEvent[]
+
+  @@index([userId])
+  @@index([read, archived])
+  @@index([type])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+// Notification Preferences Model
+model NotificationPreferences {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  
+  // Channels
+  inAppEnabled          Boolean  @default(true)
+  emailEnabled          Boolean  @default(true)
+  browserPushEnabled    Boolean  @default(true)
+  smsEnabled            Boolean  @default(false)
+  
+  // Notification Types
+  newMessageEnabled     Boolean  @default(true)
+  bookingRequestEnabled Boolean  @default(true)
+  bookingConfirmedEnabled Boolean @default(true)
+  paymentReceivedEnabled Boolean  @default(true)
+  platformUpdateEnabled Boolean  @default(true)
+  securityAlertEnabled  Boolean  @default(true)
+  
+  // Quiet Hours
+  quietHoursEnabled     Boolean  @default(false)
+  quietHoursStart       String?  // HH:mm format
+  quietHoursEnd         String?  // HH:mm format
+  
+  // Frequency
+  frequency             String   @default("immediate") // immediate, hourly, daily_digest
+  
+  // Sound & Desktop
+  soundEnabled          Boolean  @default(true)
+  soundVolume           Int      @default(70) // 0-100
+  desktopNotifications  Boolean  @default(true)
+  
+  // Email Digest
+  emailDigestEnabled    Boolean  @default(true)
+  emailDigestFrequency  String   @default("daily") // hourly, daily, weekly
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification_preferences")
+}
+
+// Consultation Submission Model
+model ConsultationSubmission {
+  id                String   @id @default(cuid())
+  userId            String?  // Optional - can be anonymous
+  
+  // Contact Information
+  name              String
+  email             String
+  phone             String?
+  location          String?
+  
+  // Business Information
+  company           String?
+  businessType      String?
+  
+  // Service Details
+  services          String[] // Array of selected services
+  primaryService    String   // Primary service for routing
+  budget            String?
+  timeline          String?
+  
+  // Preferences
+  preferredContact  String?
+  preferredTime     String?
+  
+  // Message
+  message           String?
+  
+  // Metadata
+  language          String   @default("en") // en, ar
+  source            String   @default("consultation-form")
+  status            String   @default("pending") // pending, contacted, completed, cancelled
+  webhookSent       Boolean  @default(false)
+  webhookSentAt     DateTime?
+  notes             String?  // Internal notes
+  
+  // Tracking
+  ipAddress         String?
+  userAgent         String?
+  referrer          String?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+  @@index([webhookSent])
+  @@map("consultation_submissions")
+}
+
+// Analytics Events Model
+model AnalyticsEvent {
+  id             String    @id @default(cuid())
+  notificationId String
+  userId         String
+  eventType      String    // sent, delivered, opened, clicked, archived, deleted
+  timestamp      DateTime  @default(now())
+  metadata       Json?     // Device, browser, location, etc.
+
+  // Relations
+  notification Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+
+  @@index([notificationId])
+  @@index([userId])
+  @@index([eventType])
+  @@index([timestamp])
+  @@map("analytics_events")
+}
+
+// Email Digest Model
+model EmailDigest {
+  id           String   @id @default(cuid())
+  userId       String
+  frequency    String   // hourly, daily, weekly
+  status       String   @default("pending") // pending, sent, failed
+  sentAt       DateTime?
+  scheduledFor DateTime
+  emailAddress String
+  subject      String?
+  htmlContent  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([scheduledFor])
+  @@map("email_digests")
+}
+
+// API Request Log Model (for rate limiting and logging)
+model ApiRequestLog {
+  id            String   @id @default(cuid())
+  method        String
+  path          String
+  ipAddress     String
+  userAgent     String?
+  userId        String?
+  statusCode    Int
+  responseTime  Int?     // milliseconds
+  createdAt     DateTime @default(now())
+
+  @@index([ipAddress])
+  @@index([userId])
+  @@index([createdAt])
+  @@index([method, path])
+  @@map("api_request_logs")
+}
