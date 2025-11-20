@@ -61,8 +61,44 @@ router.post(
         language: formData.language,
       });
 
-      // Save to database (if Prisma available)
+      // Check for duplicate submission (same email within 5 minutes)
       let submissionId: string | null = null;
+      if (prisma) {
+        try {
+          const recentSubmission = await prisma.consultationSubmission.findFirst({
+            where: {
+              email: formData.email,
+              createdAt: {
+                gte: new Date(Date.now() - 5 * 60 * 1000), // Last 5 minutes
+              },
+            },
+            orderBy: {
+              createdAt: 'desc',
+            },
+          });
+
+          if (recentSubmission) {
+            logger.warn('Duplicate submission detected', {
+              email: formData.email,
+              existingSubmissionId: recentSubmission.id,
+              timeSinceSubmission: Date.now() - recentSubmission.createdAt.getTime(),
+            });
+
+            // Return existing submission ID (don't create duplicate)
+            return res.status(200).json({
+              success: true,
+              message: 'Submission already received',
+              submissionId: recentSubmission.id,
+              duplicate: true,
+            });
+          }
+        } catch (duplicateCheckError: any) {
+          logger.warn('Error checking for duplicate submission', duplicateCheckError);
+          // Continue with submission even if duplicate check fails
+        }
+      }
+
+      // Save to database (if Prisma available)
       if (prisma) {
         try {
           const submission = await prisma.consultationSubmission.create({
