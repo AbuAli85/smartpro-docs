@@ -5,6 +5,7 @@
 
 import { CheckCircle2, Circle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface FormSection {
   id: string;
@@ -23,6 +24,7 @@ export function FormProgressIndicator({
   currentSection,
   className,
 }: FormProgressIndicatorProps) {
+  const { t } = useLanguage();
   const completedCount = sections.filter((s) => s.completed).length;
   const totalSections = sections.length;
   const progressPercentage = (completedCount / totalSections) * 100;
@@ -33,10 +35,10 @@ export function FormProgressIndicator({
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium text-gray-700">
-            Form Progress
+            {t("message.progress") || "Form Progress"}
           </span>
           <span className="text-sm text-gray-500">
-            {completedCount} of {totalSections} sections
+            {completedCount} of {totalSections} {t("message.sectionsComplete") || "sections complete"}
           </span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
