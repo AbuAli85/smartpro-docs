@@ -202,17 +202,26 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
     };
   }, [formData, success]);
 
-  // Verify webhook on mount
+  // Verify webhook on mount (non-blocking - runs in background)
   useEffect(() => {
     const checkWebhook = async () => {
-      setWebhookStatus("checking");
+      // Only show checking status in development
+      if (import.meta.env.DEV) {
+        setWebhookStatus("checking");
+      }
       try {
         const result = await verifyWebhookEndpoint();
-        setWebhookStatus(result ? "ok" : "error");
+        setWebhookStatus(result?.success ? "ok" : "error");
       } catch {
-        setWebhookStatus("error");
+        // Silently fail in production, show warning in dev only
+        if (import.meta.env.DEV) {
+          setWebhookStatus("error");
+        } else {
+          setWebhookStatus(null); // Don't show error in production
+        }
       }
     };
+    // Run check in background without blocking form rendering
     checkWebhook();
   }, []);
 
@@ -610,25 +619,8 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
     );
   };
 
-  if (webhookStatus === "checking") {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <Loader2 className="mr-2 h-6 w-6 animate-spin text-blue-500" />
-        <p className="text-gray-600">{t("message.progress")}</p>
-      </div>
-    );
-  }
-
-  if (webhookStatus === "error" && !import.meta.env.DEV) {
-    return (
-      <Alert variant="destructive" className="text-center">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          {t("message.error")}
-        </AlertDescription>
-      </Alert>
-    );
-  }
+  // Don't block form rendering - webhook check runs in background
+  // Form will always be visible, with optional warning if webhook check fails
 
   if (success) {
     return (
@@ -678,6 +670,24 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
 
         {/* Progress Indicator */}
         <FormProgressIndicator sections={formSections} />
+
+        {/* Webhook Status Warning (Non-blocking) */}
+        {webhookStatus === "checking" && import.meta.env.DEV && (
+          <Alert className="bg-blue-50 border-blue-200">
+            <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+            <AlertDescription className="text-sm text-blue-800">
+              {t("message.progress")} - Checking webhook endpoint...
+            </AlertDescription>
+          </Alert>
+        )}
+        {webhookStatus === "error" && import.meta.env.DEV && (
+          <Alert className="bg-yellow-50 border-yellow-200">
+            <AlertCircle className="h-4 w-4 text-yellow-600" />
+            <AlertDescription className="text-sm text-yellow-800">
+              ⚠️ Webhook endpoint check failed - form will still work but verify configuration
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Error Alert */}
         {error && (
