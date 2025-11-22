@@ -56,17 +56,20 @@ const WEBHOOK_URL = process.env.MAKE_WEBHOOK_URL ||
 // For production, consider using Redis or a database
 const submissionCache = new Map<string, number>();
 const webhookCallCache = new Map<string, number>(); // Track webhook calls to prevent duplicates
+const rateLimitCache = new Map<string, number[]>(); // Track request timestamps for rate limiting
 const DUPLICATE_WINDOW_MS = 5 * 60 * 1000; // 5 minutes
+const RATE_LIMIT_REQUESTS = 2; // Max 2 requests per second (Make.com/Resend limit)
+const RATE_LIMIT_WINDOW_MS = 1000; // 1 second window
 
 function getSubmissionKey(email: string, name: string): string {
   return `${email}:${name}`.toLowerCase().trim();
 }
 
-function getIdempotencyKey(email: string, name: string, services: string[], timestamp: string): string {
-  // Create a unique key based on email, name, services, and timestamp (rounded to nearest minute)
+function getIdempotencyKey(email: string, name: string, services: string[]): string {
+  // Create a unique key based on email, name, and services (exact, not rounded)
+  // This ensures each unique submission gets a unique key
   const servicesKey = services.sort().join(',');
-  const minuteTimestamp = Math.floor(Date.now() / 60000) * 60000; // Round to nearest minute
-  return `${email}:${name}:${servicesKey}:${minuteTimestamp}`.toLowerCase().trim();
+  return `${email}:${name}:${servicesKey}`.toLowerCase().trim();
 }
 
 function isDuplicateSubmission(email: string, name: string): boolean {
@@ -84,9 +87,55 @@ function hasWebhookBeenCalled(idempotencyKey: string): boolean {
   if (!lastCall) {
     return false;
   }
-  // Prevent duplicate webhook calls within 2 minutes
+  // Prevent duplicate webhook calls within 10 minutes (longer window)
   const timeSinceLastCall = Date.now() - lastCall;
-  return timeSinceLastCall < 2 * 60 * 1000; // 2 minutes
+  return timeSinceLastCall < 10 * 60 * 1000; // 10 minutes
+}
+
+function checkRateLimit(): { allowed: boolean; retryAfter?: number } {
+  const now = Date.now();
+  const windowStart = now - RATE_LIMIT_WINDOW_MS;
+  
+  // Get all requests in the current window
+  const recentRequests: number[] = [];
+  for (const [key, timestamps] of rateLimitCache.entries()) {
+    const validTimestamps = timestamps.filter(ts => ts > windowStart);
+    if (validTimestamps.length > 0) {
+      rateLimitCache.set(key, validTimestamps);
+      recentRequests.push(...validTimestamps);
+    } else {
+      rateLimitCache.delete(key);
+    }
+  }
+  
+  // Count requests in the last second
+  const requestsInWindow = recentRequests.filter(ts => ts > windowStart).length;
+  
+  if (requestsInWindow >= RATE_LIMIT_REQUESTS) {
+    // Find the oldest request in the window to calculate retry time
+    const oldestRequest = Math.min(...recentRequests.filter(ts => ts > windowStart));
+    const retryAfter = Math.ceil((oldestRequest + RATE_LIMIT_WINDOW_MS - now) / 1000);
+    return { allowed: false, retryAfter };
+  }
+  
+  return { allowed: true };
+}
+
+function recordRateLimit(): void {
+  const now = Date.now();
+  const key = 'global'; // Use global key for rate limiting
+  
+  if (!rateLimitCache.has(key)) {
+    rateLimitCache.set(key, []);
+  }
+  
+  const timestamps = rateLimitCache.get(key)!;
+  timestamps.push(now);
+  
+  // Keep only last 100 timestamps
+  if (timestamps.length > 100) {
+    timestamps.splice(0, timestamps.length - 100);
+  }
 }
 
 function recordSubmission(email: string, name: string, idempotencyKey: string): void {
@@ -108,7 +157,7 @@ function recordSubmission(email: string, name: string, idempotencyKey: string): 
   if (webhookCallCache.size > 1000) {
     const now = Date.now();
     for (const [k, timestamp] of webhookCallCache.entries()) {
-      if (now - timestamp > 2 * 60 * 1000) {
+      if (now - timestamp > 10 * 60 * 1000) { // 10 minutes
         webhookCallCache.delete(k);
       }
     }
@@ -130,7 +179,7 @@ export default async function handler(
     if (!validationResult.success) {
       return res.status(400).json({
         error: 'Validation failed',
-        details: validationResult.error.errors,
+        details: validationResult.error.issues,
       });
     }
 
@@ -182,21 +231,23 @@ export default async function handler(
     );
 
     // Create idempotency key to prevent duplicate webhook calls
-    const timestamp = new Date().toISOString();
+    // Use exact email + name + services (not timestamp) to catch true duplicates
     const idempotencyKey = getIdempotencyKey(
       formData.email,
       formData.name,
-      formData.services,
-      timestamp
+      formData.services
     );
 
-    // Check if we've already called the webhook with this exact payload
+    // CRITICAL: Check and record BEFORE sending webhook to prevent race conditions
     if (hasWebhookBeenCalled(idempotencyKey)) {
-      console.warn('Duplicate webhook call prevented', {
+      console.warn('Duplicate webhook call prevented (before send)', {
         email: formData.email,
         name: formData.name,
         idempotencyKey,
+        timestamp: new Date().toISOString(),
       });
+      // Still record the submission attempt to prevent form resubmission
+      recordSubmission(formData.email, formData.name, idempotencyKey);
       return res.status(200).json({
         success: true,
         message: 'Submission already processed. Please wait before submitting again.',
@@ -204,7 +255,37 @@ export default async function handler(
       });
     }
 
+    // Check rate limit before sending webhook
+    const rateLimitCheck = checkRateLimit();
+    if (!rateLimitCheck.allowed) {
+      console.warn('Rate limit exceeded, delaying webhook call', {
+        email: formData.email,
+        retryAfter: rateLimitCheck.retryAfter,
+        timestamp: new Date().toISOString(),
+      });
+      return res.status(429).json({
+        error: 'Rate limit exceeded',
+        message: `Too many requests. Please wait ${rateLimitCheck.retryAfter} second(s) before trying again.`,
+        retryAfter: rateLimitCheck.retryAfter,
+      });
+    }
+
+    // Record rate limit
+    recordRateLimit();
+
+    // Record webhook call IMMEDIATELY to prevent concurrent calls
+    webhookCallCache.set(idempotencyKey, Date.now());
+    console.log('Webhook call recorded (before send)', {
+      email: formData.email,
+      language: formData.language,
+      idempotencyKey,
+      timestamp: new Date().toISOString(),
+    });
+
     // Build webhook payload
+    const timestamp = new Date().toISOString();
+    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
     const webhookPayload = {
       form_type: 'consultation',
       client_name: formData.name.trim(),
@@ -224,7 +305,8 @@ export default async function handler(
       language: formData.language, // CRITICAL: Must be 'en' or 'ar' - Make.com uses this for template selection
       source: 'smartpro-consultation-form',
       timestamp: timestamp,
-      idempotency_key: idempotencyKey, // Add idempotency key to payload
+      idempotency_key: idempotencyKey, // Prevents duplicate processing in Make.com
+      request_id: requestId, // Unique request ID for tracking
     };
 
     // Send to Make.com webhook
@@ -245,14 +327,25 @@ export default async function handler(
     const webhookData = await webhookResponse.json().catch(() => ({}));
 
     // Record successful submission to prevent duplicates
-    // Only record if webhook was successful
+    // Webhook call was already recorded before sending, just update submission cache
     if (webhookResponse.ok) {
-      recordSubmission(formData.email, formData.name, idempotencyKey);
+      const submissionKey = getSubmissionKey(formData.email, formData.name);
+      submissionCache.set(submissionKey, Date.now());
       console.log('Webhook call successful', {
         email: formData.email,
         language: formData.language,
         service_interested: primaryService,
         idempotencyKey,
+        requestId,
+        timestamp,
+      });
+    } else {
+      // If webhook failed, remove from cache so it can be retried
+      webhookCallCache.delete(idempotencyKey);
+      console.error('Webhook call failed, removed from cache for retry', {
+        email: formData.email,
+        idempotencyKey,
+        status: webhookResponse.status,
       });
     }
 
