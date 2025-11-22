@@ -135,12 +135,10 @@ router.post(
 
       // Forward to Make.com webhook
       try {
-        const { getPrimaryServiceForRouting, SERVICE_TO_MAKE_MAP, MakeServiceType } = require('../types/webhook');
+        const { getPrimaryServiceForRouting, formatAllServicesForMake } = require('../types/webhook');
         
         const primaryService = getPrimaryServiceForRouting(formData.services);
-        const allServicesFormatted = formData.services.map((service: string) => 
-          SERVICE_TO_MAKE_MAP[service] || service
-        );
+        const allServicesFormatted = formatAllServicesForMake(formData.services);
 
         // Build comprehensive notes field (required by Make.com)
         const notesParts: string[] = [];
@@ -257,6 +255,7 @@ router.post(
       });
 
       return res.status(500).json({
+        success: false,
         error: 'Failed to process consultation request',
         message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong',
       });

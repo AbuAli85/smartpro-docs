@@ -56,6 +56,8 @@ export interface ConsultationFormData {
   preferredTime: string;
   location: string;
   message: string;
+  // Note: These fields are optional when sent to API (see buildApiPayload)
+  // but stored as non-empty strings in form state for easier form handling
 }
 
 interface ConsultationFormProps {

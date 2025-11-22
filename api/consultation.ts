@@ -98,8 +98,8 @@ function checkRateLimit(): { allowed: boolean; retryAfter?: number } {
   
   // Get all requests in the current window
   const recentRequests: number[] = [];
-  for (const [key, timestamps] of rateLimitCache.entries()) {
-    const validTimestamps = timestamps.filter(ts => ts > windowStart);
+  for (const [key, timestamps] of Array.from(rateLimitCache.entries())) {
+    const validTimestamps = timestamps.filter((ts: number) => ts > windowStart);
     if (validTimestamps.length > 0) {
       rateLimitCache.set(key, validTimestamps);
       recentRequests.push(...validTimestamps);
@@ -146,7 +146,7 @@ function recordSubmission(email: string, name: string, idempotencyKey: string): 
   // Clean up old entries (keep cache size manageable)
   if (submissionCache.size > 1000) {
     const now = Date.now();
-    for (const [k, timestamp] of submissionCache.entries()) {
+    for (const [k, timestamp] of Array.from(submissionCache.entries())) {
       if (now - timestamp > DUPLICATE_WINDOW_MS) {
         submissionCache.delete(k);
       }
@@ -156,7 +156,7 @@ function recordSubmission(email: string, name: string, idempotencyKey: string): 
   // Clean up webhook call cache
   if (webhookCallCache.size > 1000) {
     const now = Date.now();
-    for (const [k, timestamp] of webhookCallCache.entries()) {
+    for (const [k, timestamp] of Array.from(webhookCallCache.entries())) {
       if (now - timestamp > 10 * 60 * 1000) { // 10 minutes
         webhookCallCache.delete(k);
       }
@@ -360,6 +360,7 @@ export default async function handler(
   } catch (error) {
     console.error('Consultation API error:', error);
     return res.status(500).json({
+      success: false,
       error: 'Internal server error',
       message: error instanceof Error ? error.message : 'Unknown error',
     });
