@@ -42,8 +42,9 @@ export class WebhookClient {
       // Try to get from services field
       if (payload.services) {
         // If services is a string, try to map it
+        // Note: Make.com may send services as string (from Module 25 joining), even though type says string[]
         if (typeof payload.services === 'string') {
-          const serviceKey = payload.services.trim();
+          const serviceKey = (payload.services as string).trim();
           // Service mapping - must match SERVICE_TO_MAKE_MAP
           const serviceMap: Record<string, string> = {
             'projectManagement': 'Project Management',
