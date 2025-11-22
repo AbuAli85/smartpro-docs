@@ -11,13 +11,15 @@
   ملاحظة مهمة: هذا القالب مكتوب بالكامل بالعربية.
 
   الحقول المستخدمة في هذا القالب:
-  - {{1.service_interested_translated}} - الخدمة الأساسية (مترجمة للعربية عند language='ar')
-  - {{1.services_summary}} - جميع الخدمات (مترجمة للعربية عند language='ar')
-  - {{1.business_type}} - نوع النشاط (مترجم للعربية عند language='ar')
-  - {{1.budget}} - الميزانية (مترجمة للعربية عند language='ar')
-  - {{1.timeline}} - الإطار الزمني (مترجم للعربية عند language='ar')
-  - {{1.preferred_contact}} - طريقة الاتصال المفضلة (مترجمة للعربية عند language='ar')
-  - {{1.preferred_time}} - وقت الاتصال المفضل (مترجم للعربية عند language='ar')
+  - {{3.service_interested_translated}} - الخدمة الأساسية (مترجمة للعربية عند language='ar')
+  - {{3.services_summary}} - جميع الخدمات (مترجمة للعربية عند language='ar')
+  - {{3.business_type}} - نوع النشاط (مترجم للعربية عند language='ar')
+  - {{3.budget}} - الميزانية (مترجمة للعربية عند language='ar')
+  - {{3.timeline}} - الإطار الزمني (مترجم للعربية عند language='ar')
+  - {{3.preferred_contact}} - طريقة الاتصال المفضلة (مترجمة للعربية عند language='ar')
+  - {{3.preferred_time}} - وقت الاتصال المفضل (مترجم للعربية عند language='ar')
+  
+  ملاحظة: جميع الحقول تستخدم {{3.*}} لأن Webhook هو Module 3 في Make.com
   
   جميع الحقول تُرسل مترجمة تلقائياً من الخادم عند language='ar'،
   لذلك لا حاجة لترجمة إضافية في Make.com.
@@ -60,7 +62,7 @@
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="direction:rtl;">
                 <tr>
                   <td style="padding:0 0 20px 0;text-align:right;direction:rtl;">
-                    <p style="margin:0;font-size:18px;font-weight:bold;color:#1a202c;font-family:Tahoma,Arial,Arial Unicode MS,sans-serif;text-align:right;direction:rtl;">مرحباً {{1.client_name}}،</p>
+                    <p style="margin:0;font-size:18px;font-weight:bold;color:#1a202c;font-family:Tahoma,Arial,Arial Unicode MS,sans-serif;text-align:right;direction:rtl;">مرحباً {{3.client_name}}،</p>
                   </td>
                 </tr>
                 <tr>
@@ -85,27 +87,27 @@
                           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:14px;direction:rtl;">
                             <tr>
                               <td style="padding:8px 12px 8px 0;color:#64748b;width:150px;font-weight:600;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;vertical-align:top;text-align:right;white-space:nowrap;direction:rtl;unicode-bidi:embed;">اسم النشاط:</td>
-                              <td style="padding:8px 0;color:#1a202c;font-weight:bold;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;vertical-align:top;text-align:right;line-height:1.6;direction:rtl;unicode-bidi:embed;">{{1.business_name}}</td>
+                              <td style="padding:8px 0;color:#1a202c;font-weight:bold;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;vertical-align:top;text-align:right;line-height:1.6;direction:rtl;unicode-bidi:embed;">{{3.business_name}}</td>
                             </tr>
                             <tr>
                               <td style="padding:8px 12px 8px 0;color:#64748b;font-weight:600;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;vertical-align:top;text-align:right;white-space:nowrap;direction:rtl;unicode-bidi:embed;">نوع النشاط:</td>
-                              <td style="padding:8px 0;color:#1a202c;font-weight:bold;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;text-align:right;line-height:1.6;direction:rtl;unicode-bidi:embed;">{{1.business_type}}</td>
+                              <td style="padding:8px 0;color:#1a202c;font-weight:bold;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;text-align:right;line-height:1.6;direction:rtl;unicode-bidi:embed;">{{3.business_type}}</td>
                             </tr>
                             <tr>
                               <td style="padding:8px 12px 8px 0;color:#64748b;font-weight:600;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;vertical-align:top;text-align:right;white-space:nowrap;direction:rtl;unicode-bidi:embed;">الخدمة الأساسية:</td>
-                              <td style="padding:8px 0;color:#1a202c;font-weight:bold;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;text-align:right;line-height:1.6;direction:rtl;unicode-bidi:embed;">{{1.service_interested_translated}}</td>
+                              <td style="padding:8px 0;color:#1a202c;font-weight:bold;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;text-align:right;line-height:1.6;direction:rtl;unicode-bidi:embed;">{{3.service_interested_translated}}</td>
                             </tr>
                             <tr>
                               <td style="padding:8px 12px 8px 0;color:#64748b;font-weight:600;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;vertical-align:top;text-align:right;white-space:nowrap;direction:rtl;unicode-bidi:embed;">جميع الخدمات:</td>
-                              <td style="padding:8px 0;color:#1a202c;font-weight:bold;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;text-align:right;line-height:1.6;direction:rtl;unicode-bidi:embed;">{{1.services_summary}}</td>
+                              <td style="padding:8px 0;color:#1a202c;font-weight:bold;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;text-align:right;line-height:1.6;direction:rtl;unicode-bidi:embed;">{{3.services_summary}}</td>
                             </tr>
                             <tr>
                               <td style="padding:8px 12px 8px 0;color:#64748b;font-weight:600;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;vertical-align:top;text-align:right;white-space:nowrap;direction:rtl;unicode-bidi:embed;">الميزانية:</td>
-                              <td style="padding:8px 0;color:#1a202c;font-weight:bold;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;text-align:right;line-height:1.6;direction:rtl;unicode-bidi:embed;">{{1.budget}}</td>
+                              <td style="padding:8px 0;color:#1a202c;font-weight:bold;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;text-align:right;line-height:1.6;direction:rtl;unicode-bidi:embed;">{{3.budget}}</td>
                             </tr>
                             <tr>
                               <td style="padding:8px 12px 8px 0;color:#64748b;font-weight:600;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;vertical-align:top;text-align:right;white-space:nowrap;direction:rtl;unicode-bidi:embed;">الإطار الزمني:</td>
-                              <td style="padding:8px 0;color:#1a202c;font-weight:bold;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;text-align:right;line-height:1.6;direction:rtl;unicode-bidi:embed;">{{1.timeline}}</td>
+                              <td style="padding:8px 0;color:#1a202c;font-weight:bold;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;text-align:right;line-height:1.6;direction:rtl;unicode-bidi:embed;">{{3.timeline}}</td>
                             </tr>
                           </table>
                         </td>
@@ -162,7 +164,7 @@
                       </tr>
                       <tr>
                         <td style="padding:0 0 12px 0;text-align:right;direction:rtl;">
-                          <p style="margin:0;color:#1a202c;font-size:14px;line-height:1.6;font-family:Tahoma,Arial,Arial Unicode MS,sans-serif;text-align:right;direction:rtl;">خلال <strong>24 ساعة عمل</strong>، سنقوم بالتواصل معك عبر <strong>{{1.preferred_contact}} {{1.preferred_time}}</strong> من أجل:</p>
+                          <p style="margin:0;color:#1a202c;font-size:14px;line-height:1.6;font-family:Tahoma,Arial,Arial Unicode MS,sans-serif;text-align:right;direction:rtl;">خلال <strong>24 ساعة عمل</strong>، سنقوم بالتواصل معك عبر <strong>{{3.preferred_contact}} {{3.preferred_time}}</strong> من أجل:</p>
                         </td>
                       </tr>
                       <tr>
@@ -229,7 +231,7 @@
                       </tr>
                       <tr>
                         <td style="padding:0;text-align:right;direction:rtl;">
-                          <p style="margin:0;color:#1a202c;font-size:14px;line-height:1.6;font-family:Tahoma,Arial,Arial Unicode MS,sans-serif;font-style:italic;white-space:pre-wrap;text-align:right;direction:rtl;font-weight:bold;">{{1.primary_message}}</p>
+                          <p style="margin:0;color:#1a202c;font-size:14px;line-height:1.6;font-family:Tahoma,Arial,Arial Unicode MS,sans-serif;font-style:italic;white-space:pre-wrap;text-align:right;direction:rtl;font-weight:bold;">{{3.primary_message}}</p>
                         </td>
                       </tr>
                     </table>
@@ -256,8 +258,8 @@
                         <td style="padding:12px 0 0 0;text-align:right;direction:rtl;">
                           <p style="margin:0;color:#64748b;font-size:13px;line-height:1.6;font-family:Tahoma,Arial,Arial Unicode MS,sans-serif;text-align:right;direction:rtl;">
                             <strong style="color:#1a202c;">معلومات الاتصال الخاصة بك:</strong><br>
-                            البريد الإلكتروني: <a href="mailto:{{1.email}}" style="color:#2563eb;text-decoration:none;font-family:Tahoma,Arial,Arial Unicode MS,sans-serif;font-weight:bold;">{{1.email}}</a><br>
-                            الهاتف: <a href="tel:{{1.phone}}" style="color:#2563eb;text-decoration:none;font-family:Tahoma,Arial,Arial Unicode MS,sans-serif;font-weight:bold;">{{1.phone}}</a>
+                            البريد الإلكتروني: <a href="mailto:{{3.email}}" style="color:#2563eb;text-decoration:none;font-family:Tahoma,Arial,Arial Unicode MS,sans-serif;font-weight:bold;">{{3.email}}</a><br>
+                            الهاتف: <a href="tel:{{3.phone}}" style="color:#2563eb;text-decoration:none;font-family:Tahoma,Arial,Arial Unicode MS,sans-serif;font-weight:bold;">{{3.phone}}</a>
                           </p>
                         </td>
                       </tr>
@@ -276,13 +278,13 @@
                       <tr>
                         <td align="center" style="background-color:#0d3c61;padding:14px 28px;border-radius:6px;">
                           <!--[if mso]>
-                          <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{1.booking_url}}" style="height:48px;v-text-anchor:middle;width:200px;" strokecolor="#0d3c61" fillcolor="#0d3c61">
+                          <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{3.booking_url}}" style="height:48px;v-text-anchor:middle;width:200px;" strokecolor="#0d3c61" fillcolor="#0d3c61">
                             <w:anchorlock/>
                             <center style="color:#ffffff;font-family:Tahoma,Arial Unicode MS,Arial,sans-serif;font-size:15px;font-weight:bold;">📅 حجز مكالمة</center>
                           </v:roundrect>
                           <![endif]-->
                           <!--[if !mso]><!-->
-                          <a href="{{1.booking_url}}" style="color:#ffffff;text-decoration:none;font-size:15px;font-weight:bold;font-family:Tahoma,Arial,Arial Unicode MS,sans-serif;line-height:20px;display:block;">📅 حجز مكالمة</a>
+                          <a href="{{3.booking_url}}" style="color:#ffffff;text-decoration:none;font-size:15px;font-weight:bold;font-family:Tahoma,Arial,Arial Unicode MS,sans-serif;line-height:20px;display:block;">📅 حجز مكالمة</a>
                           <!--<![endif]-->
                         </td>
                       </tr>

@@ -1,472 +1,394 @@
-# Make.com Integration Testing Guide
+# Testing Guide - How to Test Your Automation
 
-**Date:** 2024  
-**Purpose:** Comprehensive testing guide for Make.com integration fixes  
-**Status:** Ready for Testing
+## 🧪 Complete Testing Guide
 
----
-
-## 🎯 Testing Overview
-
-This guide provides step-by-step instructions to test the Make.com integration after applying the fixes.
-
-### Test Environment Setup
-
-1. **Staging Environment**
-   - Deploy latest code with fixes
-   - Verify webhook URL points to staging Make.com scenario (if different)
-   - Ensure Google Sheets test sheet is accessible
-
-2. **Make.com Scenario**
-   - Verify scenario is **Active** (not paused)
-   - Check execution history is accessible
-   - Confirm Google Sheets connection is active
-
-3. **Google Sheets**
-   - Open test sheet: "Smartpro Leads" / "leads"
-   - Clear test data (optional, for clean testing)
-   - Verify column headers match expected structure
+This guide shows you how to test your Make.com scenario and verify everything works correctly.
 
 ---
 
-## 📋 Test Cases
+## 🎯 Testing Methods
 
-### Test Case 1: Full Form Submission (All Fields)
+### Method 1: Test via Webhook (Easiest) ⭐
 
-**Purpose:** Verify all fields are correctly sent and received
+**Using cURL command:**
 
-**Steps:**
-1. Navigate to consultation form
-2. Fill in ALL fields:
-   - Name: `Test User Full`
-   - Email: `test.full@example.com`
-   - Phone: `+968 1234 5678`
-   - Company: `Test Company LLC`
-   - Business Type: `Limited Liability Company (LLC)`
-   - Services: Select `Accounting` and `VAT`
-   - Budget: `$5,000 - $10,000`
-   - Timeline: `3–6 Months`
-   - Preferred Contact: `Email`
-   - Preferred Time: `Afternoon (12 PM - 5 PM)`
-   - Location: `Muscat, Oman`
-   - Message: `This is a test message for full form submission.`
-   - Language: `English`
+```bash
+curl -X POST https://hook.eu2.make.com/z9t0f5eqipopdg368eypl5i9eo7kpbu8 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "form_type": "consultation",
+    "request_id": "test_1234567890",
+    "timestamp": "2025-01-22T10:00:00.000Z",
+    "client_name": "Test User",
+    "email": "test@example.com",
+    "phone": "+96812345678",
+    "business_name": "Test Business",
+    "business_type": "Corporation",
+    "service_interested": "Company Formation",
+    "service_interested_translated": "تأسيس الشركات",
+    "services": ["Company Formation", "Accounting"],
+    "services_english": ["Company Formation", "Accounting"],
+    "services_summary": "Company Formation, Accounting",
+    "services_summary_english": "Company Formation, Accounting",
+    "budget": "$5,000 - $10,000",
+    "timeline": "3-6 months",
+    "preferred_contact": "Email",
+    "preferred_time": "Morning",
+    "location": "Muscat",
+    "primary_message": "This is a test message",
+    "language": "en",
+    "source": "smartpro-consultation-form",
+    "notes": "Test submission for automation verification"
+  }'
+```
 
-3. Submit form
-4. Wait 10-15 seconds for Make.com to process
-
-**Verification Checklist:**
-
-**Make.com Execution History:**
-- [ ] Execution appears in history
-- [ ] Status is "Success" (green)
-- [ ] Execution time < 30 seconds
-- [ ] Click on execution to view details
-
-**Make.com Webhook Data (Module 1):**
-- [ ] `client_name` = "Test User Full"
-- [ ] `email` = "test.full@example.com"
-- [ ] `phone` = "+968 1234 5678"
-- [ ] `business_name` = "Test Company LLC" ✅ (was `company`, now fixed)
-- [ ] `business_type` = "Limited Liability Company (LLC)"
-- [ ] `services` = ["Accounting", "VAT"] (array format)
-- [ ] `service_interested` = "Accounting" (first service)
-- [ ] `budget` = "$5,000 - $10,000"
-- [ ] `timeline` = "3–6 Months"
-- [ ] `preferred_contact` = "Email"
-- [ ] `preferred_time` = "Afternoon (12 PM - 5 PM)"
-- [ ] `location` = "Muscat, Oman"
-- [ ] `primary_message` = "This is a test message..."
-- [ ] `notes` contains structured data ✅ (was missing, now added)
-- [ ] `language` = "en"
-- [ ] `source` = "smartpro-consultation-form" ✅ (was missing, now added)
-
-**Google Sheets Verification:**
-- [ ] New row added
-- [ ] Column A (Timestamp): Current date/time
-- [ ] Column B (Client Name): "Test User Full"
-- [ ] Column C (Email): "test.full@example.com"
-- [ ] Column D (Phone): "+968 1234 5678"
-- [ ] Column E (Business Name): "Test Company LLC" ✅ (was empty, now fixed)
-- [ ] Column F (Business Type): "Limited Liability Company (LLC)"
-- [ ] Column G (Service Interested): "Accounting"
-- [ ] Column H (Services Full List): "Accounting, VAT"
-- [ ] Column I (Budget): "$5,000 - $10,000"
-- [ ] Column J (Timeline): "3–6 Months"
-- [ ] Column K (Preferred Contact): "Email"
-- [ ] Column L (Preferred Time): "Afternoon (12 PM - 5 PM)"
-- [ ] Column M (Location): "Muscat, Oman"
-- [ ] Column N (Primary Message): "This is a test message..."
-- [ ] Column O (Notes): Contains structured notes ✅ (was empty, now fixed)
-- [ ] Column P (Language): "en"
-- [ ] Column Q (Source): "smartpro-consultation-form" ✅ (was empty, now fixed)
-- [ ] Column R (Email Status): "Pending" initially, then "Sent"
-
-**Email Verification:**
-- [ ] Check email inbox: `test.full@example.com`
-- [ ] Email received within 30 seconds
-- [ ] Email subject: "Consultation request received – Smartpro Business Hub & Services"
-- [ ] Email contains client name
-- [ ] Email contains service information
-- [ ] Email contains AI-generated content
+**For Arabic test, change:**
+```json
+"language": "ar",
+"service_interested_translated": "تأسيس الشركات",
+"services_summary": "تأسيس الشركات، المحاسبة",
+"business_type": "شركة",
+"budget": "5,000 - 10,000 دولار",
+"timeline": "3-6 أشهر",
+"preferred_contact": "البريد الإلكتروني",
+"preferred_time": "الصباح"
+```
 
 ---
 
-### Test Case 2: Minimal Form Submission (Required Fields Only)
+### Method 2: Test via Make.com (Quick)
 
-**Purpose:** Verify system handles minimal data correctly
+**In Make.com:**
 
-**Steps:**
-1. Navigate to consultation form
-2. Fill in ONLY required fields:
-   - Name: `Minimal Test`
-   - Email: `test.minimal@example.com`
-   - Services: Select `Business Consulting` only
-   - Language: `English`
-
-3. Submit form
-4. Wait 10-15 seconds
-
-**Verification Checklist:**
-
-**Make.com:**
-- [ ] Execution successful
-- [ ] `client_name` = "Minimal Test"
-- [ ] `email` = "test.minimal@example.com"
-- [ ] `services` = ["Business Consulting"]
-- [ ] `service_interested` = "Business Consulting"
-- [ ] `notes` = "Language: en" (minimal notes) ✅
-- [ ] `source` = "smartpro-consultation-form" ✅
-- [ ] Optional fields are `undefined` or empty
-
-**Google Sheets:**
-- [ ] Row added successfully
-- [ ] Required fields populated
-- [ ] Optional fields (D, E, F, I, J, K, L, M, N) are empty
-- [ ] Column O (Notes) contains at least "Language: en" ✅
-- [ ] Column Q (Source) = "smartpro-consultation-form" ✅
+1. **Open your scenario**
+2. **Click on Webhook module (Module 3)**
+3. **Click "Run once"**
+4. **Enter test data:**
+   - Copy the JSON payload from Method 1
+   - Paste into webhook test
+5. **Click "Run"**
+6. **Watch execution**
 
 ---
 
-### Test Case 3: Service Routing - Accounting
+### Method 3: Test via Website Form (Realistic)
 
-**Purpose:** Verify Accounting route works correctly
+1. **Go to your website**
+2. **Fill out consultation form:**
+   - Use test data
+   - Submit form
+3. **Check Make.com:**
+   - Scenario should trigger automatically
+   - Watch execution logs
 
-**Steps:**
-1. Submit form with:
-   - Name: `Accounting Test`
-   - Email: `test.accounting@example.com`
-   - Services: Select `Accounting` (first service)
-   - Language: `English`
+---
 
-2. Submit and wait
+## ✅ What to Check After Test
 
-**Verification Checklist:**
+### 1. Make.com Execution (5 min)
 
-**Make.com Router (Module 8):**
-- [ ] Route taken: "Accounting" route
-- [ ] Module 3 (GPT) executed with Accounting prompt
-- [ ] Module 5 (Resend Email) executed
-- [ ] Module 7 (Sheets UpdateRow) executed
+**Check Scenario Execution:**
+- ✅ Scenario executed successfully
+- ✅ No error messages
+- ✅ All modules completed (green checkmarks)
+- ✅ Execution time reasonable (< 30 seconds)
 
-**Email:**
+**Check Module Status:**
+- ✅ Module 3 (Webhook): Received data
+- ✅ Module 2 (Google Sheets): Row added
+- ✅ Module 4 (Router): Routed correctly
+- ✅ Email modules: Emails sent
+
+**If Errors:**
+- Check error messages
+- Review `MAKECOM_QUICK_FIX_GUIDE.md`
+- Verify module connections
+- Check field mappings
+
+---
+
+### 2. Google Sheets Verification (5 min)
+
+**Open Google Sheets:**
+- Spreadsheet: "Smartpro Consultation Submissions"
+- Sheet: Sheet1
+
+**Check New Row:**
+- ✅ New row added at bottom
+- ✅ All 34 fields populated
+- ✅ Field 0 (submission_id): Has value
+- ✅ Field 1 (submitted_at): Has timestamp
+- ✅ Field 2 (client_name): "Test User"
+- ✅ Field 3 (email): "test@example.com"
+- ✅ Field 19 (confirmation_sent): TRUE
+- ✅ Field 20 (welcome_sent): FALSE
+- ✅ Fields 21, 23, 25, 27, 29, 31: Empty (as expected)
+- ✅ Field 32 (provider_notified): TRUE
+
+**If Issues:**
+- Check field mappings in Make.com
+- Verify all fields are mapped
+- Check for typos in field values
+
+---
+
+### 3. Email Verification (5 min)
+
+**Check Your Email Inbox:**
+- ✅ Confirmation email received
+- ✅ Email subject correct
+- ✅ Email in correct language (Arabic or English)
+- ✅ All fields display correctly:
+  - Client name appears
+  - Business name appears
+  - Services display correctly
+  - Budget and timeline show
+  - Contact preferences show
+
+**Check Email Content:**
+- ✅ No placeholder text (like `{{3.client_name}}`)
+- ✅ All dynamic fields replaced with actual values
+- ✅ Formatting looks good
+- ✅ Links work (if any)
+
+**If Issues:**
+- Check email module configuration
+- Verify template copied correctly
+- Check placeholder format (`{{3.*}}`)
+
+---
+
+## 🧪 Test Cases
+
+### Test Case 1: English Submission
+
+**Payload:**
+```json
+{
+  "form_type": "consultation",
+  "request_id": "test_en_001",
+  "timestamp": "2025-01-22T10:00:00.000Z",
+  "client_name": "John Doe",
+  "email": "john@example.com",
+  "phone": "+96812345678",
+  "business_name": "Test Business LLC",
+  "business_type": "Corporation",
+  "service_interested": "Company Formation",
+  "service_interested_translated": "Company Formation",
+  "services_summary": "Company Formation, Accounting",
+  "budget": "$5,000 - $10,000",
+  "timeline": "3-6 months",
+  "preferred_contact": "Email",
+  "preferred_time": "Morning",
+  "location": "Muscat",
+  "primary_message": "I need help with company formation",
+  "language": "en",
+  "source": "smartpro-consultation-form",
+  "notes": "Test English submission"
+}
+```
+
+**Expected Results:**
+- ✅ Router routes to English path
+- ✅ Email sent in English
+- ✅ Subject: "Thank You for Your Consultation Request"
+- ✅ All fields in English
+
+---
+
+### Test Case 2: Arabic Submission
+
+**Payload:**
+```json
+{
+  "form_type": "consultation",
+  "request_id": "test_ar_001",
+  "timestamp": "2025-01-22T10:00:00.000Z",
+  "client_name": "أحمد محمد",
+  "email": "ahmed@example.com",
+  "phone": "+96898765432",
+  "business_name": "شركة تجريبية",
+  "business_type": "شركة",
+  "service_interested": "Company Formation",
+  "service_interested_translated": "تأسيس الشركات",
+  "services_summary": "تأسيس الشركات، المحاسبة",
+  "budget": "5,000 - 10,000 دولار",
+  "timeline": "3-6 أشهر",
+  "preferred_contact": "البريد الإلكتروني",
+  "preferred_time": "الصباح",
+  "location": "مسقط",
+  "primary_message": "أحتاج مساعدة في تأسيس الشركة",
+  "language": "ar",
+  "source": "smartpro-consultation-form",
+  "notes": "Test Arabic submission"
+}
+```
+
+**Expected Results:**
+- ✅ Router routes to Arabic path
+- ✅ Email sent in Arabic
+- ✅ Subject: "شكراً لتواصلك معنا - طلب الاستشارة"
+- ✅ All fields in Arabic
+- ✅ RTL (right-to-left) formatting correct
+
+---
+
+## 🔍 Troubleshooting
+
+### Issue 1: Scenario Not Executing
+
+**Check:**
+1. Webhook URL correct?
+2. Scenario activated (not paused)?
+3. Payload format correct (JSON)?
+4. Content-Type header set?
+
+**Fix:**
+- Verify webhook URL
+- Check scenario status
+- Review payload format
+- Test with cURL command
+
+---
+
+### Issue 2: Google Sheets Not Updating
+
+**Check:**
+1. Google Sheets module configured?
+2. Spreadsheet name matches exactly?
+3. All fields mapped?
+4. Make.com has edit permissions?
+
+**Fix:**
+- Re-authorize Google connection
+- Verify spreadsheet sharing
+- Check all field mappings
+- Test module individually
+
+---
+
+### Issue 3: Email Not Sending
+
+**Check:**
+1. Email module configured?
+2. Email address valid?
+3. Template copied correctly?
+4. Make.com email quota not exceeded?
+
+**Fix:**
+- Verify email module settings
+- Check email address format
+- Re-copy template
+- Check Make.com limits
+
+---
+
+### Issue 4: Wrong Language Email
+
+**Check:**
+1. Router conditions set correctly?
+2. `language` field in payload correct?
+3. Correct template used?
+
+**Fix:**
+- Verify router conditions
+- Check payload `language` value
+- Verify template selection
+
+---
+
+### Issue 5: Placeholders Not Replaced
+
+**Check:**
+1. Placeholder format correct (`{{3.*}}`)?
+2. Module references correct?
+3. Field names match webhook payload?
+
+**Fix:**
+- Use `{{3.*}}` format (not `{{1.*}}`)
+- Verify webhook is Module 3
+- Check field names match exactly
+
+---
+
+## 📊 Testing Checklist
+
+### Pre-Test
+- [ ] Make.com scenario activated
+- [ ] Google Sheets accessible
+- [ ] Email templates ready
+- [ ] Test email address available
+
+### During Test
+- [ ] Submit test payload
+- [ ] Watch Make.com execution
+- [ ] Check for errors
+- [ ] Verify module completion
+
+### Post-Test
+- [ ] Google Sheets row added
+- [ ] All fields populated correctly
 - [ ] Email received
-- [ ] Email contains Accounting-specific content
-- [ ] AI-generated content is Accounting-focused
-
-**Google Sheets:**
-- [ ] Column R (Email Status) = "Sent"
-- [ ] Column S (Last Email Preview) contains AI content
-- [ ] Column U (Response Status) = "No Response"
-- [ ] Column W (Follow-up Count) = "0"
+- [ ] Email content correct
+- [ ] Language correct
+- [ ] No placeholder text visible
 
 ---
 
-### Test Case 4: Service Routing - PRO Services
+## 🚀 Quick Test Commands
 
-**Purpose:** Verify PRO Services route works correctly
-
-**Steps:**
-1. Submit form with:
-   - Name: `PRO Test`
-   - Email: `test.pro@example.com`
-   - Services: Select `PRO Services` (first service)
-   - Language: `English`
-
-2. Submit and wait
-
-**Verification Checklist:**
-
-**Make.com Router:**
-- [ ] Route taken: "PRO Services" route
-- [ ] Module 10 (GPT) executed
-- [ ] Module 11 (Resend Email) executed
-- [ ] Module 12 (Sheets UpdateRow) executed
-
-**Email:**
-- [ ] Email contains PRO Services-specific content
-
----
-
-### Test Case 5: Service Routing - Company Formation
-
-**Purpose:** Verify Company Formation route works correctly
-
-**Steps:**
-1. Submit form with:
-   - Name: `Company Formation Test`
-   - Email: `test.company@example.com`
-   - Services: Select `Company Formation` (first service)
-   - Language: `English`
-
-2. Submit and wait
-
-**Verification Checklist:**
-
-**Make.com Router:**
-- [ ] Route taken: "Company Formation" route
-- [ ] Module 13 (GPT) executed
-- [ ] Module 14 (Resend Email) executed
-- [ ] Module 15 (Sheets UpdateRow) executed
-
-**Email:**
-- [ ] Email contains Company Formation-specific content
-
----
-
-### Test Case 6: Service Routing - Default Route
-
-**Purpose:** Verify Default route works for other services
-
-**Steps:**
-1. Submit form with:
-   - Name: `Default Test`
-   - Email: `test.default@example.com`
-   - Services: Select `VAT` (not Accounting, PRO, or Company Formation)
-   - Language: `English`
-
-2. Submit and wait
-
-**Verification Checklist:**
-
-**Make.com Router:**
-- [ ] Route taken: "Default" route
-- [ ] Module 16 (GPT) executed with generic prompt
-- [ ] Module 17 (Resend Email) executed
-- [ ] Module 18 (Sheets UpdateRow) executed
-
-**Email:**
-- [ ] Email contains generic content
-- [ ] Service name appears in email
-
----
-
-### Test Case 7: Arabic Language Submission
-
-**Purpose:** Verify Arabic language handling
-
-**Steps:**
-1. Switch form to Arabic
-2. Submit form with:
-   - Name: `اختبار عربي`
-   - Email: `test.arabic@example.com`
-   - Services: Select any service
-   - Language: `Arabic`
-
-2. Submit and wait
-
-**Verification Checklist:**
-
-**Make.com:**
-- [ ] `language` = "ar"
-- [ ] `client_name` = "اختبار عربي" (preserves Arabic text)
-
-**Google Sheets:**
-- [ ] Column P (Language) = "ar"
-- [ ] Column B (Client Name) shows Arabic text correctly
-
-**Email:**
-- [ ] Email subject in Arabic (if configured)
-- [ ] Email template in Arabic (if configured)
-
----
-
-### Test Case 8: Multiple Services Selection
-
-**Purpose:** Verify multiple services are handled correctly
-
-**Steps:**
-1. Submit form with:
-   - Name: `Multi Service Test`
-   - Email: `test.multi@example.com`
-   - Services: Select `Accounting`, `VAT`, and `Business Consulting`
-   - Language: `English`
-
-2. Submit and wait
-
-**Verification Checklist:**
-
-**Make.com:**
-- [ ] `services` = ["Accounting", "VAT", "Business Consulting"] (array)
-- [ ] `service_interested` = "Accounting" (first service for routing)
-- [ ] Module 25 joins services: `services_full` = "Accounting, VAT, Business Consulting"
-
-**Google Sheets:**
-- [ ] Column G (Service Interested) = "Accounting" (first service)
-- [ ] Column H (Services Full List) = "Accounting, VAT, Business Consulting"
-
-**Email:**
-- [ ] Routes to Accounting email template (based on first service)
-- [ ] Email may mention all selected services
-
----
-
-### Test Case 9: Notes Field Structure
-
-**Purpose:** Verify notes field contains all structured data
-
-**Steps:**
-1. Submit form with various optional fields
-2. Check notes field content
-
-**Verification Checklist:**
-
-**Google Sheets Column O (Notes) should contain:**
-- [ ] Primary Message (if provided)
-- [ ] Phone (if provided)
-- [ ] Location (if provided)
-- [ ] Business Type (if provided)
-- [ ] Budget (if provided)
-- [ ] Timeline (if provided)
-- [ ] Preferred Contact (if provided)
-- [ ] Preferred Time (if provided)
-- [ ] Language (always present)
-
-**Format Example:**
+### Test English Submission
+```bash
+curl -X POST https://hook.eu2.make.com/z9t0f5eqipopdg368eypl5i9eo7kpbu8 \
+  -H "Content-Type: application/json" \
+  -d '{"form_type":"consultation","request_id":"test_001","timestamp":"2025-01-22T10:00:00.000Z","client_name":"Test User","email":"test@example.com","language":"en","service_interested":"Company Formation","service_interested_translated":"Company Formation"}'
 ```
-Primary Message: Test message
-Phone: +968 1234 5678
-Location: Muscat, Oman
-Business Type: Limited Liability Company (LLC)
-Budget: $5,000 - $10,000
-Timeline: 3–6 Months
-Preferred Contact: Email
-Preferred Time: Afternoon (12 PM - 5 PM)
-Language: en
+
+### Test Arabic Submission
+```bash
+curl -X POST https://hook.eu2.make.com/z9t0f5eqipopdg368eypl5i9eo7kpbu8 \
+  -H "Content-Type: application/json" \
+  -d '{"form_type":"consultation","request_id":"test_002","timestamp":"2025-01-22T10:00:00.000Z","client_name":"اختبار","email":"test@example.com","language":"ar","service_interested":"Company Formation","service_interested_translated":"تأسيس الشركات"}'
 ```
 
 ---
 
-### Test Case 10: Error Handling
+## 📝 Test Results Template
 
-**Purpose:** Verify error handling works correctly
+**Copy this to track your tests:**
 
-**Steps:**
-1. Temporarily break Make.com connection (pause scenario)
-2. Submit form
-3. Check error handling
+```
+Test Date: ___________
+Test Type: [ ] English [ ] Arabic
 
-**Verification Checklist:**
+Results:
+- [ ] Make.com executed successfully
+- [ ] Google Sheets row added
+- [ ] Email received
+- [ ] All fields correct
+- [ ] Language correct
 
-**Backend:**
-- [ ] Error logged properly
-- [ ] User still receives success message (graceful degradation)
-- [ ] Submission saved to database (if available)
+Issues Found:
+1. ________________
+2. ________________
 
-**Make.com:**
-- [ ] Execution shows error
-- [ ] Error handler module executes (if configured)
-
----
-
-## 🔍 Debugging Tips
-
-### If Data Not Appearing in Google Sheets
-
-1. **Check Make.com Execution:**
-   - Open scenario execution history
-   - Find the execution for your test
-   - Check if Module 2 (Add Row) executed successfully
-   - Look for error messages
-
-2. **Check Google Sheets Connection:**
-   - Verify Make.com Google Sheets connection is active
-   - Check sheet name is exactly "leads" (case-sensitive)
-   - Verify spreadsheet name is "Smartpro Leads"
-
-3. **Check Column Mapping:**
-   - Verify column indices match (A=0, B=1, etc.)
-   - Check Module 2 values mapping
-
-### If Email Not Sending
-
-1. **Check Make.com Execution:**
-   - Verify GPT module completed successfully
-   - Check Resend module executed
-   - Look for error messages
-
-2. **Check Email Service:**
-   - Verify Resend connection is active
-   - Check email address is valid
-   - Check spam folder
-
-3. **Check Routing:**
-   - Verify correct route was taken
-   - Check `service_interested` value matches route filter
-
-### If Wrong Route Triggered
-
-1. **Check `service_interested` Value:**
-   - In Make.com execution, check Module 1 output
-   - Verify `service_interested` contains expected text
-   - Check router filter conditions
-
-2. **Check Service Mapping:**
-   - Verify `SERVICE_TO_MAKE_MAP` matches Make.com expectations
-   - Check `getPrimaryServiceForRouting()` function
-
----
-
-## 📊 Test Results Template
-
-Use this template to record test results:
-
-```markdown
-## Test Results - [Date]
-
-### Test Case 1: Full Form Submission
-- Status: ✅ Pass / ❌ Fail
-- Make.com Execution: [Link/ID]
-- Google Sheets Row: [Row Number]
-- Email Received: ✅ / ❌
-- Notes: [Any issues found]
-
-### Test Case 2: Minimal Form Submission
-- Status: ✅ Pass / ❌ Fail
-- Notes: [Any issues found]
-
-[... continue for all test cases ...]
+Fixed:
+- [ ] Issue 1 fixed
+- [ ] Issue 2 fixed
 ```
 
 ---
 
-## ✅ Pre-Production Checklist
+## ✅ Success Criteria
 
-Before deploying to production:
-
-- [ ] All test cases pass
-- [ ] Notes field appears in Google Sheets column O
-- [ ] Business name appears in Google Sheets column E
-- [ ] Source field appears in Google Sheets column Q
-- [ ] All service routes tested and working
-- [ ] Email delivery confirmed for all routes
-- [ ] Error handling tested
-- [ ] Performance acceptable (< 30 seconds execution time)
-- [ ] No console errors in browser
-- [ ] No Make.com execution errors
+**Your test is successful if:**
+- ✅ Make.com scenario executes without errors
+- ✅ Google Sheets row added with all fields
+- ✅ Confirmation email received
+- ✅ Email displays all data correctly
+- ✅ Language matches submission language
+- ✅ No placeholder text visible
 
 ---
 
-**Status:** Ready for Testing  
-**Last Updated:** 2024
-
+**Start testing now! Use Method 1 (cURL) for the quickest test.** 🧪

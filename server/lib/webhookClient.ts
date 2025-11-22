@@ -4,6 +4,7 @@
  */
 
 // Webhook URL from environment or default
+// Submission webhook for consultation form submissions
 const WEBHOOK_URL = process.env.MAKE_WEBHOOK_URL || 
   'https://hook.eu2.make.com/z9t0f5eqipopdg368eypl5i9eo7kpbu8';
 
