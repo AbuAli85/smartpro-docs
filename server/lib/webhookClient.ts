@@ -14,15 +14,16 @@ export interface WebhookPayload {
   phone?: string;
   business_name?: string; // Fixed: was 'company', now 'business_name'
   business_type?: string;
-  services?: string[];
-  service_interested: string;
+  services?: string[]; // Array of formatted service names (always sent, never undefined)
+  services_summary?: string; // Comma-separated string for Make.com convenience
+  service_interested: string; // Primary service for email routing
   budget?: string;
   timeline?: string;
   preferred_contact?: string;
   preferred_time?: string;
   location?: string;
   primary_message?: string;
-  notes?: string; // Added: required by Make.com Module 25
+  notes?: string; // Added: required by Make.com Module 25, includes services list
   language?: string;
   source?: string; // Added: required by Make.com
   timestamp?: string;

@@ -136,38 +136,74 @@ router.post(
       // Forward to Make.com webhook
       try {
         const { getPrimaryServiceForRouting, formatAllServicesForMake } = require('../types/webhook');
+        const { 
+          translateBusinessType, 
+          translateBudget, 
+          translateTimeline, 
+          translateContactMethod, 
+          translateContactTime,
+          translateServices 
+        } = require('../lib/translations');
         
         const primaryService = getPrimaryServiceForRouting(formData.services);
         const allServicesFormatted = formatAllServicesForMake(formData.services);
+        
+        // Translate form fields based on language for display in notes
+        const language: 'en' | 'ar' = formData.language || 'en';
+        const translatedBusinessType = translateBusinessType(formData.businessType, language);
+        const translatedBudget = translateBudget(formData.budget, language);
+        const translatedTimeline = translateTimeline(formData.timeline, language);
+        const translatedContact = translateContactMethod(formData.preferredContact, language);
+        const translatedTime = translateContactTime(formData.preferredTime, language);
+        const translatedServices = translateServices(formData.services, language);
 
-        // Build comprehensive notes field (required by Make.com)
+        // Build services summary string for Make.com convenience (comma-separated)
+        const servicesSummary = allServicesFormatted.length > 0 
+          ? allServicesFormatted.join(', ') 
+          : 'Other';
+
+        // Build comprehensive notes field (required by Make.com) - include services
+        // Use translated values for better readability in Make.com
         const notesParts: string[] = [];
+        if (translatedServices.length > 0) {
+          const servicesLabel = language === 'ar' ? 'الخدمات المختارة' : 'Services Selected';
+          notesParts.push(`${servicesLabel}: ${translatedServices.join(', ')}`);
+        }
         if (formData.message) {
-          notesParts.push(`Primary Message: ${formData.message.trim()}`);
+          const messageLabel = language === 'ar' ? 'الرسالة الأساسية' : 'Primary Message';
+          notesParts.push(`${messageLabel}: ${formData.message.trim()}`);
         }
         if (formData.phone) {
-          notesParts.push(`Phone: ${formData.phone.trim()}`);
+          const phoneLabel = language === 'ar' ? 'الهاتف' : 'Phone';
+          notesParts.push(`${phoneLabel}: ${formData.phone.trim()}`);
         }
         if (formData.location) {
-          notesParts.push(`Location: ${formData.location.trim()}`);
+          const locationLabel = language === 'ar' ? 'الموقع' : 'Location';
+          notesParts.push(`${locationLabel}: ${formData.location.trim()}`);
         }
-        if (formData.businessType) {
-          notesParts.push(`Business Type: ${formData.businessType}`);
+        if (translatedBusinessType) {
+          const businessTypeLabel = language === 'ar' ? 'نوع النشاط التجاري' : 'Business Type';
+          notesParts.push(`${businessTypeLabel}: ${translatedBusinessType}`);
         }
-        if (formData.budget) {
-          notesParts.push(`Budget: ${formData.budget}`);
+        if (translatedBudget) {
+          const budgetLabel = language === 'ar' ? 'الميزانية' : 'Budget';
+          notesParts.push(`${budgetLabel}: ${translatedBudget}`);
         }
-        if (formData.timeline) {
-          notesParts.push(`Timeline: ${formData.timeline}`);
+        if (translatedTimeline) {
+          const timelineLabel = language === 'ar' ? 'الجدول الزمني' : 'Timeline';
+          notesParts.push(`${timelineLabel}: ${translatedTimeline}`);
         }
-        if (formData.preferredContact) {
-          notesParts.push(`Preferred Contact: ${formData.preferredContact}`);
+        if (translatedContact) {
+          const contactLabel = language === 'ar' ? 'طريقة الاتصال المفضلة' : 'Preferred Contact';
+          notesParts.push(`${contactLabel}: ${translatedContact}`);
         }
-        if (formData.preferredTime) {
-          notesParts.push(`Preferred Time: ${formData.preferredTime}`);
+        if (translatedTime) {
+          const timeLabel = language === 'ar' ? 'وقت الاتصال المفضل' : 'Preferred Time';
+          notesParts.push(`${timeLabel}: ${translatedTime}`);
         }
-        notesParts.push(`Language: ${formData.language}`);
-        const notes = notesParts.length > 0 ? notesParts.join('\n') : 'No additional information provided';
+        const languageLabel = language === 'ar' ? 'اللغة' : 'Language';
+        notesParts.push(`${languageLabel}: ${formData.language}`);
+        const notes = notesParts.length > 0 ? notesParts.join('\n') : (language === 'ar' ? 'لم يتم تقديم معلومات إضافية' : 'No additional information provided');
 
         const webhookPayload = {
           form_type: 'consultation',
@@ -175,13 +211,21 @@ router.post(
           email: formData.email.trim(),
           phone: formData.phone?.trim() || undefined,
           business_name: formData.company?.trim() || undefined, // Fixed: was 'company', should be 'business_name'
-          business_type: formData.businessType || undefined,
-          services: allServicesFormatted.length > 0 ? allServicesFormatted : undefined,
-          service_interested: primaryService || 'Other',
-          budget: formData.budget || undefined,
-          timeline: formData.timeline || undefined,
-          preferred_contact: formData.preferredContact || undefined,
-          preferred_time: formData.preferredTime || undefined,
+          business_type: translatedBusinessType || undefined, // Translated value
+          business_type_key: formData.businessType || undefined, // Original key for reference
+          services: allServicesFormatted, // Always send as array (never undefined) for Make.com Module 25 - English for routing
+          services_translated: translatedServices, // Translated services for display
+          services_summary: servicesSummary, // Comma-separated string for Make.com convenience (English)
+          services_summary_translated: translatedServices.join(', '), // Translated summary for display
+          service_interested: primaryService || 'Other', // English for Make.com routing
+          budget: translatedBudget || undefined, // Translated value
+          budget_key: formData.budget || undefined, // Original key for reference
+          timeline: translatedTimeline || undefined, // Translated value
+          timeline_key: formData.timeline || undefined, // Original key for reference
+          preferred_contact: translatedContact || undefined, // Translated value
+          preferred_contact_key: formData.preferredContact || undefined, // Original key for reference
+          preferred_time: translatedTime || undefined, // Translated value
+          preferred_time_key: formData.preferredTime || undefined, // Original key for reference
           location: formData.location?.trim() || undefined,
           primary_message: formData.message?.trim() || undefined,
           notes: notes, // Added: required by Make.com Module 25

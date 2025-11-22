@@ -6,6 +6,164 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { z } from 'zod';
 
+// Translation utilities (inline for Vercel serverless function)
+type Language = 'en' | 'ar';
+
+const BUSINESS_TYPE_TRANSLATIONS: Record<Language, Record<string, string>> = {
+  en: {
+    'soleProprietorship': 'Sole Proprietorship',
+    'llc': 'Limited Liability Company (LLC)',
+    'partnership': 'Partnership',
+    'corporation': 'Corporation',
+    'freelancer': 'Freelancer',
+    'other': 'Other',
+  },
+  ar: {
+    'soleProprietorship': 'مؤسسة فردية',
+    'llc': 'شركة ذات مسؤولية محدودة',
+    'partnership': 'شراكة',
+    'corporation': 'شركة',
+    'freelancer': 'مستقل',
+    'other': 'أخرى',
+  },
+};
+
+const BUDGET_TRANSLATIONS: Record<Language, Record<string, string>> = {
+  en: {
+    'under5k': 'Under $5,000',
+    '5k-10k': '$5,000 - $10,000',
+    '10k-25k': '$10,000 - $25,000',
+    '25k-50k': '$25,000 - $50,000',
+    '50k-100k': '$50,000 - $100,000',
+    'over100k': 'Over $100,000',
+    'notSure': 'Not Sure',
+  },
+  ar: {
+    'under5k': 'أقل من 5,000 دولار',
+    '5k-10k': '5,000 - 10,000 دولار',
+    '10k-25k': '10,000 - 25,000 دولار',
+    '25k-50k': '25,000 - 50,000 دولار',
+    '50k-100k': '50,000 - 100,000 دولار',
+    'over100k': 'أكثر من 100,000 دولار',
+    'notSure': 'غير متأكد',
+  },
+};
+
+const TIMELINE_TRANSLATIONS: Record<Language, Record<string, string>> = {
+  en: {
+    'immediate': 'Immediate (Within 1 month)',
+    '1-3months': '1-3 Months',
+    '3-6months': '3-6 Months',
+    '6-12months': '6-12 Months',
+    'planning': 'Just Planning',
+  },
+  ar: {
+    'immediate': 'فوري (خلال شهر)',
+    '1-3months': '1-3 أشهر',
+    '3-6months': '3-6 أشهر',
+    '6-12months': '6-12 شهر',
+    'planning': 'التخطيط فقط',
+  },
+};
+
+const CONTACT_TRANSLATIONS: Record<Language, Record<string, string>> = {
+  en: {
+    'email': 'Email',
+    'phone': 'Phone',
+    'both': 'Both',
+  },
+  ar: {
+    'email': 'البريد الإلكتروني',
+    'phone': 'الهاتف',
+    'both': 'كلاهما',
+  },
+};
+
+const TIME_TRANSLATIONS: Record<Language, Record<string, string>> = {
+  en: {
+    'morning': 'Morning (9 AM - 12 PM)',
+    'afternoon': 'Afternoon (12 PM - 5 PM)',
+    'evening': 'Evening (5 PM - 8 PM)',
+    'flexible': 'Flexible',
+  },
+  ar: {
+    'morning': 'الصباح (9 صباحاً - 12 ظهراً)',
+    'afternoon': 'بعد الظهر (12 ظهراً - 5 مساءً)',
+    'evening': 'المساء (5 مساءً - 8 مساءً)',
+    'flexible': 'مرن',
+  },
+};
+
+const SERVICE_TRANSLATIONS: Record<Language, Record<string, string>> = {
+  en: {
+    'companyFormation': 'Company Formation',
+    'proServices': 'PRO Services',
+    'accounting': 'Accounting & Bookkeeping',
+    'vat': 'VAT Registration & Filing',
+    'businessConsulting': 'Business Consulting',
+    'employeeManagement': 'Employee Management',
+    'crm': 'CRM & Client Management',
+    'projectManagement': 'Project Management',
+    'elearning': 'E-Learning Platform',
+    'contractManagement': 'Contract Management',
+    'workflowAutomation': 'Workflow Automation',
+    'analytics': 'Advanced Analytics',
+    'api': 'API & Integrations',
+    'support': '24/7 Support',
+    'other': 'Other',
+  },
+  ar: {
+    'companyFormation': 'تأسيس الشركات',
+    'proServices': 'خدمات الـ PRO',
+    'accounting': 'المحاسبة والمسك الدفتري',
+    'vat': 'تسجيل ضريبة القيمة المضافة والإيداع',
+    'businessConsulting': 'الاستشارات التجارية',
+    'employeeManagement': 'إدارة الموظفين',
+    'crm': 'إدارة علاقات العملاء',
+    'projectManagement': 'إدارة المشاريع',
+    'elearning': 'منصة التعلم الإلكتروني',
+    'contractManagement': 'إدارة العقود',
+    'workflowAutomation': 'أتمتة سير العمل',
+    'analytics': 'التحليلات المتقدمة',
+    'api': 'واجهات برمجة التطبيقات والتكامل',
+    'support': 'الدعم على مدار الساعة',
+    'other': 'أخرى',
+  },
+};
+
+function translateBusinessType(key: string | undefined, language: Language = 'en'): string | undefined {
+  if (!key) return undefined;
+  return BUSINESS_TYPE_TRANSLATIONS[language][key] || key;
+}
+
+function translateBudget(key: string | undefined, language: Language = 'en'): string | undefined {
+  if (!key) return undefined;
+  return BUDGET_TRANSLATIONS[language][key] || key;
+}
+
+function translateTimeline(key: string | undefined, language: Language = 'en'): string | undefined {
+  if (!key) return undefined;
+  return TIMELINE_TRANSLATIONS[language][key] || key;
+}
+
+function translateContactMethod(key: string | undefined, language: Language = 'en'): string | undefined {
+  if (!key) return undefined;
+  return CONTACT_TRANSLATIONS[language][key] || key;
+}
+
+function translateContactTime(key: string | undefined, language: Language = 'en'): string | undefined {
+  if (!key) return undefined;
+  return TIME_TRANSLATIONS[language][key] || key;
+}
+
+function translateService(key: string, language: Language = 'en'): string {
+  return SERVICE_TRANSLATIONS[language][key] || key;
+}
+
+function translateServices(services: string[], language: Language = 'en'): string[] {
+  return services.map(service => translateService(service, language));
+}
+
 // Validation schema
 const consultationSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(100, 'Name must not exceed 100 characters'),
@@ -198,37 +356,62 @@ export default async function handler(
       });
     }
 
-    // Build notes field
-    const notesParts: string[] = [];
-    if (formData.message) {
-      notesParts.push(`Primary Message: ${formData.message.trim()}`);
-    }
-    if (formData.phone) {
-      notesParts.push(`Phone: ${formData.phone.trim()}`);
-    }
-    if (formData.location) {
-      notesParts.push(`Location: ${formData.location.trim()}`);
-    }
-    if (formData.budget) {
-      notesParts.push(`Budget: ${formData.budget}`);
-    }
-    if (formData.timeline) {
-      notesParts.push(`Timeline: ${formData.timeline}`);
-    }
-    if (formData.preferredContact) {
-      notesParts.push(`Preferred Contact: ${formData.preferredContact}`);
-    }
-    if (formData.preferredTime) {
-      notesParts.push(`Preferred Time: ${formData.preferredTime}`);
-    }
-    notesParts.push(`Language: ${formData.language}`);
-    const notes = notesParts.length > 0 ? notesParts.join('\n') : 'No additional information provided';
-
-    // Get primary service
+    // Get primary service and format all services
     const primaryService = getPrimaryServiceForRouting(formData.services);
     const allServicesFormatted = formData.services.map((service: string) => 
       SERVICE_TO_MAKE_MAP[service] || service
     );
+    
+    // Translate form fields based on language for display in notes
+    const language: Language = formData.language || 'en';
+    const translatedBusinessType = translateBusinessType(formData.businessType, language);
+    const translatedBudget = translateBudget(formData.budget, language);
+    const translatedTimeline = translateTimeline(formData.timeline, language);
+    const translatedContact = translateContactMethod(formData.preferredContact, language);
+    const translatedTime = translateContactTime(formData.preferredTime, language);
+    const translatedServices = translateServices(formData.services, language);
+    
+    // Build notes field (include services for Make.com visibility) - use translated values
+    const notesParts: string[] = [];
+    if (translatedServices.length > 0) {
+      const servicesLabel = language === 'ar' ? 'الخدمات المختارة' : 'Services Selected';
+      notesParts.push(`${servicesLabel}: ${translatedServices.join(', ')}`);
+    }
+    if (formData.message) {
+      const messageLabel = language === 'ar' ? 'الرسالة الأساسية' : 'Primary Message';
+      notesParts.push(`${messageLabel}: ${formData.message.trim()}`);
+    }
+    if (formData.phone) {
+      const phoneLabel = language === 'ar' ? 'الهاتف' : 'Phone';
+      notesParts.push(`${phoneLabel}: ${formData.phone.trim()}`);
+    }
+    if (formData.location) {
+      const locationLabel = language === 'ar' ? 'الموقع' : 'Location';
+      notesParts.push(`${locationLabel}: ${formData.location.trim()}`);
+    }
+    if (translatedBusinessType) {
+      const businessTypeLabel = language === 'ar' ? 'نوع النشاط التجاري' : 'Business Type';
+      notesParts.push(`${businessTypeLabel}: ${translatedBusinessType}`);
+    }
+    if (translatedBudget) {
+      const budgetLabel = language === 'ar' ? 'الميزانية' : 'Budget';
+      notesParts.push(`${budgetLabel}: ${translatedBudget}`);
+    }
+    if (translatedTimeline) {
+      const timelineLabel = language === 'ar' ? 'الجدول الزمني' : 'Timeline';
+      notesParts.push(`${timelineLabel}: ${translatedTimeline}`);
+    }
+    if (translatedContact) {
+      const contactLabel = language === 'ar' ? 'طريقة الاتصال المفضلة' : 'Preferred Contact';
+      notesParts.push(`${contactLabel}: ${translatedContact}`);
+    }
+    if (translatedTime) {
+      const timeLabel = language === 'ar' ? 'وقت الاتصال المفضل' : 'Preferred Time';
+      notesParts.push(`${timeLabel}: ${translatedTime}`);
+    }
+    const languageLabel = language === 'ar' ? 'اللغة' : 'Language';
+    notesParts.push(`${languageLabel}: ${formData.language}`);
+    const notes = notesParts.length > 0 ? notesParts.join('\n') : (language === 'ar' ? 'لم يتم تقديم معلومات إضافية' : 'No additional information provided');
 
     // Create idempotency key to prevent duplicate webhook calls
     // Use exact email + name + services (not timestamp) to catch true duplicates
@@ -286,22 +469,35 @@ export default async function handler(
     const timestamp = new Date().toISOString();
     const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
+    // Build services summary string for Make.com convenience (comma-separated)
+    const servicesSummary = allServicesFormatted.length > 0 
+      ? allServicesFormatted.join(', ') 
+      : 'Other';
+
     const webhookPayload = {
       form_type: 'consultation',
       client_name: formData.name.trim(),
       email: formData.email.trim(),
       phone: formData.phone?.trim() || undefined,
       business_name: formData.company?.trim() || undefined,
-      business_type: formData.businessType || undefined,
-      services: allServicesFormatted.length > 0 ? allServicesFormatted : undefined,
-      service_interested: primaryService || 'Other',
-      budget: formData.budget || undefined,
-      timeline: formData.timeline || undefined,
-      preferred_contact: formData.preferredContact || undefined,
-      preferred_time: formData.preferredTime || undefined,
+      business_type: translatedBusinessType || undefined, // Translated value
+      business_type_key: formData.businessType || undefined, // Original key for reference
+      services: allServicesFormatted, // Always send as array (never undefined) for Make.com Module 25 - English for routing
+      services_translated: translatedServices, // Translated services for display
+      services_summary: servicesSummary, // Comma-separated string for Make.com convenience (English)
+      services_summary_translated: translatedServices.join(', '), // Translated summary for display
+      service_interested: primaryService || 'Other', // English for Make.com routing
+      budget: translatedBudget || undefined, // Translated value
+      budget_key: formData.budget || undefined, // Original key for reference
+      timeline: translatedTimeline || undefined, // Translated value
+      timeline_key: formData.timeline || undefined, // Original key for reference
+      preferred_contact: translatedContact || undefined, // Translated value
+      preferred_contact_key: formData.preferredContact || undefined, // Original key for reference
+      preferred_time: translatedTime || undefined, // Translated value
+      preferred_time_key: formData.preferredTime || undefined, // Original key for reference
       location: formData.location?.trim() || undefined,
       primary_message: formData.message?.trim() || undefined,
-      notes: notes,
+      notes: notes, // Includes services list and all other details
       language: formData.language, // CRITICAL: Must be 'en' or 'ar' - Make.com uses this for template selection
       source: 'smartpro-consultation-form',
       timestamp: timestamp,
