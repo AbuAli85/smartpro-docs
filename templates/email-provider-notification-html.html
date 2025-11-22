@@ -32,23 +32,23 @@
                 <table width="100%" cellpadding="8" cellspacing="0" style="font-size:14px;">
                   <tr>
                     <td style="padding:6px 0;color:#64748b;width:140px;font-weight:500;">Name:</td>
-                    <td style="padding:6px 0;color:#1a202c;font-weight:600;">{{1.client_name}}</td>
+                    <td style="padding:6px 0;color:#1a202c;font-weight:bold;">{{1.client_name}}</td>
                   </tr>
                   <tr>
                     <td style="padding:6px 0;color:#64748b;">Email:</td>
-                    <td style="padding:6px 0;color:#1a202c;"><a href="mailto:{{1.email}}" style="color:#2563eb;text-decoration:none;">{{1.email}}</a></td>
+                    <td style="padding:6px 0;color:#1a202c;"><a href="mailto:{{1.email}}" style="color:#2563eb;text-decoration:none;font-weight:bold;">{{1.email}}</a></td>
                   </tr>
                   <tr>
                     <td style="padding:6px 0;color:#64748b;">Phone:</td>
-                    <td style="padding:6px 0;color:#1a202c;"><a href="tel:{{1.phone}}" style="color:#2563eb;text-decoration:none;">{{1.phone}}</a></td>
+                    <td style="padding:6px 0;color:#1a202c;"><a href="tel:{{1.phone}}" style="color:#2563eb;text-decoration:none;font-weight:bold;">{{1.phone}}</a></td>
                   </tr>
                   <tr>
                     <td style="padding:6px 0;color:#64748b;">Business:</td>
-                    <td style="padding:6px 0;color:#1a202c;">{{1.business_name}}</td>
+                    <td style="padding:6px 0;color:#1a202c;font-weight:bold;">{{1.business_name}}</td>
                   </tr>
                   <tr>
                     <td style="padding:6px 0;color:#64748b;">Business Type:</td>
-                    <td style="padding:6px 0;color:#1a202c;">{{1.business_type}}</td>
+                    <td style="padding:6px 0;color:#1a202c;font-weight:bold;">{{1.business_type}}</td>
                   </tr>
                 </table>
               </div>
@@ -59,19 +59,19 @@
                 <table width="100%" cellpadding="8" cellspacing="0" style="font-size:14px;">
                   <tr>
                     <td style="padding:6px 0;color:#64748b;width:140px;font-weight:500;">Primary Service:</td>
-                    <td style="padding:6px 0;color:#1a202c;font-weight:600;">{{1.service_interested}}</td>
+                    <td style="padding:6px 0;color:#1a202c;font-weight:bold;">{{1.service_interested}}</td>
                   </tr>
                   <tr>
                     <td style="padding:6px 0;color:#64748b;">All Services:</td>
-                    <td style="padding:6px 0;color:#1a202c;">{{join(1.services; ", ")}}</td>
+                    <td style="padding:6px 0;color:#1a202c;font-weight:bold;">{{1.services_summary}}</td>
                   </tr>
                   <tr>
                     <td style="padding:6px 0;color:#64748b;">Budget:</td>
-                    <td style="padding:6px 0;color:#1a202c;">{{1.budget}}</td>
+                    <td style="padding:6px 0;color:#1a202c;font-weight:bold;">{{1.budget}}</td>
                   </tr>
                   <tr>
                     <td style="padding:6px 0;color:#64748b;">Timeline:</td>
-                    <td style="padding:6px 0;color:#1a202c;">{{1.timeline}}</td>
+                    <td style="padding:6px 0;color:#1a202c;font-weight:bold;">{{1.timeline}}</td>
                   </tr>
                 </table>
               </div>
@@ -79,7 +79,7 @@
               <!-- Client Message (Always show section - will be empty if no message) -->
               <div style="background:#fff7ed;border-left:4px solid #f59e0b;padding:20px;margin:20px 0;border-radius:6px;">
                 <h3 style="margin:0 0 15px 0;font-size:16px;font-weight:600;color:#f59e0b;">💬 Client Message</h3>
-                <p style="margin:0;color:#1a202c;white-space:pre-wrap;font-size:14px;line-height:1.6;">{{1.primary_message}}</p>
+                <p style="margin:0;color:#1a202c;white-space:pre-wrap;font-size:14px;line-height:1.6;font-weight:bold;">{{1.primary_message}}</p>
               </div>
 
               <!-- Contact Preferences (Always show section - will be empty if no preferences) -->
@@ -88,11 +88,11 @@
                 <table width="100%" cellpadding="8" cellspacing="0" style="font-size:14px;">
                   <tr>
                     <td style="padding:6px 0;color:#64748b;width:140px;font-weight:500;">Preferred Contact:</td>
-                    <td style="padding:6px 0;color:#1a202c;">{{1.preferred_contact}}</td>
+                    <td style="padding:6px 0;color:#1a202c;font-weight:bold;">{{1.preferred_contact}}</td>
                   </tr>
                   <tr>
                     <td style="padding:6px 0;color:#64748b;">Preferred Time:</td>
-                    <td style="padding:6px 0;color:#1a202c;">{{1.preferred_time}}</td>
+                    <td style="padding:6px 0;color:#1a202c;font-weight:bold;">{{1.preferred_time}}</td>
                   </tr>
                 </table>
               </div>
@@ -103,23 +103,23 @@
                 <table width="100%" cellpadding="8" cellspacing="0" style="font-size:14px;">
                   <tr>
                     <td style="padding:6px 0;color:#64748b;width:140px;font-weight:500;">Language:</td>
-                    <td style="padding:6px 0;color:#1a202c;">{{if(1.language = "ar"; "Arabic (العربية)"; "English")}}</td>
+                    <td style="padding:6px 0;color:#1a202c;font-weight:bold;">{{if(1.language = "ar"; "Arabic (العربية)"; "English")}}</td>
                   </tr>
                   <tr>
                     <td style="padding:6px 0;color:#64748b;">Location:</td>
-                    <td style="padding:6px 0;color:#1a202c;">{{1.location}}</td>
+                    <td style="padding:6px 0;color:#1a202c;font-weight:bold;">{{1.location}}</td>
                   </tr>
                   <tr>
                     <td style="padding:6px 0;color:#64748b;">Source:</td>
-                    <td style="padding:6px 0;color:#1a202c;">{{1.source}}</td>
+                    <td style="padding:6px 0;color:#1a202c;font-weight:bold;">{{1.source}}</td>
                   </tr>
                   <tr>
                     <td style="padding:6px 0;color:#64748b;">Submitted:</td>
-                    <td style="padding:6px 0;color:#1a202c;">{{now}}</td>
+                    <td style="padding:6px 0;color:#1a202c;font-weight:bold;">{{1.timestamp}}</td>
                   </tr>
                   <tr>
                     <td style="padding:6px 0;color:#64748b;">Sheet Row:</td>
-                    <td style="padding:6px 0;color:#1a202c;">Row #{{2.rowNumber}}</td>
+                    <td style="padding:6px 0;color:#1a202c;font-weight:bold;">Row #{{2.rowNumber}}</td>
                   </tr>
                 </table>
               </div>
