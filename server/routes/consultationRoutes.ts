@@ -157,10 +157,12 @@ router.post(
         const translatedTime = translateContactTime(formData.preferredTime, language);
         const translatedServices = translateServices(formData.services, language);
 
-        // Build services summary string for Make.com convenience (comma-separated)
-        const servicesSummary = allServicesFormatted.length > 0 
-          ? allServicesFormatted.join(', ') 
-          : 'Other';
+        // Build services summary - use translated values when language is Arabic
+        // This ensures Make.com email templates show services in the correct language
+        const servicesForDisplay = language === 'ar' ? translatedServices : allServicesFormatted;
+        const servicesSummary = servicesForDisplay.length > 0 
+          ? servicesForDisplay.join(', ') 
+          : (language === 'ar' ? 'أخرى' : 'Other');
 
         // Build comprehensive notes field (required by Make.com) - include services
         // Use translated values for better readability in Make.com
@@ -213,11 +215,11 @@ router.post(
           business_name: formData.company?.trim() || undefined, // Fixed: was 'company', should be 'business_name'
           business_type: translatedBusinessType || undefined, // Translated value
           business_type_key: formData.businessType || undefined, // Original key for reference
-          services: allServicesFormatted, // Always send as array (never undefined) for Make.com Module 25 - English for routing
-          services_translated: translatedServices, // Translated services for display
-          services_summary: servicesSummary, // Comma-separated string for Make.com convenience (English)
-          services_summary_translated: translatedServices.join(', '), // Translated summary for display
-          service_interested: primaryService || 'Other', // English for Make.com routing
+          services: servicesForDisplay, // Translated services array (Arabic if language is 'ar', English otherwise) - for email display
+          services_english: allServicesFormatted, // English services array (for routing/reference)
+          services_summary: servicesSummary, // Comma-separated string in user's language (for email display)
+          services_summary_english: allServicesFormatted.length > 0 ? allServicesFormatted.join(', ') : 'Other', // English summary (for reference)
+          service_interested: primaryService || 'Other', // Always English for Make.com routing
           budget: translatedBudget || undefined, // Translated value
           budget_key: formData.budget || undefined, // Original key for reference
           timeline: translatedTimeline || undefined, // Translated value

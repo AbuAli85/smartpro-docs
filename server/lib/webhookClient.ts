@@ -14,9 +14,11 @@ export interface WebhookPayload {
   phone?: string;
   business_name?: string; // Fixed: was 'company', now 'business_name'
   business_type?: string;
-  services?: string[]; // Array of formatted service names (always sent, never undefined)
-  services_summary?: string; // Comma-separated string for Make.com convenience
-  service_interested: string; // Primary service for email routing
+  services?: string[]; // Array of service names in user's language (Arabic if language is 'ar', English otherwise)
+  services_english?: string[]; // English services array (for routing/reference)
+  services_summary?: string; // Comma-separated string in user's language (for email display)
+  services_summary_english?: string; // English summary (for reference)
+  service_interested: string; // Primary service for email routing (always English)
   budget?: string;
   timeline?: string;
   preferred_contact?: string;
