@@ -1,0 +1,23 @@
+Write the main body content for a welcome email in {{1.language}} language.
+
+CRITICAL: Check {{1.language}} first:
+- If "ar": Write ENTIRELY in Arabic, start with "نشكرك"
+- If "en" or empty: Write ENTIRELY in English, start with "Thank you"
+- DO NOT mix languages
+
+Client: {{1.client_name}}
+Business: {{1.business_name}}
+Service (English): {{1.service_interested}}
+Service (Arabic): {{1.service_interested_translated}}
+Language: {{1.language}}
+
+Requirements:
+1. Thank them for contacting Smartpro Business Hub & Services (in {{1.language}})
+2. Explain how we can help with {{1.service_interested_translated}} (if Arabic) or {{1.service_interested}} (if English)
+3. Ask 2-3 specific questions about their needs
+4. Invite them to reply or schedule a call
+
+NO greeting, NO signature - only main body content.
+
+Write in {{1.language}}:
+

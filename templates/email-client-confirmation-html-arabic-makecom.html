@@ -10,14 +10,17 @@
   <!--
   ملاحظة مهمة: هذا القالب مكتوب بالكامل بالعربية.
 
-  للقيم الديناميكية مثل {{1.service_interested}}, {{1.business_type}}, {{1.services}}،
-  تأكد من ترجمتها في Make.com قبل إرسال البريد الإلكتروني إذا كانت تأتي بالإنجليزية من النموذج.
+  الحقول المستخدمة في هذا القالب:
+  - {{1.service_interested_translated}} - الخدمة الأساسية (مترجمة للعربية عند language='ar')
+  - {{1.services_summary}} - جميع الخدمات (مترجمة للعربية عند language='ar')
+  - {{1.business_type}} - نوع النشاط (مترجم للعربية عند language='ar')
+  - {{1.budget}} - الميزانية (مترجمة للعربية عند language='ar')
+  - {{1.timeline}} - الإطار الزمني (مترجم للعربية عند language='ar')
+  - {{1.preferred_contact}} - طريقة الاتصال المفضلة (مترجمة للعربية عند language='ar')
+  - {{1.preferred_time}} - وقت الاتصال المفضل (مترجم للعربية عند language='ar')
   
-  للحقول مثل {{1.services}} التي تحتوي على قيم متعددة مفصولة بفواصل:
-  - استخدم وحدة "Replace" أو "Set variable" في Make.com لترجمة القيم
-  - مثال: استبدل "PRO Services" بـ "خدمات PRO"
-  - مثال: استبدل "Company Formation" بـ "تأسيس الشركات"
-  - مثال: استبدل "Business Consulting" بـ "استشارات الأعمال"
+  جميع الحقول تُرسل مترجمة تلقائياً من الخادم عند language='ar'،
+  لذلك لا حاجة لترجمة إضافية في Make.com.
   -->
   <!--[if mso]>
   <style type="text/css">
@@ -90,11 +93,11 @@
                             </tr>
                             <tr>
                               <td style="padding:8px 12px 8px 0;color:#64748b;font-weight:600;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;vertical-align:top;text-align:right;white-space:nowrap;direction:rtl;unicode-bidi:embed;">الخدمة الأساسية:</td>
-                              <td style="padding:8px 0;color:#1a202c;font-weight:bold;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;text-align:right;line-height:1.6;direction:rtl;unicode-bidi:embed;">{{1.service_interested}}</td>
+                              <td style="padding:8px 0;color:#1a202c;font-weight:bold;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;text-align:right;line-height:1.6;direction:rtl;unicode-bidi:embed;">{{1.service_interested_translated}}</td>
                             </tr>
                             <tr>
                               <td style="padding:8px 12px 8px 0;color:#64748b;font-weight:600;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;vertical-align:top;text-align:right;white-space:nowrap;direction:rtl;unicode-bidi:embed;">جميع الخدمات:</td>
-                              <td style="padding:8px 0;color:#1a202c;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;text-align:right;line-height:1.6;direction:rtl;unicode-bidi:embed;">{{1.services}}</td>
+                              <td style="padding:8px 0;color:#1a202c;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;text-align:right;line-height:1.6;direction:rtl;unicode-bidi:embed;">{{1.services_summary}}</td>
                             </tr>
                             <tr>
                               <td style="padding:8px 12px 8px 0;color:#64748b;font-weight:600;font-family:'Tahoma','Arial Unicode MS',Arial,sans-serif;vertical-align:top;text-align:right;white-space:nowrap;direction:rtl;unicode-bidi:embed;">الميزانية:</td>

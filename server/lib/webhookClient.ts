@@ -19,6 +19,7 @@ export interface WebhookPayload {
   services_summary?: string; // Comma-separated string in user's language (for email display)
   services_summary_english?: string; // English summary (for reference)
   service_interested: string; // Primary service for email routing (always English)
+  service_interested_translated?: string; // Primary service in user's language (for email display)
   budget?: string;
   timeline?: string;
   preferred_contact?: string;

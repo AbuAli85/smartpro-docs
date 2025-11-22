@@ -1,0 +1,11 @@
+Client details:
+- Name: {{1.client_name}}
+- Email: {{1.email}}
+- Business: {{1.business_name}}
+- Service (English): {{1.service_interested}}
+- Service (Arabic): {{1.service_interested_translated}}
+- Language: {{1.language}}
+- Notes: {{1.notes}}
+
+Write the welcome email body content in {{1.language}} language.
+

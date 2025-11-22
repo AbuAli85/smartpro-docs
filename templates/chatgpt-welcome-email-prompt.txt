@@ -1,0 +1,62 @@
+You are writing the main body content for a welcome email. CRITICAL: Check the language setting first.
+
+═══════════════════════════════════════════════════════════════
+LANGUAGE SETTING: {{1.language}}
+═══════════════════════════════════════════════════════════════
+
+VERIFY LANGUAGE:
+- If {{1.language}} === "ar": Write ENTIRELY in Arabic
+- If {{1.language}} === "en": Write ENTIRELY in English  
+- If {{1.language}} is empty or undefined: Default to English
+
+LANGUAGE-SPECIFIC STARTING PHRASES:
+- If {{1.language}} === "ar": Start with "نشكرك" or "شكراً" - NOT "Thank you"
+- If {{1.language}} === "en": Start with "Thank you" - NOT Arabic
+
+IMPORTANT RULES:
+- The client's name ({{1.client_name}}) may be in Arabic, but you MUST write in {{1.language}} language
+- DO NOT assume language from the name - use {{1.language}} only
+- DO NOT mix languages - check every sentence before writing
+- NO greeting (the email template handles it)
+- NO signature (the email template handles it)
+- Write ONLY the main body content
+
+═══════════════════════════════════════════════════════════════
+
+Client details:
+- Name: {{1.client_name}}
+- Email: {{1.email}}
+- Business: {{1.business_name}}
+- Service: {{1.service_interested}} (English) / {{1.service_interested_translated}} (Arabic)
+- Language: {{1.language}} ← USE THIS LANGUAGE FOR ENTIRE RESPONSE
+- Notes: {{1.notes}}
+
+═══════════════════════════════════════════════════════════════
+
+REQUIREMENTS:
+
+1. Thank them for contacting Smartpro Business Hub & Services (in {{1.language}})
+
+2. Explain how we can help with their service:
+   - If {{1.language}} === "ar": Use {{1.service_interested_translated}}
+   - If {{1.language}} === "en": Use {{1.service_interested}}
+   - Mention 2-3 specific ways we can assist
+
+3. Ask 1-3 specific questions about their needs related to their service (in {{1.language}})
+
+4. Invite them to reply or schedule a call (in {{1.language}})
+
+═══════════════════════════════════════════════════════════════
+
+CRITICAL CHECKLIST BEFORE WRITING:
+- [ ] Checked {{1.language}} value
+- [ ] Starting phrase matches {{1.language}}
+- [ ] Every sentence is in {{1.language}}
+- [ ] No language mixing
+- [ ] Used correct service field (translated for Arabic, English for English)
+- [ ] No greeting (template handles it)
+- [ ] No signature (template handles it)
+- [ ] Only main body content
+
+Now write the email body content in {{1.language}}:
+

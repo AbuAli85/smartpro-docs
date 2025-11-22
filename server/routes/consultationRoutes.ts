@@ -207,6 +207,24 @@ router.post(
         notesParts.push(`${languageLabel}: ${formData.language}`);
         const notes = notesParts.length > 0 ? notesParts.join('\n') : (language === 'ar' ? 'لم يتم تقديم معلومات إضافية' : 'No additional information provided');
 
+        // Calculate service_interested_translated - ensure it's always a string
+        const serviceInterestedTranslated = (() => {
+          if (language === 'ar') {
+            return translatedServices.length > 0 ? translatedServices[0] : 'أخرى';
+          } else {
+            return primaryService || 'Other';
+          }
+        })();
+
+        // Debug logging
+        console.log('Webhook payload construction:', {
+          language,
+          primaryService,
+          translatedServices,
+          serviceInterestedTranslated,
+          servicesForDisplay,
+        });
+
         const webhookPayload = {
           form_type: 'consultation',
           client_name: formData.name.trim(),
@@ -220,6 +238,7 @@ router.post(
           services_summary: servicesSummary, // Comma-separated string in user's language (for email display)
           services_summary_english: allServicesFormatted.length > 0 ? allServicesFormatted.join(', ') : 'Other', // English summary (for reference)
           service_interested: primaryService || 'Other', // Always English for Make.com routing
+          service_interested_translated: serviceInterestedTranslated, // Translated primary service for email display - ALWAYS PRESENT
           budget: translatedBudget || undefined, // Translated value
           budget_key: formData.budget || undefined, // Original key for reference
           timeline: translatedTimeline || undefined, // Translated value
@@ -235,6 +254,24 @@ router.post(
           source: 'smartpro-consultation-form', // Added: required by Make.com
           timestamp: new Date().toISOString(),
         };
+
+        // Verify service_interested_translated is present
+        if (!webhookPayload.service_interested_translated) {
+          console.error('ERROR: service_interested_translated is missing from payload!', {
+            language,
+            primaryService,
+            translatedServices,
+            payload: webhookPayload,
+          });
+          // Force set it as fallback
+          webhookPayload.service_interested_translated = primaryService || 'Other';
+        }
+
+        console.log('Sending webhook payload with service_interested_translated:', {
+          service_interested_translated: webhookPayload.service_interested_translated,
+          service_interested: webhookPayload.service_interested,
+          language: webhookPayload.language,
+        });
 
         const webhookResponse = await webhookClient.send(webhookPayload);
 
