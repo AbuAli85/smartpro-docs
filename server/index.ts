@@ -91,8 +91,8 @@ app.use((req: Request, res: Response) => {
   });
 });
 
-// Start server
-if (require.main === module) {
+// Start server (only if not in serverless environment)
+if (require.main === module && !process.env.VERCEL) {
   app.listen(PORT, () => {
     logger.info(`Server started on port ${PORT}`, {
       port: PORT,
