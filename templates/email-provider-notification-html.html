@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Consultation Request</title>
+</head>
+<body style="margin:0;padding:0;font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:#f5f7fa;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f7fa;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1);max-width:600px;margin:0 auto;">
+          
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg, #0d3c61 0%, #1a5a8a 100%);padding:30px 40px;color:#ffffff;text-align:center;">
+              <h1 style="margin:0;font-size:24px;font-weight:700;">🔔 New Consultation Request</h1>
+              <p style="margin:8px 0 0 0;font-size:14px;opacity:0.9;">Smartpro Business Hub & Services</p>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px;color:#2d3748;font-size:16px;line-height:1.8;">
+              
+              <p style="margin:0 0 20px 0;font-size:18px;font-weight:600;color:#1a202c;">
+                A new consultation request has been submitted:
+              </p>
+
+              <!-- Client Information -->
+              <div style="background:#f8fafc;border-left:4px solid #0d3c61;padding:20px;margin:20px 0;border-radius:6px;">
+                <h3 style="margin:0 0 15px 0;font-size:16px;font-weight:600;color:#0d3c61;">👤 Client Information</h3>
+                <table width="100%" cellpadding="8" cellspacing="0" style="font-size:14px;">
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;width:140px;font-weight:500;">Name:</td>
+                    <td style="padding:6px 0;color:#1a202c;font-weight:600;">{{1.client_name}}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Email:</td>
+                    <td style="padding:6px 0;color:#1a202c;"><a href="mailto:{{1.email}}" style="color:#2563eb;text-decoration:none;">{{1.email}}</a></td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Phone:</td>
+                    <td style="padding:6px 0;color:#1a202c;"><a href="tel:{{1.phone}}" style="color:#2563eb;text-decoration:none;">{{1.phone}}</a></td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Business:</td>
+                    <td style="padding:6px 0;color:#1a202c;">{{1.business_name}}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Business Type:</td>
+                    <td style="padding:6px 0;color:#1a202c;">{{1.business_type}}</td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- Service Details -->
+              <div style="background:#f0f7ff;border-left:4px solid #2563eb;padding:20px;margin:20px 0;border-radius:6px;">
+                <h3 style="margin:0 0 15px 0;font-size:16px;font-weight:600;color:#2563eb;">🎯 Service Request</h3>
+                <table width="100%" cellpadding="8" cellspacing="0" style="font-size:14px;">
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;width:140px;font-weight:500;">Primary Service:</td>
+                    <td style="padding:6px 0;color:#1a202c;font-weight:600;">{{1.service_interested}}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">All Services:</td>
+                    <td style="padding:6px 0;color:#1a202c;">{{join(1.services; ", ")}}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Budget:</td>
+                    <td style="padding:6px 0;color:#1a202c;">{{1.budget}}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Timeline:</td>
+                    <td style="padding:6px 0;color:#1a202c;">{{1.timeline}}</td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- Client Message (Always show section - will be empty if no message) -->
+              <div style="background:#fff7ed;border-left:4px solid #f59e0b;padding:20px;margin:20px 0;border-radius:6px;">
+                <h3 style="margin:0 0 15px 0;font-size:16px;font-weight:600;color:#f59e0b;">💬 Client Message</h3>
+                <p style="margin:0;color:#1a202c;white-space:pre-wrap;font-size:14px;line-height:1.6;">{{1.primary_message}}</p>
+              </div>
+
+              <!-- Contact Preferences (Always show section - will be empty if no preferences) -->
+              <div style="background:#f5f5f5;padding:20px;margin:20px 0;border-radius:6px;">
+                <h3 style="margin:0 0 15px 0;font-size:16px;font-weight:600;color:#1a202c;">📞 Contact Preferences</h3>
+                <table width="100%" cellpadding="8" cellspacing="0" style="font-size:14px;">
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;width:140px;font-weight:500;">Preferred Contact:</td>
+                    <td style="padding:6px 0;color:#1a202c;">{{1.preferred_contact}}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Preferred Time:</td>
+                    <td style="padding:6px 0;color:#1a202c;">{{1.preferred_time}}</td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- Metadata -->
+              <div style="background:#f8fafc;padding:20px;margin:20px 0;border-radius:6px;border:1px solid #e2e8f0;">
+                <h3 style="margin:0 0 15px 0;font-size:16px;font-weight:600;color:#1a202c;">📋 Submission Details</h3>
+                <table width="100%" cellpadding="8" cellspacing="0" style="font-size:14px;">
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;width:140px;font-weight:500;">Language:</td>
+                    <td style="padding:6px 0;color:#1a202c;">{{if(1.language = "ar"; "Arabic (العربية)"; "English")}}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Location:</td>
+                    <td style="padding:6px 0;color:#1a202c;">{{1.location}}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Source:</td>
+                    <td style="padding:6px 0;color:#1a202c;">{{1.source}}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Submitted:</td>
+                    <td style="padding:6px 0;color:#1a202c;">{{now}}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:6px 0;color:#64748b;">Sheet Row:</td>
+                    <td style="padding:6px 0;color:#1a202c;">Row #{{2.rowNumber}}</td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- Action Buttons -->
+              <div style="margin:30px 0;text-align:center;">
+                <a href="mailto:{{1.email}}?subject=Re: Consultation Request - {{1.service_interested}}&body=Dear {{1.client_name}},%0D%0A%0D%0AThank you for your consultation request..."
+                   style="background:#0d3c61;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;display:inline-block;margin:0 8px;">
+                  📧 Reply to Client
+                </a>
+                <a href="https://docs.google.com/spreadsheets/d/1NVjl-yG95DLLjyF3HQ6qMBBCBQUQQe3HO_E6-MnVGeU/edit#gid=0"
+                   style="background:#2563eb;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;display:inline-block;margin:0 8px;">
+                  📊 View in Sheets
+                </a>
+              </div>
+
+              <!-- Footer -->
+              <div style="margin-top:30px;padding-top:20px;border-top:1px solid #e2e8f0;text-align:center;font-size:12px;color:#94a3b8;">
+                <p style="margin:0;">This is an automated notification from Smartpro Business Hub & Services</p>
+                <p style="margin:8px 0 0 0;">Please respond to the client within 24 hours.</p>
+              </div>
+
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+

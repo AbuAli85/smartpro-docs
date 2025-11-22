@@ -428,6 +428,13 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Prevent double-submission
+    if (loading) {
+      console.warn('Form submission already in progress, ignoring duplicate submit');
+      return;
+    }
+    
     setError(null);
     setSuccess(false);
 

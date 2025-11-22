@@ -43,6 +43,40 @@ function getPrimaryServiceForRouting(services: string[]): string {
 const WEBHOOK_URL = process.env.MAKE_WEBHOOK_URL || 
   'https://hook.eu2.make.com/z9t0f5eqipopdg368eypl5i9eo7kpbu8';
 
+// In-memory cache for duplicate prevention (in serverless, this is per-instance)
+// For production, consider using Redis or a database
+const submissionCache = new Map<string, number>();
+const DUPLICATE_WINDOW_MS = 5 * 60 * 1000; // 5 minutes
+
+function getSubmissionKey(email: string, name: string): string {
+  return `${email}:${name}`.toLowerCase().trim();
+}
+
+function isDuplicateSubmission(email: string, name: string): boolean {
+  const key = getSubmissionKey(email, name);
+  const lastSubmission = submissionCache.get(key);
+  if (!lastSubmission) {
+    return false;
+  }
+  const timeSinceLastSubmission = Date.now() - lastSubmission;
+  return timeSinceLastSubmission < DUPLICATE_WINDOW_MS;
+}
+
+function recordSubmission(email: string, name: string): void {
+  const key = getSubmissionKey(email, name);
+  submissionCache.set(key, Date.now());
+  
+  // Clean up old entries (keep cache size manageable)
+  if (submissionCache.size > 1000) {
+    const now = Date.now();
+    for (const [k, timestamp] of submissionCache.entries()) {
+      if (now - timestamp > DUPLICATE_WINDOW_MS) {
+        submissionCache.delete(k);
+      }
+    }
+  }
+}
+
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse
@@ -63,6 +97,19 @@ export default async function handler(
     }
 
     const formData = validationResult.data;
+
+    // Check for duplicate submission (same email + name within 5 minutes)
+    if (isDuplicateSubmission(formData.email, formData.name)) {
+      console.warn('Duplicate submission detected', {
+        email: formData.email,
+        name: formData.name,
+      });
+      return res.status(200).json({
+        success: true,
+        message: 'Submission already received. Please wait before submitting again.',
+        duplicate: true,
+      });
+    }
 
     // Build notes field
     const notesParts: string[] = [];
@@ -134,6 +181,9 @@ export default async function handler(
     }
 
     const webhookData = await webhookResponse.json().catch(() => ({}));
+
+    // Record successful submission to prevent duplicates
+    recordSubmission(formData.email, formData.name);
 
     // Return success response
     return res.status(200).json({
