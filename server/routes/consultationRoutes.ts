@@ -142,12 +142,41 @@ router.post(
           SERVICE_TO_MAKE_MAP[service] || service
         );
 
+        // Build comprehensive notes field (required by Make.com)
+        const notesParts: string[] = [];
+        if (formData.message) {
+          notesParts.push(`Primary Message: ${formData.message.trim()}`);
+        }
+        if (formData.phone) {
+          notesParts.push(`Phone: ${formData.phone.trim()}`);
+        }
+        if (formData.location) {
+          notesParts.push(`Location: ${formData.location.trim()}`);
+        }
+        if (formData.businessType) {
+          notesParts.push(`Business Type: ${formData.businessType}`);
+        }
+        if (formData.budget) {
+          notesParts.push(`Budget: ${formData.budget}`);
+        }
+        if (formData.timeline) {
+          notesParts.push(`Timeline: ${formData.timeline}`);
+        }
+        if (formData.preferredContact) {
+          notesParts.push(`Preferred Contact: ${formData.preferredContact}`);
+        }
+        if (formData.preferredTime) {
+          notesParts.push(`Preferred Time: ${formData.preferredTime}`);
+        }
+        notesParts.push(`Language: ${formData.language}`);
+        const notes = notesParts.length > 0 ? notesParts.join('\n') : 'No additional information provided';
+
         const webhookPayload = {
           form_type: 'consultation',
           client_name: formData.name.trim(),
           email: formData.email.trim(),
           phone: formData.phone?.trim() || undefined,
-          company: formData.company?.trim() || undefined,
+          business_name: formData.company?.trim() || undefined, // Fixed: was 'company', should be 'business_name'
           business_type: formData.businessType || undefined,
           services: allServicesFormatted.length > 0 ? allServicesFormatted : undefined,
           service_interested: primaryService || 'Other',
@@ -157,9 +186,10 @@ router.post(
           preferred_time: formData.preferredTime || undefined,
           location: formData.location?.trim() || undefined,
           primary_message: formData.message?.trim() || undefined,
+          notes: notes, // Added: required by Make.com Module 25
           language: formData.language,
+          source: 'smartpro-consultation-form', // Added: required by Make.com
           timestamp: new Date().toISOString(),
-          submission_id: submissionId, // Include database ID if available
         };
 
         const webhookResponse = await webhookClient.send(webhookPayload);

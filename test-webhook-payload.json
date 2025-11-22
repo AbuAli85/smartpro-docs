@@ -1,0 +1,194 @@
+{
+  "test_cases": {
+    "full_submission": {
+      "description": "Complete form submission with all fields",
+      "payload": {
+        "client_name": "Test User Full",
+        "email": "test.full@example.com",
+        "phone": "+968 1234 5678",
+        "business_name": "Test Company LLC",
+        "business_type": "Limited Liability Company (LLC)",
+        "services": ["Accounting", "VAT"],
+        "service_interested": "Accounting",
+        "budget": "$5,000 - $10,000",
+        "timeline": "3–6 Months",
+        "preferred_contact": "Email",
+        "preferred_time": "Afternoon (12 PM - 5 PM)",
+        "location": "Muscat, Oman",
+        "primary_message": "This is a test message for full form submission.",
+        "notes": "Primary Message: This is a test message for full form submission.\nPhone: +968 1234 5678\nLocation: Muscat, Oman\nBusiness Type: Limited Liability Company (LLC)\nBudget: $5,000 - $10,000\nTimeline: 3–6 Months\nPreferred Contact: Email\nPreferred Time: Afternoon (12 PM - 5 PM)\nLanguage: en",
+        "language": "en",
+        "source": "smartpro-consultation-form",
+        "timestamp": "2024-01-01T12:00:00.000Z"
+      },
+      "expected_google_sheets": {
+        "column_b": "Test User Full",
+        "column_c": "test.full@example.com",
+        "column_d": "+968 1234 5678",
+        "column_e": "Test Company LLC",
+        "column_f": "Limited Liability Company (LLC)",
+        "column_g": "Accounting",
+        "column_h": "Accounting, VAT",
+        "column_i": "$5,000 - $10,000",
+        "column_j": "3–6 Months",
+        "column_k": "Email",
+        "column_l": "Afternoon (12 PM - 5 PM)",
+        "column_m": "Muscat, Oman",
+        "column_n": "This is a test message for full form submission.",
+        "column_o": "Primary Message: This is a test message for full form submission.\nPhone: +968 1234 5678\nLocation: Muscat, Oman\nBusiness Type: Limited Liability Company (LLC)\nBudget: $5,000 - $10,000\nTimeline: 3–6 Months\nPreferred Contact: Email\nPreferred Time: Afternoon (12 PM - 5 PM)\nLanguage: en",
+        "column_p": "en",
+        "column_q": "smartpro-consultation-form"
+      }
+    },
+    "minimal_submission": {
+      "description": "Minimal submission with only required fields",
+      "payload": {
+        "client_name": "Minimal Test",
+        "email": "test.minimal@example.com",
+        "services": ["Business Consulting"],
+        "service_interested": "Business Consulting",
+        "notes": "Language: en",
+        "language": "en",
+        "source": "smartpro-consultation-form",
+        "timestamp": "2024-01-01T12:00:00.000Z"
+      },
+      "expected_google_sheets": {
+        "column_b": "Minimal Test",
+        "column_c": "test.minimal@example.com",
+        "column_d": "",
+        "column_e": "",
+        "column_f": "",
+        "column_g": "Business Consulting",
+        "column_h": "Business Consulting",
+        "column_i": "",
+        "column_j": "",
+        "column_k": "",
+        "column_l": "",
+        "column_m": "",
+        "column_n": "",
+        "column_o": "Language: en",
+        "column_p": "en",
+        "column_q": "smartpro-consultation-form"
+      }
+    },
+    "accounting_route": {
+      "description": "Test Accounting service route",
+      "payload": {
+        "client_name": "Accounting Test",
+        "email": "test.accounting@example.com",
+        "services": ["Accounting"],
+        "service_interested": "Accounting",
+        "notes": "Language: en",
+        "language": "en",
+        "source": "smartpro-consultation-form",
+        "timestamp": "2024-01-01T12:00:00.000Z"
+      },
+      "expected_route": "Accounting",
+      "expected_modules": [3, 5, 7]
+    },
+    "pro_services_route": {
+      "description": "Test PRO Services route",
+      "payload": {
+        "client_name": "PRO Test",
+        "email": "test.pro@example.com",
+        "services": ["PRO Services"],
+        "service_interested": "PRO Services",
+        "notes": "Language: en",
+        "language": "en",
+        "source": "smartpro-consultation-form",
+        "timestamp": "2024-01-01T12:00:00.000Z"
+      },
+      "expected_route": "PRO Services",
+      "expected_modules": [10, 11, 12]
+    },
+    "company_formation_route": {
+      "description": "Test Company Formation route",
+      "payload": {
+        "client_name": "Company Formation Test",
+        "email": "test.company@example.com",
+        "services": ["Company Formation"],
+        "service_interested": "Company Formation",
+        "notes": "Language: en",
+        "language": "en",
+        "source": "smartpro-consultation-form",
+        "timestamp": "2024-01-01T12:00:00.000Z"
+      },
+      "expected_route": "Company Formation",
+      "expected_modules": [13, 14, 15]
+    },
+    "default_route": {
+      "description": "Test Default route for other services",
+      "payload": {
+        "client_name": "Default Test",
+        "email": "test.default@example.com",
+        "services": ["VAT"],
+        "service_interested": "VAT",
+        "notes": "Language: en",
+        "language": "en",
+        "source": "smartpro-consultation-form",
+        "timestamp": "2024-01-01T12:00:00.000Z"
+      },
+      "expected_route": "Default",
+      "expected_modules": [16, 17, 18]
+    },
+    "arabic_language": {
+      "description": "Test Arabic language submission",
+      "payload": {
+        "client_name": "اختبار عربي",
+        "email": "test.arabic@example.com",
+        "services": ["Accounting"],
+        "service_interested": "Accounting",
+        "notes": "Language: ar",
+        "language": "ar",
+        "source": "smartpro-consultation-form",
+        "timestamp": "2024-01-01T12:00:00.000Z"
+      },
+      "expected_google_sheets": {
+        "column_b": "اختبار عربي",
+        "column_p": "ar"
+      }
+    },
+    "multiple_services": {
+      "description": "Test multiple services selection",
+      "payload": {
+        "client_name": "Multi Service Test",
+        "email": "test.multi@example.com",
+        "services": ["Accounting", "VAT", "Business Consulting"],
+        "service_interested": "Accounting",
+        "notes": "Language: en",
+        "language": "en",
+        "source": "smartpro-consultation-form",
+        "timestamp": "2024-01-01T12:00:00.000Z"
+      },
+      "expected_google_sheets": {
+        "column_g": "Accounting",
+        "column_h": "Accounting, VAT, Business Consulting"
+      }
+    }
+  },
+  "verification_checklist": {
+    "make_com": [
+      "Execution appears in history",
+      "Status is Success",
+      "Execution time < 30 seconds",
+      "All modules executed successfully",
+      "Webhook data matches expected payload"
+    ],
+    "google_sheets": [
+      "New row added",
+      "All required fields populated",
+      "business_name in column E",
+      "notes in column O",
+      "source in column Q",
+      "Email status updated to Sent"
+    ],
+    "email": [
+      "Email received within 30 seconds",
+      "Correct subject line",
+      "Contains client name",
+      "Contains service information",
+      "Contains AI-generated content"
+    ]
+  }
+}
+

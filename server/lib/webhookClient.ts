@@ -12,7 +12,7 @@ export interface WebhookPayload {
   client_name: string;
   email: string;
   phone?: string;
-  company?: string;
+  business_name?: string; // Fixed: was 'company', now 'business_name'
   business_type?: string;
   services?: string[];
   service_interested: string;
@@ -22,7 +22,9 @@ export interface WebhookPayload {
   preferred_time?: string;
   location?: string;
   primary_message?: string;
+  notes?: string; // Added: required by Make.com Module 25
   language?: string;
+  source?: string; // Added: required by Make.com
   timestamp?: string;
   submission_id?: string;
   [key: string]: any;
