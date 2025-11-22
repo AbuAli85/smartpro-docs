@@ -23,13 +23,22 @@ const consultationSchema = z.object({
   language: z.enum(['en', 'ar']).default('en'),
 });
 
-// Service mapping (from client/src/types/webhook.ts)
+// Service mapping (must match client/src/types/webhook.ts)
 const SERVICE_TO_MAKE_MAP: Record<string, string> = {
+  companyFormation: 'Company Formation',
+  proServices: 'PRO Services',
   accounting: 'Accounting',
   vat: 'VAT',
-  proServices: 'PRO Services',
-  companyFormation: 'Company Formation',
   businessConsulting: 'Business Consulting',
+  employeeManagement: 'Employee Management',
+  crm: 'CRM & Client Management',
+  projectManagement: 'Project Management',
+  elearning: 'E-Learning Platform',
+  contractManagement: 'Contract Management',
+  workflowAutomation: 'Workflow Automation',
+  analytics: 'Advanced Analytics',
+  api: 'API & Integrations',
+  support: '24/7 Support',
   other: 'Other',
 };
 
@@ -46,10 +55,18 @@ const WEBHOOK_URL = process.env.MAKE_WEBHOOK_URL ||
 // In-memory cache for duplicate prevention (in serverless, this is per-instance)
 // For production, consider using Redis or a database
 const submissionCache = new Map<string, number>();
+const webhookCallCache = new Map<string, number>(); // Track webhook calls to prevent duplicates
 const DUPLICATE_WINDOW_MS = 5 * 60 * 1000; // 5 minutes
 
 function getSubmissionKey(email: string, name: string): string {
   return `${email}:${name}`.toLowerCase().trim();
+}
+
+function getIdempotencyKey(email: string, name: string, services: string[], timestamp: string): string {
+  // Create a unique key based on email, name, services, and timestamp (rounded to nearest minute)
+  const servicesKey = services.sort().join(',');
+  const minuteTimestamp = Math.floor(Date.now() / 60000) * 60000; // Round to nearest minute
+  return `${email}:${name}:${servicesKey}:${minuteTimestamp}`.toLowerCase().trim();
 }
 
 function isDuplicateSubmission(email: string, name: string): boolean {
@@ -62,9 +79,20 @@ function isDuplicateSubmission(email: string, name: string): boolean {
   return timeSinceLastSubmission < DUPLICATE_WINDOW_MS;
 }
 
-function recordSubmission(email: string, name: string): void {
+function hasWebhookBeenCalled(idempotencyKey: string): boolean {
+  const lastCall = webhookCallCache.get(idempotencyKey);
+  if (!lastCall) {
+    return false;
+  }
+  // Prevent duplicate webhook calls within 2 minutes
+  const timeSinceLastCall = Date.now() - lastCall;
+  return timeSinceLastCall < 2 * 60 * 1000; // 2 minutes
+}
+
+function recordSubmission(email: string, name: string, idempotencyKey: string): void {
   const key = getSubmissionKey(email, name);
   submissionCache.set(key, Date.now());
+  webhookCallCache.set(idempotencyKey, Date.now());
   
   // Clean up old entries (keep cache size manageable)
   if (submissionCache.size > 1000) {
@@ -72,6 +100,16 @@ function recordSubmission(email: string, name: string): void {
     for (const [k, timestamp] of submissionCache.entries()) {
       if (now - timestamp > DUPLICATE_WINDOW_MS) {
         submissionCache.delete(k);
+      }
+    }
+  }
+  
+  // Clean up webhook call cache
+  if (webhookCallCache.size > 1000) {
+    const now = Date.now();
+    for (const [k, timestamp] of webhookCallCache.entries()) {
+      if (now - timestamp > 2 * 60 * 1000) {
+        webhookCallCache.delete(k);
       }
     }
   }
@@ -143,6 +181,29 @@ export default async function handler(
       SERVICE_TO_MAKE_MAP[service] || service
     );
 
+    // Create idempotency key to prevent duplicate webhook calls
+    const timestamp = new Date().toISOString();
+    const idempotencyKey = getIdempotencyKey(
+      formData.email,
+      formData.name,
+      formData.services,
+      timestamp
+    );
+
+    // Check if we've already called the webhook with this exact payload
+    if (hasWebhookBeenCalled(idempotencyKey)) {
+      console.warn('Duplicate webhook call prevented', {
+        email: formData.email,
+        name: formData.name,
+        idempotencyKey,
+      });
+      return res.status(200).json({
+        success: true,
+        message: 'Submission already processed. Please wait before submitting again.',
+        duplicate: true,
+      });
+    }
+
     // Build webhook payload
     const webhookPayload = {
       form_type: 'consultation',
@@ -160,9 +221,10 @@ export default async function handler(
       location: formData.location?.trim() || undefined,
       primary_message: formData.message?.trim() || undefined,
       notes: notes,
-      language: formData.language,
+      language: formData.language, // CRITICAL: Must be 'en' or 'ar' - Make.com uses this for template selection
       source: 'smartpro-consultation-form',
-      timestamp: new Date().toISOString(),
+      timestamp: timestamp,
+      idempotency_key: idempotencyKey, // Add idempotency key to payload
     };
 
     // Send to Make.com webhook
@@ -183,13 +245,23 @@ export default async function handler(
     const webhookData = await webhookResponse.json().catch(() => ({}));
 
     // Record successful submission to prevent duplicates
-    recordSubmission(formData.email, formData.name);
+    // Only record if webhook was successful
+    if (webhookResponse.ok) {
+      recordSubmission(formData.email, formData.name, idempotencyKey);
+      console.log('Webhook call successful', {
+        email: formData.email,
+        language: formData.language,
+        service_interested: primaryService,
+        idempotencyKey,
+      });
+    }
 
     // Return success response
     return res.status(200).json({
       success: true,
       message: 'Consultation request submitted successfully',
       submissionId: webhookData.id || `sub_${Date.now()}`,
+      language: formData.language, // Return language for debugging
     });
 
   } catch (error) {
