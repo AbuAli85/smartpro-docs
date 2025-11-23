@@ -17,14 +17,13 @@ interface Reply {
   status: string;
 }
 
-export function ReplyTable() {
-  const { data: replies, isLoading } = useQuery({
-    queryKey: ['replies'],
-    queryFn: () => api.get('/replies').then(res => res.data.data)
-  });
+interface ReplyTableProps {
+  replies?: Reply[];
+}
 
-  if (isLoading) {
-    return <div className="text-center py-8">Loading...</div>;
+export function ReplyTable({ replies }: ReplyTableProps) {
+  if (!replies) {
+    return <div className="text-center py-8">No replies to display</div>;
   }
 
   return (
