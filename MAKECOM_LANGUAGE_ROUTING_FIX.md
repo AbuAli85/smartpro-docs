@@ -1,162 +1,191 @@
 # Make.com Language Routing Fix
 
-## 🔍 Problem
+## Problem
+Both email modules (7 and 8) are being filtered out because the router filters aren't matching the language value correctly.
 
-The system is sending **both English and Arabic emails** instead of just one based on the `language` field.
+**Error:**
+- Email module 7 (Arabic): "The bundle did not pass through the filter"
+- Email module 8 (English): "The bundle did not pass through the filter"
+- Set Variable module 9: ✅ Completed (but filters still not working)
 
-## 🎯 Root Cause
+## Root Cause
+1. **Set Variable module (9) is using wrong reference**: It's using `{{1.language}}` but should use `{{3.language}}` (webhook is module 3)
+2. **Email filters are not using the normalized variable**: Filters in modules 7 and 8 are still checking `{{3.language}}` instead of `{{9.language_normalized}}`
 
-The Make.com scenario currently routes emails by **service type** (Accounting, PRO Services, etc.) but **NOT by language**. This means:
+## Solution: Fix Set Variable and Update Filters
 
-1. The scenario has ONE email module per service route (Modules 5, 11, 14, 17)
-2. Each email module should use the `language` field to select the correct template
-3. If the email template or Make.com configuration doesn't properly filter by language, it might send both
+You already have Set Variable module 9, but it needs two fixes:
+1. **Fix the variable reference** (use `{{3.language}}` instead of `{{1.language}}`)
+2. **Update email filters** to use the normalized variable from module 9
 
-## ✅ Solution
+### Step 1: Fix Set Variable Module 9
 
-### Option 1: Add Language Router in Make.com (Recommended)
+1. **Open Module 9** (Set Variable)
+2. **Edit the variable value**:
+   - **Current (WRONG)**: `{{replace(replace(lower(trim(1.language)); "arabic"; "ar"); "english"; "en")}}`
+   - **Change to (CORRECT)**: `{{replace(replace(lower(trim(3.language)); "arabic"; "ar"); "english"; "en")}}`
+   
+   **Important**: Change `1.language` to `3.language` because the webhook is module 3!
 
-Add a **Router module** after the service router to route by language:
+**What this does:**
+- `trim(3.language)` - Removes whitespace from webhook language field
+- `lower(...)` - Converts to lowercase
+- `replace(..., "arabic", "ar")` - Converts "arabic" to "ar"
+- `replace(..., "english", "en")` - Converts "english" to "en"
 
-```
-[1] Webhook → [25] Set Variables → [2] Sheets AddRow → [8] Service Router
-    ├─ Accounting: [3] GPT → [Language Router]
-    │   ├─ English: [5] Resend (English template) → [7] Sheets UpdateRow
-    │   └─ Arabic: [5-ar] Resend (Arabic template) → [7] Sheets UpdateRow
-    ├─ PRO Services: [10] GPT → [Language Router]
-    │   ├─ English: [11] Resend (English template) → [12] Sheets UpdateRow
-    │   └─ Arabic: [11-ar] Resend (Arabic template) → [12] Sheets UpdateRow
-    └─ ... (same for other routes)
-```
+### Step 2: Update Email Module Filters
 
-**Router Filter:**
-- Route 1: `{{1.language}}` equals `"en"` → English email
-- Route 2: `{{1.language}}` equals `"ar"` → Arabic email
+Update both email module filters to use the normalized variable from module 9:
 
-### Option 2: Use Conditional Logic in Email Template (Simpler)
+**Module 7 (Arabic Email) - Filter:**
+1. Open **Module 7** (Arabic Email)
+2. Click the **Filter** icon
+3. Change the condition from:
+   - `{{3.language}}` equals `ar`
+   - To: `{{9.language_normalized}}` equals `ar`
 
-In each Resend Email module (5, 11, 14, 17), use Make.com's conditional logic:
+**Module 8 (English Email) - Filter:**
+1. Open **Module 8** (English Email)
+2. Click the **Filter** icon
+3. Change the condition from:
+   - `{{3.language}}` equals `en`
+   - To: `{{9.language_normalized}}` equals `en`
 
-**HTML Template Selection:**
-```
-{{if(1.language = "ar"; "Arabic Template HTML"; "English Template HTML")}}
-```
+### Step 3: Alternative - Update Filters Directly (Simpler)
 
-**Subject Line:**
-```
-{{if(1.language = "ar"; "تم استلام طلب الاستشارة"; "Consultation Request Received")}}
-```
+If you prefer not to add a new module, update the existing filters to be more robust:
 
-## 🔧 Make.com Configuration Steps
-
-### Step 1: Verify Language Field
-
-Ensure the webhook payload includes:
+**Module 7 (Arabic) - Updated Filter:**
 ```json
 {
-  "language": "en"  // or "ar"
+  "name": "Arabic (ar)",
+  "conditions": [
+    [
+      {
+        "a": "{{lower(trim(3.language))}}",
+        "b": "ar",
+        "o": "text:equal"
+      }
+    ]
+  ]
 }
 ```
 
-✅ **Already implemented** in `api/consultation.ts`
+**Module 8 (English) - Updated Filter:**
+```json
+{
+  "name": "English (en)",
+  "conditions": [
+    [
+      {
+        "a": "{{lower(trim(3.language))}}",
+        "b": "en",
+        "o": "text:equal"
+      }
+    ]
+  ]
+}
+```
 
-### Step 2: Add Language Router (Option 1)
+## Verification
 
-1. In Make.com scenario, after each GPT module (3, 10, 13, 16), add a **Router** module
-2. Configure router with 2 routes:
-   - **Route 1:** Filter: `{{1.language}}` equals `"en"`
-   - **Route 2:** Filter: `{{1.language}}` equals `"ar"`
-3. Connect English route to English email template
-4. Connect Arabic route to Arabic email template
+After applying the fix:
 
-### Step 3: Use Conditional Templates (Option 2)
+1. **Test with Arabic submission:**
+   - Submit form with `language: "ar"`
+   - Should route to Module 7 (Arabic email)
+   - Check execution log: Module 7 should show "The operation was completed"
 
-In each Resend Email module:
+2. **Test with English submission:**
+   - Submit form with `language: "en"`
+   - Should route to Module 8 (English email)
+   - Check execution log: Module 8 should show "The operation was completed"
 
-1. **HTML Body:** Use Make.com formula:
+## Expected Flow After Fix
+
+```
+Webhook (3) ✅
+  ↓
+Google Sheets (2) ✅
+  ↓
+Set Variable (9) - Normalize language ✅ [FIXED: uses {{3.language}}]
+  ↓
+Router (4)
+  ├─ Route 1: {{9.language_normalized}} = "ar" → Email 7 (Arabic) ✅
+  └─ Route 2: {{9.language_normalized}} = "en" → Email 8 (English) ✅
+```
+
+## Critical Fixes Required
+
+### Fix 1: Set Variable Module 9
+**Current**: `{{1.language}}` ❌  
+**Should be**: `{{3.language}}` ✅
+
+### Fix 2: Email Module 7 Filter
+**Current**: `{{3.language}}` equals `ar` ❌  
+**Should be**: `{{9.language_normalized}}` equals `ar` ✅
+
+### Fix 3: Email Module 8 Filter
+**Current**: `{{3.language}}` equals `en` ❌  
+**Should be**: `{{9.language_normalized}}` equals `en` ✅
+
+## Step-by-Step Fix Instructions
+
+### 1. Fix Set Variable Module 9
+
+1. In Make.com, open your scenario
+2. Click on **Module 9** (Set Variable - Tools)
+3. Click **Edit** or the pencil icon
+4. Find the **Variable value** field
+5. **Change**:
    ```
-   {{if(1.language = "ar"; [Arabic Template]; [English Template])}}
+   {{replace(replace(lower(trim(1.language)); "arabic"; "ar"); "english"; "en")}}
    ```
-
-2. **Subject:** Use Make.com formula:
+   **To**:
    ```
-   {{if(1.language = "ar"; "تم استلام طلب الاستشارة"; "Consultation Request Received")}}
+   {{replace(replace(lower(trim(3.language)); "arabic"; "ar"); "english"; "en")}}
    ```
+6. **Save** the module
 
-3. **From Name:** Can also be conditional:
-   ```
-   {{if(1.language = "ar"; "مركز سمارت برو"; "Smartpro Business Hub")}}
-   ```
+### 2. Fix Email Module 7 Filter (Arabic)
 
-## 📋 Email Template Files
+1. Click on **Module 7** (Email - Send an Email - Arabic)
+2. Click the **Filter** icon (funnel icon)
+3. Find the condition that checks language
+4. **Change**:
+   - Field A: `{{3.language}}`
+   - **To**: `{{9.language_normalized}}`
+5. Keep: Operator = "equal", Value = `ar`
+6. **Save** the filter
 
-### English Template
-- **File:** `templates/email-client-confirmation-html-english-makecom.html`
-- **Variables:** Uses `{{1.xxx}}` syntax
-- **Guide:** `CLIENT_EMAIL_TEMPLATE_GUIDE.md`
+### 3. Fix Email Module 8 Filter (English)
 
-### Arabic Template
-- **File:** `templates/email-client-confirmation-html-arabic-makecom.html`
-- **Variables:** Uses `{{1.xxx}}` syntax
-- **Guide:** `ARABIC_CLIENT_EMAIL_TEMPLATE_GUIDE.md`
+1. Click on **Module 8** (Email - Send an Email - English)
+2. Click the **Filter** icon (funnel icon)
+3. Find the condition that checks language
+4. **Change**:
+   - Field A: `{{3.language}}`
+   - **To**: `{{9.language_normalized}}`
+5. Keep: Operator = "equal", Value = `en`
+6. **Save** the filter
 
-## ⚠️ Important Notes
+### 4. Save and Test
 
-1. **Language Field Values:**
-   - Must be exactly `"en"` or `"ar"` (lowercase)
-   - ✅ Backend sends correct values
+1. **Save** the entire scenario
+2. **Run** a test execution with a new form submission
+3. Check the execution log:
+   - Module 9 should complete ✅
+   - Module 7 OR Module 8 should complete (depending on language) ✅
+   - The other email module should be filtered out (expected)
 
-2. **Template Selection:**
-   - Make.com must use the `language` field to select template
-   - If both templates are used, both emails will be sent
+## Alternative: Direct Filter Fix (If Module 9 Still Doesn't Work)
 
-3. **Testing:**
-   - Test with `language: "en"` → Should receive only English email
-   - Test with `language: "ar"` → Should receive only Arabic email
+If you prefer not to use the Set Variable module, update filters directly:
 
-## 🐛 Debugging
+**Module 7 Filter:**
+- Change to: `{{lower(trim(3.language))}}` equals `ar`
 
-If still receiving both emails:
+**Module 8 Filter:**
+- Change to: `{{lower(trim(3.language))}}` equals `en`
 
-1. **Check Make.com Execution Log:**
-   - Look for multiple email modules executing
-   - Check if language router is working
-
-2. **Check Email Module Configuration:**
-   - Verify only ONE email module executes per submission
-   - Check if language filter is applied correctly
-
-3. **Check Webhook Payload:**
-   - Verify `language` field is present and correct
-   - Check Make.com execution data to see received payload
-
-4. **Check Duplicate Prevention:**
-   - Verify idempotency key is working
-   - Check if webhook is being called multiple times
-
-## ✅ Backend Improvements Applied
-
-1. **Idempotency Key:** Added to prevent duplicate webhook calls
-2. **Webhook Call Tracking:** Tracks webhook calls to prevent duplicates
-3. **Language Field:** Ensured `language` is always included in payload
-4. **Logging:** Added logging to track language and service routing
-
-## 📝 Next Steps
-
-1. **Update Make.com Scenario:**
-   - Add language router OR use conditional templates
-   - Test with both `en` and `ar` submissions
-
-2. **Verify Email Templates:**
-   - Ensure templates are correctly configured in Make.com
-   - Test template selection based on language
-
-3. **Monitor Executions:**
-   - Check Make.com execution history
-   - Verify only one email is sent per submission
-
----
-
-**Last Updated:** 2025-01-22  
-**Status:** Backend fixed, Make.com configuration needed
-
+This normalizes the language value directly in the filter without needing the Set Variable module.
