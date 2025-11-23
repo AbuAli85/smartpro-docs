@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {/* Suppress Vercel feedback widget errors */}
+        {/* Suppress Vercel feedback widget errors - Run immediately */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -30,31 +30,52 @@ export default function RootLayout({
                 const originalError = console.error;
                 console.error = function(...args) {
                   const message = args[0]?.toString() || '';
+                  const fullMessage = args.map(a => String(a)).join(' ');
                   if (
                     message.includes('vercel') ||
                     message.includes('.well-known/vercel') ||
                     message.includes('feedback.js') ||
-                    message.includes('Fetch failed loading')
+                    message.includes('Fetch failed loading') ||
+                    fullMessage.includes('vercel') ||
+                    fullMessage.includes('.well-known/vercel') ||
+                    fullMessage.includes('feedback.js')
                   ) {
-                    return; // Suppress Vercel widget errors
+                    return; // Suppress silently
                   }
                   originalError.apply(console, args);
                 };
                 
-                // Intercept fetch to suppress Vercel widget requests
+                // Intercept fetch EARLY to suppress Vercel widget requests
                 const originalFetch = window.fetch;
                 window.fetch = function(...args) {
-                  const url = args[0]?.toString() || '';
+                  const url = typeof args[0] === 'string' ? args[0] : (args[0]?.url || '');
+                  const method = args[1]?.method || 'GET';
                   if (
                     url.includes('.well-known/vercel') ||
                     url.includes('feedback.js') ||
+                    url.includes('instrument.') ||
                     (url.includes('smartpro-docs.vercel.app') && 
-                     (url.includes('.well-known') || args[1]?.method === 'HEAD'))
+                     (url.includes('.well-known') || method === 'HEAD'))
                   ) {
-                    // Return a rejected promise silently
-                    return Promise.reject(new Error('Suppressed Vercel widget request'));
+                    return Promise.reject(new Error('Suppressed'));
                   }
-                  return originalFetch.apply(this, args);
+                  return originalFetch.apply(this, args).catch(function(error) {
+                    const errorMsg = error?.message || '';
+                    if (errorMsg.includes('vercel') || errorMsg.includes('.well-known') || errorMsg.includes('feedback')) {
+                      return Promise.reject(new Error('Suppressed'));
+                    }
+                    throw error;
+                  });
+                };
+                
+                // Intercept XMLHttpRequest
+                const originalXHROpen = XMLHttpRequest.prototype.open;
+                XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+                  const urlStr = typeof url === 'string' ? url : url.toString();
+                  if (urlStr.includes('.well-known/vercel') || urlStr.includes('feedback.js') || urlStr.includes('instrument.')) {
+                    return;
+                  }
+                  return originalXHROpen.apply(this, [method, url, ...rest]);
                 };
               })();
             `,
