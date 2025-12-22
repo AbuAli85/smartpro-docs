@@ -12,19 +12,21 @@ datasource db {
 
 // User Model
 model User {
-  id            String   @id @default(cuid())
-  email         String   @unique
-  password      String   // Hashed password
-  name          String
-  role          String   @default("provider") // provider, client, admin
-  emailVerified Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                      String   @id @default(cuid())
+  email                   String   @unique
+  password                String   // Hashed password
+  name                    String
+  role                    String   @default("provider") // provider, client, admin
+  emailVerified           Boolean  @default(false)
+  consultationSubmissionId String?  @unique // Link to consultation submission
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
 
   // Relations
-  notifications         Notification[]
+  notifications           Notification[]
   notificationPreferences NotificationPreferences?
   consultationSubmissions ConsultationSubmission[]
+  linkedConsultation      ConsultationSubmission? @relation("UserConsultation", fields: [consultationSubmissionId], references: [submissionId])
 
   @@map("users")
 }
@@ -111,6 +113,7 @@ model NotificationPreferences {
 // Consultation Submission Model
 model ConsultationSubmission {
   id                String   @id @default(cuid())
+  submissionId      String   @unique // Unique submission identifier
   userId            String?  // Optional - can be anonymous
   
   // Contact Information
@@ -154,7 +157,9 @@ model ConsultationSubmission {
 
   // Relations
   user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  linkedUser User? @relation("UserConsultation", fields: [submissionId], references: [consultationSubmissionId])
 
+  @@index([submissionId])
   @@index([email])
   @@index([status])
   @@index([createdAt])
