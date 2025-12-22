@@ -43,7 +43,10 @@ export function measureWebVitals(): void {
     const entries = list.getEntries();
     const lastEntry = entries[entries.length - 1] as any;
     
-    console.log('LCP:', lastEntry.renderTime || lastEntry.loadTime);
+    // Only log in development mode
+    if (import.meta.env.DEV) {
+      console.log('LCP:', lastEntry.renderTime || lastEntry.loadTime);
+    }
     
     if (window.gtag) {
       window.gtag('event', 'web_vitals', {
@@ -65,7 +68,11 @@ export function measureWebVitals(): void {
     const entries = list.getEntries();
     entries.forEach((entry: any) => {
       const fid = entry.processingStart - entry.startTime;
-      console.log('FID:', fid);
+      
+      // Only log in development mode
+      if (import.meta.env.DEV) {
+        console.log('FID:', fid);
+      }
       
       if (window.gtag) {
         window.gtag('event', 'web_vitals', {
@@ -92,7 +99,10 @@ export function measureWebVitals(): void {
       }
     }
     
-    console.log('CLS:', clsValue);
+    // Only log in development mode
+    if (import.meta.env.DEV) {
+      console.log('CLS:', clsValue);
+    }
     
     if (window.gtag) {
       window.gtag('event', 'web_vitals', {
@@ -186,11 +196,20 @@ export function monitorLongTasks(): void {
   try {
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        console.warn('Long task detected:', {
-          duration: entry.duration,
-          startTime: entry.startTime
-        });
+        // Only log in development mode or if debug flag is set
+        const shouldLog = import.meta.env.DEV || 
+                         (typeof localStorage !== 'undefined' && localStorage.getItem('debug_performance') === 'true');
+        
+        // Never log long tasks in production - they're too noisy
+        // Only track in GA4 for analytics
+        if (shouldLog && entry.duration > 50) {
+          console.warn('Long task detected:', {
+            duration: entry.duration,
+            startTime: entry.startTime
+          });
+        }
 
+        // Still track in GA4 even if not logging
         if (window.gtag && entry.duration > 50) {
           window.gtag('event', 'long_task', {
             duration: Math.round(entry.duration),
@@ -202,7 +221,10 @@ export function monitorLongTasks(): void {
 
     observer.observe({ type: 'longtask', buffered: true });
   } catch (e) {
-    console.warn('Long task observation not supported');
+    // Silently fail - long task monitoring is not critical
+    if (import.meta.env.DEV) {
+      console.warn('Long task observation not supported');
+    }
   }
 }
 

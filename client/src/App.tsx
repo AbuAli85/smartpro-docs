@@ -11,50 +11,81 @@ import { initGoogleAnalytics, trackPageView } from "@/lib/googleAnalytics";
 import { initPerformanceMonitoring } from "@/lib/performanceUtils";
 import { CoreWebVitalsMonitor } from "@/components/CoreWebVitalsMonitor";
 
-// Lazy load pages to reduce initial bundle
-const ProvidersPage = lazy(() => import("./pages/ProvidersPage"));
-const ClientsPage = lazy(() => import("./pages/ClientsPage"));
-const GetStartedClients = lazy(() => import("./pages/GetStartedClients"));
-const Company = lazy(() => import("./pages/Company"));
-const Careers = lazy(() => import("./pages/Careers"));
-const About = lazy(() => import("./pages/About"));
-const Pricing = lazy(() => import("./pages/Pricing"));
-const Features = lazy(() => import("./pages/Features"));
-const Contact = lazy(() => import("./pages/Contact"));
-const Consultation = lazy(() => import("./pages/Consultation"));
-const ConsultationThankYou = lazy(() => import("./pages/ConsultationThankYou"));
-const Book = lazy(() => import("./pages/Book"));
-const HelpCenter = lazy(() => import("./pages/HelpCenter"));
-const Community = lazy(() => import("./pages/Community"));
-const Blog = lazy(() => import("./pages/Blog"));
-const BlogArticle = lazy(() => import("./pages/BlogArticle"));
-const Security = lazy(() => import("./pages/Security"));
-const HowItWorks = lazy(() => import("./pages/HowItWorks"));
-const Comparison = lazy(() => import("./pages/Comparison"));
-const ROICalculator = lazy(() => import("./pages/ROICalculator"));
-const ProviderOnboarding = lazy(() => import("./pages/ProviderOnboarding"));
-const CaseStudies = lazy(() => import("./pages/CaseStudies"));
-const CaseStudyDetail = lazy(() => import("./pages/CaseStudyDetail"));
-const Privacy = lazy(() => import("./pages/Privacy"));
-const Terms = lazy(() => import("./pages/Terms"));
-const Cookies = lazy(() => import("./pages/Cookies"));
+// Helper function to handle lazy loading errors gracefully
+const lazyWithErrorHandling = (importFn: () => Promise<any>) => {
+  return lazy(() =>
+    importFn().catch((error) => {
+      // Log error in development
+      if (import.meta.env.DEV) {
+        console.error('Failed to load module:', error);
+      }
+      // Return a fallback component
+      return {
+        default: () => (
+          <div className="flex items-center justify-center min-h-screen p-8">
+            <div className="text-center">
+              <h2 className="text-xl font-semibold mb-2">Failed to load page</h2>
+              <p className="text-muted-foreground mb-4">
+                Please refresh the page or try again later.
+              </p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90"
+              >
+                Refresh Page
+              </button>
+            </div>
+          </div>
+        ),
+      };
+    })
+  );
+};
 
-const DocsIndex = lazy(() => import("./pages/docs/Index"));
-const ProductOverview = lazy(() => import("./pages/docs/ProductOverview"));
-const DocFeatures = lazy(() => import("./pages/docs/Features"));
-const Architecture = lazy(() => import("./pages/docs/Architecture"));
-const BusinessPlan = lazy(() => import("./pages/docs/BusinessPlan"));
-const GettingStarted = lazy(() => import("./pages/docs/GettingStarted"));
-const API = lazy(() => import("./pages/docs/API"));
-const FAQ = lazy(() => import("./pages/docs/FAQ"));
-const Support = lazy(() => import("./pages/docs/Support"));
-const BusinessPlanFull = lazy(() => import("./pages/docs/BusinessPlanFull"));
-const WorkflowAutomation = lazy(
+// Lazy load pages to reduce initial bundle
+const ProvidersPage = lazyWithErrorHandling(() => import("./pages/ProvidersPage"));
+const ClientsPage = lazyWithErrorHandling(() => import("./pages/ClientsPage"));
+const GetStartedClients = lazyWithErrorHandling(() => import("./pages/GetStartedClients"));
+const Company = lazyWithErrorHandling(() => import("./pages/Company"));
+const Careers = lazyWithErrorHandling(() => import("./pages/Careers"));
+const About = lazyWithErrorHandling(() => import("./pages/About"));
+const Pricing = lazyWithErrorHandling(() => import("./pages/Pricing"));
+const Features = lazyWithErrorHandling(() => import("./pages/Features"));
+const Contact = lazyWithErrorHandling(() => import("./pages/Contact"));
+const Consultation = lazyWithErrorHandling(() => import("./pages/Consultation"));
+const ConsultationThankYou = lazyWithErrorHandling(() => import("./pages/ConsultationThankYou"));
+const Book = lazyWithErrorHandling(() => import("./pages/Book"));
+const HelpCenter = lazyWithErrorHandling(() => import("./pages/HelpCenter"));
+const Community = lazyWithErrorHandling(() => import("./pages/Community"));
+const Blog = lazyWithErrorHandling(() => import("./pages/Blog"));
+const BlogArticle = lazyWithErrorHandling(() => import("./pages/BlogArticle"));
+const Security = lazyWithErrorHandling(() => import("./pages/Security"));
+const HowItWorks = lazyWithErrorHandling(() => import("./pages/HowItWorks"));
+const Comparison = lazyWithErrorHandling(() => import("./pages/Comparison"));
+const ROICalculator = lazyWithErrorHandling(() => import("./pages/ROICalculator"));
+const ProviderOnboarding = lazyWithErrorHandling(() => import("./pages/ProviderOnboarding"));
+const CaseStudies = lazyWithErrorHandling(() => import("./pages/CaseStudies"));
+const CaseStudyDetail = lazyWithErrorHandling(() => import("./pages/CaseStudyDetail"));
+const Privacy = lazyWithErrorHandling(() => import("./pages/Privacy"));
+const Terms = lazyWithErrorHandling(() => import("./pages/Terms"));
+const Cookies = lazyWithErrorHandling(() => import("./pages/Cookies"));
+
+const DocsIndex = lazyWithErrorHandling(() => import("./pages/docs/Index"));
+const ProductOverview = lazyWithErrorHandling(() => import("./pages/docs/ProductOverview"));
+const DocFeatures = lazyWithErrorHandling(() => import("./pages/docs/Features"));
+const Architecture = lazyWithErrorHandling(() => import("./pages/docs/Architecture"));
+const BusinessPlan = lazyWithErrorHandling(() => import("./pages/docs/BusinessPlan"));
+const GettingStarted = lazyWithErrorHandling(() => import("./pages/docs/GettingStarted"));
+const API = lazyWithErrorHandling(() => import("./pages/docs/API"));
+const FAQ = lazyWithErrorHandling(() => import("./pages/docs/FAQ"));
+const Support = lazyWithErrorHandling(() => import("./pages/docs/Support"));
+const BusinessPlanFull = lazyWithErrorHandling(() => import("./pages/docs/BusinessPlanFull"));
+const WorkflowAutomation = lazyWithErrorHandling(
   () => import("./pages/docs/WorkflowAutomation"),
 );
-const DocsSecurity = lazy(() => import("./pages/docs/Security"));
-const LetterAutomationDemo = lazy(() => import("./pages/demo/LetterAutomationDemo"));
-const ProfessionalLetterBuilder = lazy(() => import("./pages/demo/ProfessionalLetterBuilder"));
+const DocsSecurity = lazyWithErrorHandling(() => import("./pages/docs/Security"));
+const LetterAutomationDemo = lazyWithErrorHandling(() => import("./pages/demo/LetterAutomationDemo"));
+const ProfessionalLetterBuilder = lazyWithErrorHandling(() => import("./pages/demo/ProfessionalLetterBuilder"));
 
 import { ToastContainer } from "./components/ToastContainer";
 // Lazy load non-critical widgets to improve INP/LCP
@@ -148,6 +179,58 @@ function Router() {
 function App() {
   // Initialize monitoring and analytics on mount
   useEffect(() => {
+    // Suppress non-critical errors from third-party libraries
+    const originalError = console.error;
+    const originalWarn = console.warn;
+    
+    // Suppress InvalidNodeTypeError (from third-party libraries like Vercel feedback widget)
+    // Also suppress Vercel feedback widget fetch errors
+    const errorHandler = (message: any, ...args: any[]) => {
+      const messageStr = typeof message === 'string' ? message : String(message);
+      
+      if (
+        messageStr.includes('InvalidNodeTypeError') ||
+        messageStr.includes('selectNode') ||
+        messageStr.includes('Range') ||
+        messageStr.includes('.well-known/vercel/jwe') ||
+        messageStr.includes('vercel/jwe') ||
+        messageStr.includes('feedback.js') ||
+        (messageStr.includes('Fetch failed') && messageStr.includes('vercel'))
+      ) {
+        // Silently ignore these errors - they're from third-party libraries
+        return;
+      }
+      originalError(message, ...args);
+    };
+    
+    // Suppress Google Analytics fetch errors (expected with ad blockers)
+    // Also suppress Vercel feedback widget errors
+    const warnHandler = (message: any, ...args: any[]) => {
+      const messageStr = typeof message === 'string' ? message : String(message);
+      
+      if (
+        messageStr.includes('Fetch failed loading') ||
+        messageStr.includes('google-analytics.com') ||
+        messageStr.includes('Failed to fetch dynamically imported module') ||
+        messageStr.includes('.well-known/vercel/jwe') ||
+        messageStr.includes('vercel/jwe') ||
+        messageStr.includes('feedback.js')
+      ) {
+        // Only log in development
+        if (import.meta.env.DEV) {
+          originalWarn(message, ...args);
+        }
+        return;
+      }
+      originalWarn(message, ...args);
+    };
+    
+    // Only override in production to reduce console noise
+    if (!import.meta.env.DEV) {
+      console.error = errorHandler;
+      console.warn = warnHandler;
+    }
+    
     // Initialize Google Analytics 4
     const ga4Id = import.meta.env.VITE_GA4_MEASUREMENT_ID;
     if (ga4Id) {
@@ -163,6 +246,14 @@ function App() {
       console.log('📊 Analytics:', ga4Id ? 'Enabled' : 'Disabled');
       console.log('⚡ Performance Monitoring: Enabled');
     }
+    
+    // Cleanup: restore original console methods on unmount
+    return () => {
+      if (!import.meta.env.DEV) {
+        console.error = originalError;
+        console.warn = originalWarn;
+      }
+    };
   }, []);
 
   return (
