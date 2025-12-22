@@ -99,12 +99,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET',
       connectionInfo: connectionInfo,
       recommendation: connectionInfo?.port === '5432' 
-        ? 'For Vercel serverless functions, use connection pooling (port 6543) instead of direct connection (port 5432). Get it from Supabase Dashboard → Settings → Database → Connection pooling.'
+        ? 'Using direct connection (port 5432). This works but connection pooling (port 6543) is recommended for Vercel. If this works, you can switch to pooling later. If this fails, check: 1) Password is correct and URL-encoded, 2) Project is active, 3) Database is accessible.'
         : connectionInfo?.port === '6543' && !connectionInfo?.isPoolerHostname
         ? 'You are using port 6543 but with the direct connection hostname. Connection pooling requires a DIFFERENT hostname (usually contains "pooler" or "pool"). Get the correct connection pooling URL from Supabase Dashboard → Settings → Database → Connection pooling tab.'
         : connectionInfo?.port === '6543' && connectionInfo?.isPoolerHostname
-        ? 'Connection string format is correct (pooler hostname, port 6543). Common issues: 1) Password has special characters - URL encode them (@ → %40, # → %23, etc.), 2) IP restrictions enabled in Supabase - disable them for connection pooling, 3) Connection pooling not enabled - enable it in Supabase settings, 4) Wrong password - verify it works with direct connection first.'
-        : 'Check your DATABASE_URL in Vercel environment variables. Ensure the hostname (should contain "pooler" for connection pooling), password (URL-encoded if it has special characters), and port are correct.',
+        ? 'Connection string format is correct (pooler hostname, port 6543) but connection is failing. Try: 1) Use direct connection (port 5432) as temporary workaround - get it from Supabase Dashboard → Settings → Database → URI tab, 2) Check IP restrictions - disable them in Supabase → Settings → Database → Connection pooling, 3) Verify connection pooling is enabled for your project, 4) Password encoding - URL encode special characters.'
+        : 'Check your DATABASE_URL in Vercel environment variables. Ensure the hostname, password (URL-encoded if it has special characters), and port are correct.',
     });
   }
 }
