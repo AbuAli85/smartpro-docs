@@ -718,10 +718,6 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const setLanguage = useCallback((lang: Language) => {
     const isDev = import.meta.env.DEV;
-    if (isDev) {
-      console.log('🔄 Setting language to:', lang);
-      console.log('🔄 Current language before change:', languageRef.current);
-    }
     
     // Prevent unnecessary updates using ref to avoid stale closure
     if (languageRef.current === lang) {
@@ -729,6 +725,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         console.log('🔄 Language already set to', lang);
       }
       return;
+    }
+    
+    if (isDev) {
+      console.log('🔄 Setting language to:', lang);
+      console.log('🔄 Current language before change:', languageRef.current);
     }
     
     // Update state - this will trigger useEffect and re-renders
@@ -739,22 +740,57 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       const htmlElement = document.documentElement;
       const dir = lang === 'ar' ? 'rtl' : 'ltr';
       
+      // Update HTML attributes immediately
       htmlElement.setAttribute('dir', dir);
       htmlElement.setAttribute('lang', lang);
       
+      // Update body if available
       const bodyElement = document.body;
       if (bodyElement) {
         bodyElement.setAttribute('dir', dir);
       }
       
       // Save to localStorage immediately
-      localStorage.setItem('smartpro_language', lang);
+      try {
+        localStorage.setItem('smartpro_language', lang);
+      } catch (error) {
+        if (isDev) {
+          console.warn('Failed to save language to localStorage:', error);
+        }
+      }
       
       // Force a reflow to ensure styles apply
       void htmlElement.offsetHeight;
       
       // Dispatch custom event for components that might be listening
-      window.dispatchEvent(new CustomEvent('languagechange', { detail: { language: lang } }));
+      try {
+        window.dispatchEvent(new CustomEvent('languagechange', { detail: { language: lang } }));
+      } catch (error) {
+        if (isDev) {
+          console.warn('Failed to dispatch languagechange event:', error);
+        }
+      }
+      
+      // Verify the update was applied
+      const verifyUpdate = () => {
+        const currentLang = htmlElement.getAttribute('lang');
+        const currentDir = htmlElement.getAttribute('dir');
+        
+        if (currentLang !== lang || currentDir !== dir) {
+          // Force update if verification fails
+          htmlElement.setAttribute('dir', dir);
+          htmlElement.setAttribute('lang', lang);
+          if (bodyElement) {
+            bodyElement.setAttribute('dir', dir);
+          }
+          if (isDev) {
+            console.warn('🔄 Language attributes mismatch detected, forced update');
+          }
+        }
+      };
+      
+      // Verify after a short delay
+      setTimeout(verifyUpdate, 10);
       
       if (isDev) {
         console.log('🔄 Language set to:', lang);

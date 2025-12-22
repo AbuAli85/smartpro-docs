@@ -1,4 +1,4 @@
-import { Globe } from 'lucide-react';
+import { Globe, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -7,76 +7,93 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import { cn } from '@/lib/utils';
 
 export function LanguageSwitcher() {
   const { language, setLanguage, t } = useLanguage();
   const [open, setOpen] = useState(false);
+  const [isChanging, setIsChanging] = useState(false);
   
-  // Debug: Log when language prop changes (dev only)
+  // Verify language is correctly applied
   useEffect(() => {
-    if (import.meta.env.DEV) {
-      console.log('🌐 LanguageSwitcher: Language prop changed to', language);
+    if (typeof window === 'undefined') return;
+    
+    const verifyLanguage = () => {
       const htmlLang = document.documentElement.getAttribute('lang');
       const htmlDir = document.documentElement.getAttribute('dir');
-      console.log('🌐 LanguageSwitcher: HTML attributes - lang:', htmlLang, 'dir:', htmlDir);
-    }
+      const expectedDir = language === 'ar' ? 'rtl' : 'ltr';
+      
+      // If attributes don't match, fix them
+      if (htmlLang !== language || htmlDir !== expectedDir) {
+        document.documentElement.setAttribute('lang', language);
+        document.documentElement.setAttribute('dir', expectedDir);
+        if (document.body) {
+          document.body.setAttribute('dir', expectedDir);
+        }
+      }
+    };
+    
+    verifyLanguage();
+    
+    // Listen for language change events
+    const handleLanguageChange = () => {
+      verifyLanguage();
+    };
+    
+    window.addEventListener('languagechange', handleLanguageChange);
+    return () => {
+      window.removeEventListener('languagechange', handleLanguageChange);
+    };
   }, [language]);
 
-  const handleLanguageChange = (lang: 'en' | 'ar') => {
-    const isDev = import.meta.env.DEV;
-    if (isDev) {
-      console.log('🌐 LanguageSwitcher: handleLanguageChange called with', lang);
-      console.log('🌐 Current language in component:', language);
-    }
-    
-    // Prevent if already selected
-    if (language === lang) {
-      if (isDev) {
-        console.log('🌐 Language already set to', lang, '- skipping');
-      }
+  const handleLanguageChange = useCallback((lang: 'en' | 'ar') => {
+    // Prevent if already selected or changing
+    if (language === lang || isChanging) {
       setOpen(false);
       return;
     }
     
-    if (isDev) {
-      console.log('🌐 Calling setLanguage with', lang);
-    }
-    // Close dropdown first
+    setIsChanging(true);
     setOpen(false);
     
-    // Update language - this should trigger re-renders
-    setLanguage(lang);
-    
-    // Verify after React has had a chance to update (dev only)
-    if (isDev) {
+    try {
+      // Update language
+      setLanguage(lang);
+      
+      // Verify DOM update after a short delay
       setTimeout(() => {
-        const currentLang = document.documentElement.getAttribute('lang');
-        const currentDir = document.documentElement.getAttribute('dir');
+        const htmlLang = document.documentElement.getAttribute('lang');
+        const htmlDir = document.documentElement.getAttribute('dir');
         const expectedDir = lang === 'ar' ? 'rtl' : 'ltr';
         
-        console.log('🌐 Verification after 100ms:');
-        console.log('  - Expected lang:', lang, 'dir:', expectedDir);
-        console.log('  - Actual HTML lang:', currentLang, 'dir:', currentDir);
-        console.log('  - Component language state:', language);
-        
-        // If attributes don't match, force update
-        if (currentLang !== lang || currentDir !== expectedDir) {
-          console.warn('🌐 ⚠️ MISMATCH DETECTED! Forcing DOM update...');
-          document.documentElement.setAttribute('dir', expectedDir);
+        if (htmlLang !== lang || htmlDir !== expectedDir) {
+          // Force update if mismatch detected
           document.documentElement.setAttribute('lang', lang);
+          document.documentElement.setAttribute('dir', expectedDir);
           if (document.body) {
             document.body.setAttribute('dir', expectedDir);
           }
-          // Force a re-render by dispatching a custom event
           window.dispatchEvent(new CustomEvent('languagechange', { detail: { language: lang } }));
-          console.log('🌐 ✅ DOM attributes forced to:', lang, expectedDir);
-        } else {
-          console.log('🌐 ✅ DOM attributes match expected values');
         }
-      }, 100);
+        
+        setIsChanging(false);
+      }, 50);
+    } catch (error) {
+      console.error('Error changing language:', error);
+      setIsChanging(false);
     }
-  };
+  }, [language, setLanguage, isChanging]);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent, lang: 'en' | 'ar') => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleLanguageChange(lang);
+    }
+  }, [handleLanguageChange]);
+
+  const currentLanguageLabel = language === 'en' ? 'English' : 'العربية';
+  const isRTL = language === 'ar';
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -84,49 +101,77 @@ export function LanguageSwitcher() {
         <Button
           variant="ghost"
           size="sm"
-          className="gap-2 cursor-pointer"
-          aria-label={t('button.changeLanguage')}
-          title={t('button.changeLanguage')}
-          onClick={() => {
-            // Ensure the entire button is clickable
-            if (import.meta.env.DEV) {
-              console.log('🌐 Language switcher button clicked');
-            }
-          }}
+          className={cn(
+            "gap-2 cursor-pointer transition-all duration-200",
+            "hover:bg-slate-100 dark:hover:bg-slate-800",
+            isChanging && "opacity-50 cursor-wait"
+          )}
+          aria-label={t('button.changeLanguage') || 'Change language'}
+          aria-expanded={open}
+          aria-haspopup="true"
+          title={t('button.changeLanguage') || 'Change language'}
+          disabled={isChanging}
         >
-          <Globe className="h-4 w-4 flex-shrink-0" />
-          <span className="hidden sm:inline whitespace-nowrap">
-            {language === 'en' ? 'English' : 'العربية'}
+          <Globe className={cn(
+            "h-4 w-4 flex-shrink-0 transition-transform duration-200",
+            isChanging && "animate-spin"
+          )} />
+          <span className="hidden sm:inline whitespace-nowrap font-medium">
+            {currentLanguageLabel}
           </span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-[120px]">
+      <DropdownMenuContent 
+        align={isRTL ? "start" : "end"} 
+        className="min-w-[140px]"
+        dir={isRTL ? "rtl" : "ltr"}
+      >
         <DropdownMenuItem
-          onSelect={() => {
-            if (import.meta.env.DEV) {
-              console.log('🌐 English selected via onSelect');
-            }
+          onSelect={(e) => {
+            e.preventDefault();
             handleLanguageChange('en');
           }}
-          className={`cursor-pointer ${language === 'en' ? 'bg-accent font-semibold' : ''}`}
+          onKeyDown={(e) => handleKeyDown(e, 'en')}
+          className={cn(
+            "cursor-pointer transition-colors duration-150",
+            language === 'en' && "bg-blue-50 dark:bg-blue-900/20 font-semibold",
+            "hover:bg-slate-100 dark:hover:bg-slate-800"
+          )}
+          aria-selected={language === 'en'}
+          role="option"
         >
-          <span className="flex items-center justify-between w-full">
-            English
-            {language === 'en' && <span className="text-xs">✓</span>}
+          <span className="flex items-center justify-between w-full gap-2">
+            <span className="flex items-center gap-2">
+              <span className="text-sm font-medium">English</span>
+              <span className="text-xs text-gray-500">EN</span>
+            </span>
+            {language === 'en' && (
+              <Check className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+            )}
           </span>
         </DropdownMenuItem>
         <DropdownMenuItem
-          onSelect={() => {
-            if (import.meta.env.DEV) {
-              console.log('🌐 Arabic selected via onSelect');
-            }
+          onSelect={(e) => {
+            e.preventDefault();
             handleLanguageChange('ar');
           }}
-          className={`cursor-pointer ${language === 'ar' ? 'bg-accent font-semibold' : ''}`}
+          onKeyDown={(e) => handleKeyDown(e, 'ar')}
+          className={cn(
+            "cursor-pointer transition-colors duration-150",
+            language === 'ar' && "bg-blue-50 dark:bg-blue-900/20 font-semibold",
+            "hover:bg-slate-100 dark:hover:bg-slate-800"
+          )}
+          aria-selected={language === 'ar'}
+          role="option"
         >
-          <span className="flex items-center justify-between w-full">
-            العربية
-            {language === 'ar' && <span className="text-xs">✓</span>}
+          <span className="flex items-center justify-between w-full gap-2">
+            <span className="flex items-center gap-2">
+              <span className="text-sm font-medium">العربية</span>
+              <span className="text-xs text-gray-500">AR</span>
+            </span>
+            {language === 'ar' && (
+              <Check className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+            )}
           </span>
         </DropdownMenuItem>
       </DropdownMenuContent>
