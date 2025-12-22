@@ -82,12 +82,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     
     // Extract connection details for debugging (without exposing password)
     const dbUrl = process.env.DATABASE_URL || '';
-    const urlMatch = dbUrl.match(/postgresql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
+    // Match both postgres:// and postgresql://
+    const urlMatch = dbUrl.match(/postgres(ql)?:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
     const connectionInfo = urlMatch ? {
-      host: urlMatch[3],
-      port: urlMatch[4],
-      database: urlMatch[5],
-      usingPooling: urlMatch[4] === '6543',
+      host: urlMatch[4],
+      port: urlMatch[5],
+      database: urlMatch[6],
+      usingPooling: urlMatch[5] === '6543',
+      isPoolerHostname: urlMatch[4]?.includes('pooler') || urlMatch[4]?.includes('pool'),
     } : null;
     
     return res.status(500).json({
@@ -98,7 +100,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       connectionInfo: connectionInfo,
       recommendation: connectionInfo?.port === '5432' 
         ? 'For Vercel serverless functions, use connection pooling (port 6543) instead of direct connection (port 5432). Get it from Supabase Dashboard → Settings → Database → Connection pooling.'
-        : 'Check your DATABASE_URL in Vercel environment variables. Ensure the hostname, password, and port are correct.',
+        : connectionInfo?.port === '6543' && !connectionInfo?.isPoolerHostname
+        ? 'You are using port 6543 but with the direct connection hostname. Connection pooling requires a DIFFERENT hostname (usually contains "pooler" or "pool"). Get the correct connection pooling URL from Supabase Dashboard → Settings → Database → Connection pooling tab.'
+        : 'Check your DATABASE_URL in Vercel environment variables. Ensure the hostname (should contain "pooler" for connection pooling), password, and port are correct.',
     });
   }
 }
