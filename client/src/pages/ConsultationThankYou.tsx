@@ -8,20 +8,23 @@ import { trackEvent } from "@/lib/googleAnalytics";
 import { CheckCircle2, Mail, Phone, Clock, FileText, Users, ArrowRight, Home, MessageSquare, Sparkles, Shield, Zap, UserPlus } from "lucide-react";
 import { Link } from "wouter";
 import { TrackingStatus } from "@/components/TrackingStatus";
+import { LeadProgress } from "@/components/LeadProgress";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { handlePlatformRegistration } from "@/lib/platformUtils";
 
 export default function ConsultationThankYou() {
   const { t, language } = useLanguage();
   const isRTL = language === "ar";
   const [location] = useLocation();
 
-  // Extract tracking IDs from URL params
-  const { submissionId, executionId } = useMemo(() => {
+  // Extract tracking IDs and email from URL params
+  const { submissionId, executionId, email } = useMemo(() => {
     const params = new URLSearchParams(location.split("?")[1] || "");
     return {
       submissionId: params.get("id") || undefined,
       executionId: params.get("execution") || undefined,
+      email: params.get("email") || undefined, // Optional email for lead tracking
     };
   }, [location]);
 
@@ -131,6 +134,13 @@ export default function ConsultationThankYou() {
             </div>
           )}
 
+          {/* Lead Progress Tracking - Shows journey from consultation to registration */}
+          {submissionId && (
+            <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
+              <LeadProgress submissionId={submissionId} email={email} />
+            </div>
+          )}
+
           {/* Platform Registration CTA - Conversion Opportunity */}
           <Card className="mb-8 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white border-0 shadow-2xl overflow-hidden">
             <div className="p-8 md:p-12 relative">
@@ -182,41 +192,62 @@ export default function ConsultationThankYou() {
                   </div>
                 </div>
 
-                {/* CTA Buttons */}
+                {/* CTA Buttons - Direct to Platform Registration */}
                 <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <Link
-                    href="/get-started-providers"
+                  <button
+                    type="button"
                     className="inline-flex items-center justify-center gap-2 rounded-lg bg-white text-blue-600 px-6 py-3 text-sm md:text-base font-semibold hover:bg-blue-50 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600 shadow-lg"
-                    onClick={() => {
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      
+                      // Track analytics
                       trackEvent("consultation_thank_you_register_provider", {
                         language,
                         submission_id: submissionId,
                         source: "thank_you_page",
+                        platform_url: "https://marketing.thedigitalmorph.com/auth/sign-up",
                       });
+
+                      // Track lead progression and open platform
+                      await handlePlatformRegistration('provider', submissionId, email);
                     }}
                   >
                     <UserPlus className="h-5 w-5" />
                     {t("registration.cta.registerProvider") || "Register as Provider"}
-                  </Link>
-                  <Link
-                    href="/clients"
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
                     className="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-white text-white px-6 py-3 text-sm md:text-base font-semibold hover:bg-white/10 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600"
-                    onClick={() => {
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      
+                      // Track analytics
                       trackEvent("consultation_thank_you_register_client", {
                         language,
                         submission_id: submissionId,
                         source: "thank_you_page",
+                        platform_url: "https://marketing.thedigitalmorph.com/auth/sign-up",
                       });
+
+                      // Track lead progression and open platform
+                      await handlePlatformRegistration('client', submissionId, email);
                     }}
                   >
                     <Users className="h-5 w-5" />
                     {t("registration.cta.registerClient") || "Register as Client"}
-                  </Link>
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
                 </div>
 
                 <p className="text-sm text-blue-200 mt-4 text-center">
                   {t("registration.cta.free") || "Free to register • No credit card required"}
                 </p>
+                {submissionId && (
+                  <p className="text-xs text-blue-300 mt-2 text-center">
+                    {t("registration.cta.tracking") || "Your consultation request will be automatically linked to your account"}
+                  </p>
+                )}
               </div>
             </div>
           </Card>

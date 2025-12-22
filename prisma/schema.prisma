@@ -219,3 +219,22 @@ model ApiRequestLog {
   @@index([method, path])
   @@map("api_request_logs")
 }
+
+// Lead Tracking Model
+model Lead {
+  id            String   @id @default(cuid())
+  submissionId  String   @unique // Links to consultation submission
+  email         String
+  currentStage  String   // Current stage in the funnel
+  stages        String[] // Array of completed stages
+  metadata      Json?    // Additional tracking data
+  source        String   @default("consultation_form")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([email])
+  @@index([currentStage])
+  @@index([submissionId])
+  @@index([createdAt])
+  @@map("leads")
+}

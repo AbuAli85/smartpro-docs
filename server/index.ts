@@ -26,6 +26,7 @@ import authRoutes from './routes/authRoutes';
 import notificationRoutes from './routes/notificationRoutes';
 import preferencesRoutes from './routes/preferencesRoutes';
 import consultationRoutes from './routes/consultationRoutes';
+import leadTrackingRoutes from './routes/leadTrackingRoutes';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -66,6 +67,7 @@ app.use('/api/auth', rateLimiters.auth, authRoutes);
 app.use('/api/notifications', rateLimiters.notifications, notificationRoutes);
 app.use('/api/preferences', preferencesRoutes);
 app.use('/api/consultation', rateLimiters.forms, consultationRoutes);
+app.use('/api/leads', rateLimiters.forms, leadTrackingRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

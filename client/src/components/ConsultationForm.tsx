@@ -560,6 +560,10 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
           if (response.executionId) {
             params.set('execution', response.executionId);
           }
+          // Add email for lead tracking (optional, can be removed if privacy concern)
+          if (formData.email) {
+            params.set('email', encodeURIComponent(formData.email));
+          }
           navigate(`/consultation/thanks?${params.toString()}`);
         }, 2000);
       } else {
