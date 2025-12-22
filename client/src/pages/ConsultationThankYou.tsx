@@ -1,11 +1,11 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { setSEOTags } from "@/lib/seoUtils";
 import { trackEvent } from "@/lib/googleAnalytics";
-import { CheckCircle2, Mail, Phone, Clock, FileText, Users, ArrowRight, Home, MessageSquare, Sparkles, Shield, Zap, UserPlus } from "lucide-react";
+import { CheckCircle2, Mail, Phone, Clock, FileText, Users, ArrowRight, Home, MessageSquare, Sparkles, Shield, Zap, UserPlus, Loader2 } from "lucide-react";
 import { Link } from "wouter";
 import { TrackingStatus } from "@/components/TrackingStatus";
 import { LeadProgress } from "@/components/LeadProgress";
@@ -17,6 +17,9 @@ export default function ConsultationThankYou() {
   const { t, language } = useLanguage();
   const isRTL = language === "ar";
   const [location] = useLocation();
+  const [consultationData, setConsultationData] = useState<any>(null);
+  const [loadingConsultation, setLoadingConsultation] = useState(false);
+  const [consultationError, setConsultationError] = useState<string | null>(null);
 
   // Extract tracking IDs and email from URL params
   const { submissionId, executionId, email } = useMemo(() => {
@@ -24,9 +27,43 @@ export default function ConsultationThankYou() {
     return {
       submissionId: params.get("id") || undefined,
       executionId: params.get("execution") || undefined,
-      email: params.get("email") || undefined, // Optional email for lead tracking
+      email: params.get("email") ? decodeURIComponent(params.get("email") || "") : undefined, // Decode email
     };
   }, [location]);
+
+  // Fetch consultation data from database
+  useEffect(() => {
+    if (!submissionId) return;
+
+    const fetchConsultation = async () => {
+      setLoadingConsultation(true);
+      setConsultationError(null);
+      
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+        const response = await fetch(`${apiUrl}/consultation/${submissionId}`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          setConsultationData(data);
+          console.log('✅ Consultation data fetched from database:', data);
+        } else if (response.status === 404) {
+          setConsultationError('Consultation not found in database');
+          console.warn('⚠️ Consultation not found:', submissionId);
+        } else {
+          setConsultationError('Failed to fetch consultation data');
+          console.error('❌ Failed to fetch consultation:', response.statusText);
+        }
+      } catch (error) {
+        console.error('❌ Error fetching consultation:', error);
+        setConsultationError('Error connecting to database');
+      } finally {
+        setLoadingConsultation(false);
+      }
+    };
+
+    fetchConsultation();
+  }, [submissionId]);
 
   useEffect(() => {
     setSEOTags({
@@ -126,6 +163,44 @@ export default function ConsultationThankYou() {
               {t("consultation.thanks.body")}
             </p>
           </div>
+
+          {/* Database Connection Status - Debug Info */}
+          {submissionId && (
+            <Card className="mb-4 p-4 bg-gray-50 border border-gray-200">
+              <div className="flex items-center gap-3">
+                {loadingConsultation ? (
+                  <>
+                    <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
+                    <p className="text-sm text-gray-600">
+                      {t("consultation.thanks.loadingData") || "Verifying data in database..."}
+                    </p>
+                  </>
+                ) : consultationError ? (
+                  <>
+                    <CheckCircle2 className="h-5 w-5 text-yellow-600" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-yellow-900">
+                        {t("consultation.thanks.dataWarning") || "Data Status"}
+                      </p>
+                      <p className="text-xs text-yellow-700">{consultationError}</p>
+                    </div>
+                  </>
+                ) : consultationData ? (
+                  <>
+                    <CheckCircle2 className="h-5 w-5 text-green-600" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-green-900">
+                        {t("consultation.thanks.dataSaved") || "✅ Data saved to database"}
+                      </p>
+                      <p className="text-xs text-green-700">
+                        {t("consultation.thanks.dataDetails") || `Name: ${consultationData.name || 'N/A'}, Email: ${consultationData.email || 'N/A'}`}
+                      </p>
+                    </div>
+                  </>
+                ) : null}
+              </div>
+            </Card>
+          )}
 
           {/* Tracking Status - Always show if submissionId exists */}
           {submissionId && (
