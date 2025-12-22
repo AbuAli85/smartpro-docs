@@ -12,7 +12,7 @@
     "strict": false,
     "noEmit": true,
     "resolveJsonModule": true,
-    "noLib": false
+    "typeRoots": ["./node_modules/@types", "../node_modules/@types"]
   },
   "include": ["./**/*", "./types/**/*"],
   "exclude": ["node_modules", "**/*.test.ts"]
