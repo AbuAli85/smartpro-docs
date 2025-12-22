@@ -157,7 +157,7 @@ model ConsultationSubmission {
 
   // Relations
   user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
-  linkedUser User? @relation("UserConsultation", fields: [submissionId], references: [consultationSubmissionId])
+  linkedUser User? @relation("UserConsultation")
 
   @@index([submissionId])
   @@index([email])

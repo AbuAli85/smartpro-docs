@@ -114,8 +114,12 @@ router.post(
       // Save to database (if Prisma available)
       if (prisma) {
         try {
+          // Generate unique submission ID
+          const uniqueSubmissionId = `sub_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+          
           const submission = await prisma.consultationSubmission.create({
             data: {
+              submissionId: uniqueSubmissionId, // Set submissionId explicitly
               name: formData.name,
               email: formData.email,
               phone: formData.phone,
@@ -136,7 +140,35 @@ router.post(
               referrer,
             },
           });
-          submissionId = submission.id;
+          submissionId = submission.submissionId || submission.id;
+          
+          // Create lead entry automatically (only for new submissions)
+          if (!isDuplicate && submissionId) {
+            try {
+              await prisma.lead.create({
+                data: {
+                  submissionId: submissionId,
+                  email: formData.email,
+                  currentStage: 'consultation_submitted',
+                  stages: ['consultation_submitted'],
+                  metadata: {
+                    name: formData.name,
+                    services: formData.services,
+                    language: formData.language,
+                    submittedAt: new Date().toISOString(),
+                  },
+                  source: 'consultation_form',
+                },
+              });
+              logger.info('Lead entry created automatically', { submissionId });
+            } catch (leadError: any) {
+              // Ignore if lead already exists (duplicate submission)
+              if (!leadError.message?.includes('Unique constraint')) {
+                logger.warn('Failed to create lead entry', leadError);
+              }
+            }
+          }
+          
           logger.info('Consultation submission saved to database', { submissionId });
         } catch (dbError: any) {
           logger.error('Failed to save consultation to database', dbError, {
@@ -238,35 +270,8 @@ router.post(
           servicesForDisplay,
         });
 
-        // Generate unique submission ID to prevent duplicate processing in Make.com
+        // Use submissionId from database (already set above)
         const uniqueSubmissionId = submissionId || `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        
-        // Create lead tracking entry (after we have uniqueSubmissionId, only for new submissions)
-        if (prisma && !isDuplicate && uniqueSubmissionId) {
-          try {
-            await prisma.lead.create({
-              data: {
-                submissionId: uniqueSubmissionId,
-                email: formData.email,
-                currentStage: 'consultation_submitted',
-                stages: ['consultation_submitted'],
-                metadata: {
-                  name: formData.name,
-                  services: formData.services,
-                  language: formData.language,
-                  submittedAt: new Date().toISOString(),
-                },
-                source: 'consultation_form',
-              },
-            });
-            logger.info('Lead tracking entry created', { submissionId: uniqueSubmissionId });
-          } catch (leadError: any) {
-            // Ignore if lead already exists (duplicate submission)
-            if (!leadError.message?.includes('Unique constraint')) {
-              logger.warn('Failed to create lead tracking entry', leadError);
-            }
-          }
-        }
         
         // Ensure is_duplicate is always a boolean (not undefined) for Make.com filter
         const isDuplicateFlag = isDuplicate === true;
