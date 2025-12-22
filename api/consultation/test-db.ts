@@ -5,35 +5,32 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-// Initialize Prisma client
-let prisma: any;
+// Lazy-load Prisma client (cached per function instance)
+let prisma: any = null;
 let prismaError: string | null = null;
 
-try {
-  const { PrismaClient } = require('@prisma/client');
-  prisma = new PrismaClient();
-  
-  // Test connection on module load
-  prisma.$connect()
-    .then(() => {
-      console.log('✅ Prisma connected to database successfully');
-    })
-    .catch((err: any) => {
-      const errorMsg = err?.message || 'Unknown error';
-      console.error('❌ Prisma failed to connect to database', {
-        message: errorMsg,
-        code: err?.code,
-        DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET',
-      });
-      prismaError = errorMsg;
+async function getPrisma() {
+  if (prisma) {
+    return prisma;
+  }
+
+  if (prismaError) {
+    return null;
+  }
+
+  try {
+    const { PrismaClient } = await import('@prisma/client');
+    prisma = new PrismaClient();
+    return prisma;
+  } catch (error: any) {
+    const errorMsg = error?.message || 'Unknown error';
+    console.error('❌ Failed to initialize Prisma client', {
+      message: errorMsg,
+      DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET',
     });
-} catch (error: any) {
-  const errorMsg = error?.message || 'Unknown error';
-  console.error('❌ Failed to initialize Prisma client', {
-    message: errorMsg,
-    DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET',
-  });
-  prismaError = errorMsg;
+    prismaError = errorMsg;
+    return null;
+  }
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -43,7 +40,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    if (!prisma) {
+    // Lazy-load Prisma client
+    const prismaClient = await getPrisma();
+    
+    if (!prismaClient) {
       return res.status(503).json({ 
         error: 'Database not available',
         prismaError: prismaError || 'Prisma not initialized',
@@ -52,10 +52,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Test connection
-    await prisma.$queryRaw`SELECT 1`;
+    await prismaClient.$queryRaw`SELECT 1`;
     
     // Check if tables exist
-    const tableCount = await prisma.consultationSubmission.count();
+    const tableCount = await prismaClient.consultationSubmission.count();
     
     return res.json({
       success: true,
