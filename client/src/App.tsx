@@ -54,6 +54,10 @@ const Features = lazyWithErrorHandling(() => import("./pages/Features"));
 const Contact = lazyWithErrorHandling(() => import("./pages/Contact"));
 const Consultation = lazyWithErrorHandling(() => import("./pages/Consultation"));
 const ConsultationThankYou = lazyWithErrorHandling(() => import("./pages/ConsultationThankYou"));
+const ConsultationStatus = lazyWithErrorHandling(() => import("./pages/ConsultationStatus"));
+const PostRegistrationWelcome = lazy(() => 
+  import("./components/PostRegistrationWelcome").then(module => ({ default: module.PostRegistrationWelcome }))
+);
 const Book = lazyWithErrorHandling(() => import("./pages/Book"));
 const HelpCenter = lazyWithErrorHandling(() => import("./pages/HelpCenter"));
 const Community = lazyWithErrorHandling(() => import("./pages/Community"));

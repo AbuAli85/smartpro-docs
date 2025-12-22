@@ -6,7 +6,6 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { setSEOTags } from "@/lib/seoUtils";
 import { trackEvent } from "@/lib/googleAnalytics";
 import { getLeadStatus } from "@/lib/leadTrackingApi";
-import { PostRegistrationWelcome } from "@/components/PostRegistrationWelcome";
 import { LeadProgress } from "@/components/LeadProgress";
 import { TrackingStatus } from "@/components/TrackingStatus";
 import { Card } from "@/components/ui/card";
