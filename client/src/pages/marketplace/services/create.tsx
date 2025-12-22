@@ -9,7 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ArrowLeft, Save, X } from 'lucide-react'
 import { useServices } from '@/hooks/useServices'
 import { toast } from 'sonner'
-import { supabase } from '@/lib/supabase/client'
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext'
+import { AuthGuard } from '@/components/marketplace/AuthGuard'
 
 const categories = [
   'Digital Marketing',
@@ -24,9 +25,10 @@ const categories = [
   'Content Creation'
 ]
 
-export default function ServiceCreatePage() {
+function ServiceCreatePageContent() {
   const [, setLocation] = useLocation()
   const { addService } = useServices()
+  const { user } = useSupabaseAuth()
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     title: '',
@@ -48,16 +50,14 @@ export default function ServiceCreatePage() {
       return
     }
 
+    if (!user) {
+      toast.error('Please log in to create a service')
+      setLocation('/marketplace/auth/sign-in')
+      return
+    }
+
     try {
       setLoading(true)
-
-      // Get current user
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        toast.error('Please log in to create a service')
-        setLocation('/auth/sign-in')
-        return
-      }
 
       // Create service
       const service = await addService({
@@ -250,6 +250,14 @@ export default function ServiceCreatePage() {
         </div>
       </form>
     </div>
+  )
+}
+
+export default function ServiceCreatePage() {
+  return (
+    <AuthGuard>
+      <ServiceCreatePageContent />
+    </AuthGuard>
   )
 }
 

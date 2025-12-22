@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect } from "react";
 import { NotificationProvider } from "./contexts/NotificationContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { SupabaseAuthProvider } from "./contexts/SupabaseAuthContext";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch, useLocation } from "wouter";
@@ -96,6 +97,8 @@ const ServicesPage = lazyWithErrorHandling(() => import("./pages/marketplace/ser
 const ServiceCreatePage = lazyWithErrorHandling(() => import("./pages/marketplace/services/create"));
 const ServiceDetailPage = lazyWithErrorHandling(() => import("./pages/marketplace/services/[id]"));
 const ServiceEditPage = lazyWithErrorHandling(() => import("./pages/marketplace/services/[id]/edit"));
+const SignInPage = lazyWithErrorHandling(() => import("./pages/marketplace/auth/sign-in"));
+const SignUpPage = lazyWithErrorHandling(() => import("./pages/marketplace/auth/sign-up"));
 
 import { ToastContainer } from "./components/ToastContainer";
 // Lazy load non-critical widgets to improve INP/LCP
@@ -185,6 +188,8 @@ function Router() {
         <Route path={"/marketplace/services/create"} component={ServiceCreatePage} />
         <Route path={"/marketplace/services/:id/edit"} component={ServiceEditPage} />
         <Route path={"/marketplace/services/:id"} component={ServiceDetailPage} />
+        <Route path={"/marketplace/auth/sign-in"} component={SignInPage} />
+        <Route path={"/marketplace/auth/sign-up"} component={SignUpPage} />
         
         <Route path={"/404"} component={NotFound} />
         {/* Final fallback route */}
@@ -281,11 +286,12 @@ function App() {
   return (
     <ErrorBoundary>
       <LanguageProvider>
-        <NotificationProvider>
-          <ThemeProvider defaultTheme="light" switchable={true}>
-            <TooltipProvider>
-              <Router />
-              <ToastContainer />
+        <SupabaseAuthProvider>
+          <NotificationProvider>
+            <ThemeProvider defaultTheme="light" switchable={true}>
+              <TooltipProvider>
+                <Router />
+                <ToastContainer />
               <Suspense fallback={null}>
                 <LiveChat />
               </Suspense>
@@ -301,6 +307,7 @@ function App() {
             </TooltipProvider>
           </ThemeProvider>
         </NotificationProvider>
+      </SupabaseAuthProvider>
       </LanguageProvider>
     </ErrorBoundary>
   );

@@ -4,12 +4,14 @@ import { ServiceTable } from '@/components/marketplace/services/ServiceTable'
 import { useServices } from '@/hooks/useServices'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Plus, Package, RefreshCw } from 'lucide-react'
+import { Plus, Package, RefreshCw, LogIn, User } from 'lucide-react'
 import { toast } from 'sonner'
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext'
 import type { Service } from '@/lib/services'
 
 export default function ServicesPage() {
   const [, setLocation] = useLocation()
+  const { user, signOut } = useSupabaseAuth()
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [recentlyApproved, setRecentlyApproved] = useState<Set<string>>(new Set())
   
@@ -142,6 +144,28 @@ export default function ServicesPage() {
           <p className="text-gray-500 mt-1">Manage your service offerings</p>
         </div>
         <div className="flex items-center gap-3">
+          {user ? (
+            <>
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <User className="h-4 w-4" />
+                <span>{user.email}</span>
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => signOut()}
+              >
+                Sign Out
+              </Button>
+            </>
+          ) : (
+            <Button
+              variant="outline"
+              onClick={() => setLocation('/marketplace/auth/sign-in')}
+            >
+              <LogIn className="h-4 w-4 mr-2" />
+              Sign In
+            </Button>
+          )}
           <Button
             variant="outline"
             onClick={handleRefresh}
@@ -150,10 +174,12 @@ export default function ServicesPage() {
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
-          <Button onClick={handleCreateService}>
-            <Plus className="h-4 w-4 mr-2" />
-            Create Service
-          </Button>
+          {user && (
+            <Button onClick={handleCreateService}>
+              <Plus className="h-4 w-4 mr-2" />
+              Create Service
+            </Button>
+          )}
         </div>
       </div>
 
