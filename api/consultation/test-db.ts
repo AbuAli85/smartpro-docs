@@ -19,7 +19,9 @@ async function getPrisma() {
   }
 
   try {
-    const { PrismaClient } = await import('@prisma/client');
+    const prismaModule = await import('@prisma/client');
+    // Handle both default export and named export
+    const PrismaClient = prismaModule.PrismaClient || (prismaModule as any).default?.PrismaClient || (prismaModule as any).default;
     prisma = new PrismaClient();
     return prisma;
   } catch (error: any) {
