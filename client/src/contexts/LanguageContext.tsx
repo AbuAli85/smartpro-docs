@@ -150,6 +150,15 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Accessibility
     'accessibility.skipToForm': 'Skip to consultation form',
+    'accessibility.formNavigation': 'Form section navigation',
+    'accessibility.goToSection': 'Go to',
+    'accessibility.completed': 'Completed',
+    'accessibility.formProgress': 'Form progress',
+    'accessibility.of': 'of',
+    'accessibility.sectionsCompleted': 'sections completed',
+    
+    // Consultation form navigation
+    'consultation.form.navigation': 'Quick Navigation',
     
     // Form fields
     'form.name': 'Full Name',
@@ -508,6 +517,15 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Accessibility
     'accessibility.skipToForm': 'انتقل إلى نموذج الاستشارة',
+    'accessibility.formNavigation': 'تنقل أقسام النموذج',
+    'accessibility.goToSection': 'انتقل إلى',
+    'accessibility.completed': 'مكتمل',
+    'accessibility.formProgress': 'تقدم النموذج',
+    'accessibility.of': 'من',
+    'accessibility.sectionsCompleted': 'أقسام مكتملة',
+    
+    // Consultation form navigation
+    'consultation.form.navigation': 'تنقل سريع',
     
     // Placeholders
     'placeholder.name': 'اسمك الكامل',
