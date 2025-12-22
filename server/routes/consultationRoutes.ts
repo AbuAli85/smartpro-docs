@@ -463,4 +463,53 @@ router.get('/stats', async (req: any, res: Response) => {
   }
 });
 
+/**
+ * GET /api/consultation/:submissionId
+ * Get consultation details by submission ID
+ */
+router.get('/:submissionId', async (req: Request, res: Response) => {
+  try {
+    const { submissionId } = req.params;
+
+    if (!prisma) {
+      return res.status(503).json({ error: 'Database not available' });
+    }
+
+    // Find consultation by submission ID
+    const consultation = await prisma.consultationSubmission.findFirst({
+      where: {
+        submissionId: submissionId,
+      },
+      select: {
+        id: true,
+        submissionId: true,
+        name: true,
+        email: true,
+        phone: true,
+        location: true,
+        company: true,
+        businessType: true,
+        services: true,
+        budget: true,
+        timeline: true,
+        preferredContact: true,
+        preferredTime: true,
+        message: true,
+        language: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!consultation) {
+      return res.status(404).json({ error: 'Consultation not found' });
+    }
+
+    res.json(consultation);
+  } catch (error: any) {
+    logger.error('Error fetching consultation', error, { submissionId: req.params.submissionId });
+    res.status(500).json({ error: error.message || 'Failed to fetch consultation' });
+  }
+});
+
 export default router;

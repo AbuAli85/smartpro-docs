@@ -136,6 +136,7 @@ function Router() {
         <Route path={"/contact"} component={Contact} />
         <Route path={"/consultation"} component={Consultation} />
         <Route path={"/consultation/thanks"} component={ConsultationThankYou} />
+        <Route path={"/consultation/status/:submissionId"} component={ConsultationStatus} />
         <Route path={"/book"} component={Book} />
         <Route path={"/blog"} component={Blog} />
         <Route path={"/blog/:id"} component={BlogArticle} />
