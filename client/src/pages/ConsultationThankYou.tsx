@@ -24,10 +24,31 @@ export default function ConsultationThankYou() {
   // Extract tracking IDs and email from URL params
   const { submissionId, executionId, email } = useMemo(() => {
     const params = new URLSearchParams(location.split("?")[1] || "");
+    
+    // Handle email decoding - may be double-encoded
+    const getDecodedEmail = (): string | undefined => {
+      const emailParam = params.get("email");
+      if (!emailParam) return undefined;
+      
+      try {
+        // Try decoding once
+        let decoded = decodeURIComponent(emailParam);
+        // If still contains encoded characters, decode again (handles double-encoding)
+        if (decoded.includes('%')) {
+          decoded = decodeURIComponent(decoded);
+        }
+        return decoded;
+      } catch (e) {
+        // If decode fails, return original
+        console.warn('Failed to decode email parameter:', e);
+        return emailParam;
+      }
+    };
+    
     return {
       submissionId: params.get("id") || undefined,
       executionId: params.get("execution") || undefined,
-      email: params.get("email") ? decodeURIComponent(params.get("email") || "") : undefined, // Decode email
+      email: getDecodedEmail(),
     };
   }, [location]);
 

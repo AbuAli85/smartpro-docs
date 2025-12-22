@@ -561,8 +561,9 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
             params.set('execution', response.executionId);
           }
           // Add email for lead tracking (optional, can be removed if privacy concern)
+          // Note: URLSearchParams.set() automatically encodes values, so no need for encodeURIComponent
           if (formData.email) {
-            params.set('email', encodeURIComponent(formData.email));
+            params.set('email', formData.email);
           }
           navigate(`/consultation/thanks?${params.toString()}`);
         }, 2000);

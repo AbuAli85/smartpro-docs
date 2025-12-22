@@ -1,265 +1,192 @@
-# Make.com Scenario - Critical Fixes Required
+# Make.com Scenario Fixes
 
-## 🔴 Critical Issues Found
+## Issues Found in Your Current Configuration
 
-### 1. Module 2 (addRow) - Missing Column 18
-**Current:** Only maps columns 0-17
-**Should:** Map columns 0-18 (add empty string for Last Email Preview)
-
-### 2. Module 7 (updateRow - Accounting) - WRONG COLUMNS
-**Current:**
-```json
-"values": {
-  "6": "Sent",  // ❌ WRONG - This is Service Interested column!
-  "7": "{{3.choices[].message.content}}"  // ❌ WRONG - Missing array index!
-}
+### ❌ Issue 1: Services Array Syntax is Wrong
+**Current (WRONG):**
 ```
+{{split(1.Services + (Full + List); ",")}}
+```
+
 **Should be:**
+```
+{{split(1.7; ",")}}
+```
+Where `7` is the column index for "Services (Full List)" (column H)
+
+---
+
+### ❌ Issue 2: Missing `submissionId`
+**Problem:** Supabase requires `submissionId` but you're only setting `id` (which Supabase auto-generates)
+
+**Solution:** Add `submissionId` field with unique value:
+```
+sub_{{formatDate(1.0; "yyyyMMddHHmmss")}}_{substring(md5(1.2); 0; 8)}}
+```
+- `1.0` = Timestamp column
+- `1.2` = Email column
+
+---
+
+### ❌ Issue 3: Wrong Field Mappings
+**Current mappings need correction:**
+
+| Supabase Field | Current Mapping | Should Be |
+|---------------|----------------|-----------|
+| `budget` | `{{1.8}}` | ✅ Correct (Column I) |
+| `timeline` | `{{1.9}}` | ✅ Correct (Column J) |
+| `preferredContact` | `{{1.10}}` | ✅ Correct (Column K) |
+| `preferredTime` | `{{1.11}}` | ✅ Correct (Column L) |
+| `location` | `{{1.12}}` | ✅ Correct (Column M) |
+| `message` | `{{1.13}}` | ✅ Correct (Column N) |
+| `notes` | Missing | Should be `{{1.14}}` (Column O) |
+| `createdAt` | Missing | Should be `{{1.0}}` (Column A - Timestamp) |
+
+---
+
+### ❌ Issue 4: Status Field
+**Current:** `{{1.20}}` (Response Status from Google Sheets)
+
+**Problem:** This maps to "Response Status" which might be "No Response", "Pending", etc. But Supabase `status` expects: `pending`, `contacted`, `completed`, `cancelled`
+
+**Solution:** Either:
+1. Map to `{{1.20}}` and transform it, OR
+2. Set default: `pending` (since these are new rows from Google Sheets)
+
+---
+
+## ✅ Corrected Field Mappings
+
+Here's the complete corrected mapper for Supabase module:
+
 ```json
-"values": {
-  "17": "Sent",  // ✅ Email Status column
-  "18": "{{3.choices[1].message.content}}"  // ✅ Last Email Preview column
+{
+  "table": "consultation_submissions",
+  "submissionId": "sub_{{formatDate(1.0; \"yyyyMMddHHmmss\")}}_{substring(md5(1.2); 0; 8)}}",
+  "name": "{{1.1}}",
+  "email": "{{1.2}}",
+  "phone": "{{1.3}}",
+  "location": "{{1.12}}",
+  "company": "{{1.4}}",
+  "businessType": "{{1.5}}",
+  "services": "{{split(1.7; \",\")}}",
+  "primaryService": "{{1.6}}",
+  "budget": "{{1.8}}",
+  "timeline": "{{1.9}}",
+  "preferredContact": "{{1.10}}",
+  "preferredTime": "{{1.11}}",
+  "message": "{{1.13}}",
+  "notes": "{{1.14}}",
+  "language": "{{1.15}}",
+  "source": "{{if(1.16; 1.16; \"google_sheets\")}}",
+  "status": "pending",
+  "createdAt": "{{1.0}}",
+  "webhookSent": false
 }
 ```
 
-### 3. Module 12 (updateRow - PRO Services) - WRONG COLUMNS
-**Current:**
-```json
-"values": {
-  "6": "Sent",  // ❌ WRONG
-  "7": "{{10.choices[1].message.content}}"  // ❌ WRONG
-}
-```
-**Should be:**
-```json
-"values": {
-  "17": "Sent",
-  "18": "{{10.choices[1].message.content}}"
-}
-```
+---
 
-### 4. Module 15 (updateRow - Company Formation) - WRONG COLUMNS
-**Current:**
-```json
-"values": {
-  "6": "Sent",  // ❌ WRONG
-  "7": "{{13.choices[1].message.content}}"  // ❌ WRONG
-}
-```
-**Should be:**
-```json
-"values": {
-  "17": "Sent",
-  "18": "{{13.choices[1].message.content}}"
-}
-```
+## 📋 Column Index Reference
 
-### 5. Module 18 (updateRow - Default) - WRONG COLUMNS
-**Current:**
-```json
-"values": {
-  "6": "Sent",  // ❌ WRONG
-  "7": "{{16.choices[1].message.content}}"  // ❌ WRONG
-}
+Based on your Make.com interface:
+
+| Column | Index | Field Name | Supabase Field |
+|--------|-------|------------|----------------|
+| A | `0` | Timestamp | `createdAt` |
+| B | `1` | Client Name | `name` |
+| C | `2` | Email | `email` |
+| D | `3` | Phone | `phone` |
+| E | `4` | Business Name | `company` |
+| F | `5` | Business Type | `businessType` |
+| G | `6` | Service Interested | `primaryService` |
+| H | `7` | Services (Full List) | `services` (array) |
+| I | `8` | Budget | `budget` |
+| J | `9` | Timeline | `timeline` |
+| K | `10` | Preferred Contact | `preferredContact` |
+| L | `11` | Preferred Time | `preferredTime` |
+| M | `12` | Location | `location` |
+| N | `13` | Primary Message | `message` |
+| O | `14` | Notes / Extra Info | `notes` |
+| P | `15` | Language | `language` |
+| Q | `16` | Source | `source` |
+
+---
+
+## 🔧 Step-by-Step Fix Instructions
+
+### 1. Fix Services Array
+1. Open Supabase module
+2. Find `services` field
+3. Replace with: `{{split(1.7; ",")}}`
+4. If your data uses semicolons, use: `{{split(1.7; ";")}}`
+
+### 2. Add submissionId
+1. In Supabase module, find `submissionId` field
+2. Add: `sub_{{formatDate(1.0; "yyyyMMddHHmmss")}}_{substring(md5(1.2); 0; 8)}}`
+3. This creates unique ID like: `sub_20241116123456_a1b2c3d4`
+
+### 3. Add Missing Fields
+1. Add `notes` field: `{{1.14}}`
+2. Add `createdAt` field: `{{1.0}}`
+3. Set `status` to: `pending` (or map from `{{1.20}}` if you want)
+4. Set `webhookSent` to: `false`
+
+### 4. Fix Source Field
+1. Update `source` to: `{{if(1.16; 1.16; "google_sheets")}}`
+2. This uses Google Sheets value if exists, otherwise defaults to "google_sheets"
+
+---
+
+## ⚠️ Important Notes
+
+### Services Array Format
+- If your Google Sheets has: `"VAT, Accounting, PRO Services"`
+- The split function will create: `["VAT", " Accounting", " PRO Services"]`
+- Note: There might be spaces after commas - you may need to trim them
+
+**Better solution (with trim):**
+Use a "Set variables" module to clean the services first:
 ```
-**Should be:**
-```json
-"values": {
-  "17": "Sent",
-  "18": "{{16.choices[1].message.content}}"
-}
-```
-
-## ✅ Complete Fix Instructions
-
-### Fix 1: Module 2 (addRow) - Add Column 18
-
-**Current values object:**
-```json
-"values": {
-  "0": "{{now}}",
-  "1": "{{1.client_name}}",
-  "2": "{{1.email}}",
-  "3": "{{1.phone}}",
-  "4": "{{1.business_name}}",
-  "5": "{{1.business_type}}",
-  "6": "{{1.service_interested}}",
-  "7": "{{1.services}}",
-  "8": "{{1.budget}}",
-  "9": "{{1.timeline}}",
-  "10": "{{1.preferred_contact}}",
-  "11": "{{1.preferred_time}}",
-  "12": "{{1.location}}",
-  "13": "{{1.message}}",
-  "14": "{{1.notes}}",
-  "15": "{{1.language}}",
-  "16": "{{1.source}}",
-  "17": "Pending"
-  // ❌ Missing column 18!
-}
+{{replace(replace(1.7; " "; ""); ", "; ",")}}
 ```
 
-**Fixed values object:**
-```json
-"values": {
-  "0": "{{now}}",
-  "1": "{{1.client_name}}",
-  "2": "{{1.email}}",
-  "3": "{{1.phone}}",
-  "4": "{{1.business_name}}",
-  "5": "{{1.business_type}}",
-  "6": "{{1.service_interested}}",
-  "7": "{{1.services}}",
-  "8": "{{1.budget}}",
-  "9": "{{1.timeline}}",
-  "10": "{{1.preferred_contact}}",
-  "11": "{{1.preferred_time}}",
-  "12": "{{1.location}}",
-  "13": "{{1.message}}",
-  "14": "{{1.notes}}",
-  "15": "{{1.language}}",
-  "16": "{{1.source}}",
-  "17": "Pending",
-  "18": ""  // ✅ ADD THIS!
-}
-```
+### Timestamp Format
+- Make.com should handle the timestamp conversion automatically
+- If you get errors, use "Parse date" module before Supabase
 
-### Fix 2: Module 7 (updateRow - Accounting)
+### Duplicate Prevention
+- Consider adding a Filter module to check if email already exists in Supabase
+- Or use "Update row" instead of "Create row" if you want to update existing records
 
-**Change from:**
-```json
-"values": {
-  "6": "Sent",
-  "7": "{{3.choices[].message.content}}"
-}
-```
+---
 
-**To:**
-```json
-"values": {
-  "17": "Sent",
-  "18": "{{3.choices[1].message.content}}"
-}
-```
+## ✅ Final Checklist
 
-### Fix 3: Module 12 (updateRow - PRO Services)
+- [ ] Fixed `services` field syntax: `{{split(1.7; ",")}}`
+- [ ] Added `submissionId` with unique value
+- [ ] Added `notes` field: `{{1.14}}`
+- [ ] Added `createdAt` field: `{{1.0}}`
+- [ ] Set `status` to `pending` or map from Response Status
+- [ ] Set `webhookSent` to `false`
+- [ ] Fixed `source` field with fallback
+- [ ] Removed incorrect `id` mapping (Supabase auto-generates this)
 
-**Change from:**
-```json
-"values": {
-  "6": "Sent",
-  "7": "{{10.choices[1].message.content}}"
-}
-```
+---
 
-**To:**
-```json
-"values": {
-  "17": "Sent",
-  "18": "{{10.choices[1].message.content}}"
-}
-```
+## 🧪 Test Your Scenario
 
-### Fix 4: Module 15 (updateRow - Company Formation)
+1. **Save** the scenario
+2. **Run once** with a test row
+3. **Check Operations** tab for errors
+4. **Verify in Supabase** that:
+   - Row was created
+   - `submissionId` is unique
+   - `services` is an array (not a string)
+   - All fields are mapped correctly
 
-**Change from:**
-```json
-"values": {
-  "6": "Sent",
-  "7": "{{13.choices[1].message.content}}"
-}
-```
+---
 
-**To:**
-```json
-"values": {
-  "17": "Sent",
-  "18": "{{13.choices[1].message.content}}"
-}
-```
+## 🎉 That's It!
 
-### Fix 5: Module 18 (updateRow - Default)
-
-**Change from:**
-```json
-"values": {
-  "6": "Sent",
-  "7": "{{16.choices[1].message.content}}"
-}
-```
-
-**To:**
-```json
-"values": {
-  "17": "Sent",
-  "18": "{{16.choices[1].message.content}}"
-}
-```
-
-## 📊 Column Reference
-
-| Column | Index | Field | Used By |
-|--------|-------|-------|---------|
-| A | 0 | Timestamp | addRow |
-| B | 1 | Client Name | addRow |
-| C | 2 | Email | addRow |
-| D | 3 | Phone | addRow |
-| E | 4 | Business Name | addRow |
-| F | 5 | Business Type | addRow |
-| G | 6 | **Service Interested** | addRow |
-| H | 7 | Services | addRow |
-| I | 8 | Budget | addRow |
-| J | 9 | Timeline | addRow |
-| K | 10 | Preferred Contact | addRow |
-| L | 11 | Preferred Time | addRow |
-| M | 12 | Location | addRow |
-| N | 13 | Primary Message | addRow |
-| O | 14 | Notes | addRow |
-| P | 15 | Language | addRow |
-| Q | 16 | Source | addRow |
-| R | 17 | **Email Status** | addRow, updateRow |
-| S | 18 | **Last Email Preview** | addRow, updateRow |
-
-## ⚠️ Why This Matters
-
-**Current Problem:**
-- updateRow modules are writing to columns 6 and 7
-- Column 6 is "Service Interested" - you're overwriting it with "Sent"!
-- Column 7 is "Services" - you're overwriting it with email content!
-- This corrupts your data!
-
-**After Fix:**
-- updateRow writes to columns 17 and 18 (correct columns)
-- Column 17 gets "Sent" status
-- Column 18 gets email preview
-- No data corruption!
-
-## 🚨 Additional Issue: Module 7 Syntax Error
-
-**Current:**
-```json
-"{{3.choices[].message.content}}"  // ❌ Missing array index!
-```
-
-**Fixed:**
-```json
-"{{3.choices[1].message.content}}"  // ✅ Correct!
-```
-
-## ✅ Quick Action Checklist
-
-1. [ ] **Module 2**: Add `"18": ""` to values object
-2. [ ] **Module 7**: Change columns 6,7 → 17,18 and fix array index
-3. [ ] **Module 12**: Change columns 6,7 → 17,18
-4. [ ] **Module 15**: Change columns 6,7 → 17,18
-5. [ ] **Module 18**: Change columns 6,7 → 17,18
-6. [ ] **Test**: Submit a form and verify columns 17 and 18 update correctly
-
-## 📝 Summary
-
-**Total fixes needed:** 5 modules
-**Critical:** All updateRow modules are writing to wrong columns
-**Impact:** Data corruption - Service Interested and Services columns are being overwritten!
-
-Fix immediately to prevent data loss!
-
+After these fixes, your scenario should work correctly! 🚀

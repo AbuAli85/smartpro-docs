@@ -99,11 +99,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET',
       connectionInfo: connectionInfo,
       recommendation: connectionInfo?.port === '5432' 
-        ? 'Using direct connection (port 5432). This works but connection pooling (port 6543) is recommended for Vercel. If this works, you can switch to pooling later. If this fails, check: 1) Password is correct and URL-encoded, 2) Project is active, 3) Database is accessible.'
+        ? 'Both direct connection (5432) and pooling (6543) are failing - this indicates a fundamental issue. Most likely: 1) Wrong password - reset it in Supabase Dashboard → Settings → Database → Reset database password (use simple password like "Test123" for testing), 2) Project is paused - check Supabase Dashboard and resume if needed, 3) Test locally - try connecting from your computer to verify password works, 4) IP restrictions - disable them in Supabase settings.'
         : connectionInfo?.port === '6543' && !connectionInfo?.isPoolerHostname
         ? 'You are using port 6543 but with the direct connection hostname. Connection pooling requires a DIFFERENT hostname (usually contains "pooler" or "pool"). Get the correct connection pooling URL from Supabase Dashboard → Settings → Database → Connection pooling tab.'
         : connectionInfo?.port === '6543' && connectionInfo?.isPoolerHostname
-        ? 'Connection string format is correct (pooler hostname, port 6543) but connection is failing. Try: 1) Use direct connection (port 5432) as temporary workaround - get it from Supabase Dashboard → Settings → Database → URI tab, 2) Check IP restrictions - disable them in Supabase → Settings → Database → Connection pooling, 3) Verify connection pooling is enabled for your project, 4) Password encoding - URL encode special characters.'
+        ? 'Connection string format is correct (pooler hostname, port 6543) but connection is failing. Since direct connection also fails, this is likely: 1) Wrong password - reset to simple password and test, 2) Project paused - check and resume in Supabase Dashboard, 3) Test locally first - verify password works from your computer, 4) IP restrictions - disable them.'
         : 'Check your DATABASE_URL in Vercel environment variables. Ensure the hostname, password (URL-encoded if it has special characters), and port are correct.',
     });
   }
