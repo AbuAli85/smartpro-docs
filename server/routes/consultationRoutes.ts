@@ -352,19 +352,33 @@ router.post(
 
         const webhookResponse = await webhookClient.send(webhookPayload);
 
+        // Log webhook response for debugging
+        logger.info('Webhook response received', {
+          success: webhookResponse.success,
+          executionId: webhookResponse.data?.execution_id,
+          error: webhookResponse.error,
+          submissionId: uniqueSubmissionId,
+        });
+
         // Update database record with webhook status
-        if (prisma && submissionId) {
+        if (prisma && uniqueSubmissionId) {
           try {
             await prisma.consultationSubmission.update({
-              where: { id: submissionId },
+              where: { submissionId: uniqueSubmissionId }, // Use submissionId, not id
               data: {
                 webhookSent: webhookResponse.success,
                 webhookSentAt: new Date(),
                 status: webhookResponse.success ? 'contacted' : 'pending',
               },
             });
+            logger.info('Webhook status updated in database', {
+              submissionId: uniqueSubmissionId,
+              webhookSent: webhookResponse.success,
+            });
           } catch (updateError: any) {
-            logger.warn('Failed to update webhook status in database', updateError);
+            logger.error('Failed to update webhook status in database', updateError, {
+              submissionId: uniqueSubmissionId,
+            });
           }
         }
 

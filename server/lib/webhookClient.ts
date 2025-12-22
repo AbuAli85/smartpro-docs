@@ -57,7 +57,8 @@ export class WebhookClient {
 
   async send(payload: WebhookPayload): Promise<WebhookResponse> {
     if (!this.url || this.url.trim() === '') {
-      console.warn('⚠️ Make.com webhook URL not configured');
+      console.error('❌ Make.com webhook URL not configured');
+      console.error('   Please set MAKE_WEBHOOK_URL environment variable');
       return {
         success: false,
         error: {
@@ -65,6 +66,13 @@ export class WebhookClient {
         },
       };
     }
+
+    console.log('📤 Sending webhook to Make.com:', {
+      url: this.url,
+      payloadKeys: Object.keys(payload),
+      submissionId: payload.submission_id,
+      email: payload.email,
+    });
 
     try {
       const controller = new AbortController();
@@ -82,8 +90,15 @@ export class WebhookClient {
 
       clearTimeout(timeoutId);
 
+      console.log('📥 Webhook response status:', response.status, response.statusText);
+
       if (!response.ok) {
         const errorText = await response.text().catch(() => 'Unknown error');
+        console.error('❌ Webhook request failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorText,
+        });
         return {
           success: false,
           error: {
@@ -95,13 +110,18 @@ export class WebhookClient {
 
       try {
         const data = await response.json();
+        console.log('✅ Webhook success:', {
+          message: data.message,
+          executionId: data.data?.execution_id,
+        });
         return {
           success: true,
           message: data.message || 'Request successful',
           data: data.data,
         };
       } catch {
-        // Make.com might return empty response
+        // Make.com might return empty response (this is normal)
+        console.log('✅ Webhook success (empty response - this is normal for Make.com)');
         return {
           success: true,
           message: 'Request successful',
@@ -109,6 +129,7 @@ export class WebhookClient {
       }
     } catch (error: any) {
       if (error.name === 'AbortError') {
+        console.error('❌ Webhook timeout after 30 seconds');
         return {
           success: false,
           error: {
@@ -118,6 +139,10 @@ export class WebhookClient {
         };
       }
 
+      console.error('❌ Webhook network error:', {
+        message: error.message,
+        stack: error.stack,
+      });
       return {
         success: false,
         error: {
