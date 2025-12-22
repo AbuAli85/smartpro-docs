@@ -200,6 +200,8 @@ function App() {
         messageStr.includes('.well-known/vercel/jwe') ||
         messageStr.includes('vercel/jwe') ||
         messageStr.includes('feedback.js') ||
+        messageStr.includes('zustand') ||
+        messageStr.includes('DEPRECATED') ||
         (messageStr.includes('Fetch failed') && messageStr.includes('vercel'))
       ) {
         // Silently ignore these errors - they're from third-party libraries
@@ -219,7 +221,9 @@ function App() {
         messageStr.includes('Failed to fetch dynamically imported module') ||
         messageStr.includes('.well-known/vercel/jwe') ||
         messageStr.includes('vercel/jwe') ||
-        messageStr.includes('feedback.js')
+        messageStr.includes('feedback.js') ||
+        messageStr.includes('zustand') ||
+        messageStr.includes('DEPRECATED')
       ) {
         // Only log in development
         if (import.meta.env.DEV) {
