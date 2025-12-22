@@ -211,6 +211,11 @@ function App() {
     const errorHandler = (message: any, ...args: any[]) => {
       const messageStr = typeof message === 'string' ? message : String(message);
       
+      // Always suppress Zustand deprecation warnings (from dependencies, not actionable)
+      if (messageStr.includes('zustand') && messageStr.includes('DEPRECATED')) {
+        return;
+      }
+      
       if (
         messageStr.includes('InvalidNodeTypeError') ||
         messageStr.includes('selectNode') ||
@@ -233,6 +238,11 @@ function App() {
     const warnHandler = (message: any, ...args: any[]) => {
       const messageStr = typeof message === 'string' ? message : String(message);
       
+      // Always suppress Zustand deprecation warnings (from dependencies, not actionable)
+      if (messageStr.includes('zustand') && messageStr.includes('DEPRECATED')) {
+        return;
+      }
+      
       if (
         messageStr.includes('Fetch failed loading') ||
         messageStr.includes('google-analytics.com') ||
@@ -243,7 +253,7 @@ function App() {
         messageStr.includes('zustand') ||
         messageStr.includes('DEPRECATED')
       ) {
-        // Only log in development
+        // Only log in development for other warnings
         if (import.meta.env.DEV) {
           originalWarn(message, ...args);
         }
@@ -252,10 +262,11 @@ function App() {
       originalWarn(message, ...args);
     };
     
-    // Only override in production to reduce console noise
+    // Apply warning filter in both dev and production (Zustand warnings suppressed always)
+    // Error filter only in production to reduce console noise
+    console.warn = warnHandler;
     if (!import.meta.env.DEV) {
       console.error = errorHandler;
-      console.warn = warnHandler;
     }
     
     // Initialize Google Analytics 4
