@@ -148,6 +148,9 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.thanks.point3': "You can prepare any documents or questions you'd like to discuss during the session.",
     'consultation.thanks.backToHome': 'Back to homepage',
     
+    // Accessibility
+    'accessibility.skipToForm': 'Skip to consultation form',
+    
     // Form fields
     'form.name': 'Full Name',
     'form.email': 'Email Address',
@@ -222,6 +225,7 @@ const translations: Record<Language, Record<string, string>> = {
     'button.submitting': 'Submitting...',
     'button.select': 'Select',
     'button.changeLanguage': 'Change Language',
+    'button.retry': 'Retry',
     
     // Messages
     'message.success': 'Thank you! We\'ve received your consultation request and will contact you within 24 hours.',
@@ -236,12 +240,14 @@ const translations: Record<Language, Record<string, string>> = {
     'message.error.location': 'Location must be between 2 and 200 characters',
     'message.error.message': 'Message must not exceed 5000 characters',
     'message.error.services': 'Please select at least one service',
+    'message.error.retry': 'Please check your connection and try again.',
     'message.progress': 'Form Progress',
     'message.sectionsComplete': 'sections complete',
     'message.saving': 'Saving draft...',
     'message.saved': 'Draft saved',
     'message.charactersRemaining': 'characters remaining',
     'message.charactersOver': 'characters over limit',
+    'message.formCompletionEstimate': 'Estimated completion time: 3-5 minutes',
     
     // Placeholders
     'placeholder.name': 'Your full name',
@@ -476,6 +482,7 @@ const translations: Record<Language, Record<string, string>> = {
     'button.submitting': 'جاري الإرسال...',
     'button.select': 'اختر',
     'button.changeLanguage': 'تغيير اللغة',
+    'button.retry': 'إعادة المحاولة',
     
     // Messages
     'message.success': 'شكراً لك! لقد استلمنا طلب الاستشارة الخاص بك وسنتصل بك خلال 24 ساعة.',
@@ -490,12 +497,17 @@ const translations: Record<Language, Record<string, string>> = {
     'message.error.location': 'يجب أن يكون الموقع بين 2 و 200 حرف',
     'message.error.message': 'يجب ألا تتجاوز الرسالة 5000 حرف',
     'message.error.services': 'يرجى اختيار خدمة واحدة على الأقل',
+    'message.error.retry': 'يرجى التحقق من اتصالك والمحاولة مرة أخرى.',
     'message.progress': 'تقدم النموذج',
     'message.sectionsComplete': 'أقسام مكتملة',
     'message.saving': 'جاري حفظ المسودة...',
     'message.saved': 'تم حفظ المسودة',
     'message.charactersRemaining': 'حرف متبقي',
     'message.charactersOver': 'حرف فوق الحد المسموح',
+    'message.formCompletionEstimate': 'الوقت المقدر للإكمال: 3-5 دقائق',
+    
+    // Accessibility
+    'accessibility.skipToForm': 'انتقل إلى نموذج الاستشارة',
     
     // Placeholders
     'placeholder.name': 'اسمك الكامل',

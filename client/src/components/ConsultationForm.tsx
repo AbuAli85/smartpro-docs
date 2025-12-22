@@ -29,7 +29,7 @@ import {
   Save
 } from "lucide-react";
 import { consultationApi, ConsultationResponse } from "@/lib/backendApi";
-import { trackFormSubmit } from "@/lib/googleAnalytics";
+import { trackFormSubmit, trackEvent } from "@/lib/googleAnalytics";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { 
   validateEmail, 
@@ -144,6 +144,9 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
   const [submittedName, setSubmittedName] = useState<string | null>(null);
   const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [focusedSection, setFocusedSection] = useState<string | null>(null);
+  const [formStartTime] = useState<number>(Date.now());
+  const [fieldInteractions, setFieldInteractions] = useState<Record<string, number>>({});
 
   const isRTL = language === "ar";
 
@@ -233,6 +236,12 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
   ) => {
     const { name, value } = e.target;
     
+    // Track field interactions for analytics
+    setFieldInteractions((prev) => ({
+      ...prev,
+      [name]: (prev[name] || 0) + 1,
+    }));
+    
     // Limit message length
     if (name === "message" && value.length > MAX_MESSAGE_LENGTH) {
       return;
@@ -256,6 +265,14 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
   const handleBlur = (fieldName: string, value: string | string[]) => {
     setTouchedFields((prev) => new Set(prev).add(fieldName));
     validateField(fieldName, value);
+    
+    // Track field completion for analytics
+    if (value && typeof value === 'string' && value.trim()) {
+      trackEvent("consultation_field_completed", {
+        field_name: fieldName,
+        has_value: true,
+      });
+    }
   };
 
   const validateField = (name: string, value: string | string[]): boolean => {
@@ -437,6 +454,12 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
       return;
     }
     
+    // Track form submission attempt
+    trackEvent("consultation_form_submit_attempt", {
+      services_count: formData.services.length,
+      has_optional_fields: !!(formData.phone || formData.company || formData.message),
+    });
+    
     setError(null);
     setSuccess(false);
 
@@ -468,6 +491,9 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
       const response: ConsultationResponse = await consultationApi.submit(payload);
 
       if (response.success) {
+        // Calculate form completion time
+        const formCompletionTime = Math.round((Date.now() - formStartTime) / 1000);
+        
         trackFormSubmit("consultation_form", {
           services_count: formData.services.length,
           has_budget: !!formData.budget,
@@ -475,6 +501,14 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
           language: language,
           submission_id: response.submissionId,
           execution_id: response.executionId,
+          form_completion_time_seconds: formCompletionTime,
+          total_field_interactions: Object.values(fieldInteractions).reduce((a, b) => a + b, 0),
+          fields_completed: Object.keys(formData).filter(
+            (key) => formData[key as keyof ConsultationFormData] && 
+            (typeof formData[key as keyof ConsultationFormData] !== 'object' || 
+             (Array.isArray(formData[key as keyof ConsultationFormData]) && 
+              (formData[key as keyof ConsultationFormData] as string[]).length > 0))
+          ).length,
         });
 
         setSubmittedName(formData.name.trim());
@@ -515,25 +549,33 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
     } catch (err) {
       console.error("Error submitting form:", err);
       
+      const errorMessage = err instanceof Error ? err.message : "unknown";
       trackFormSubmit("consultation_form_error", {
-        error_type: err instanceof Error ? err.message : "unknown",
+        error_type: errorMessage,
+        form_completion_time_seconds: Math.round((Date.now() - formStartTime) / 1000),
       });
       
-      // Handle different error types
+      // Handle different error types with better user feedback
       if (err instanceof Error) {
         if (err.message.includes("timeout") || err.message.includes("network")) {
-          setError(t("message.error.network"));
+          setError(t("message.error.network") + " " + (t("message.error.retry") || "Please check your connection and try again."));
         } else if (err.message.includes("rate limit") || err.message.includes("too many")) {
           setError(t("message.error.rateLimit"));
         } else {
           setError(err.message || t("message.error.network"));
         }
       } else {
-        setError(t("message.error.network"));
+        setError(t("message.error.network") + " " + (t("message.error.retry") || "Please try again."));
       }
       
       localStorage.setItem("submitAttempts", (submitAttempts + 1).toString());
       localStorage.setItem("lastFormSubmitTime", Date.now().toString());
+      
+      // Track error for analytics
+      trackEvent("consultation_form_error", {
+        error_type: errorMessage,
+        attempt_number: submitAttempts + 1,
+      });
     } finally {
       setLoading(false);
     }
@@ -600,6 +642,7 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
         className="space-y-8"
         dir={isRTL ? "rtl" : "ltr"}
         noValidate
+        aria-label={t("consultation.form.title")}
       >
         {/* Auto-save indicator */}
         {autoSaveStatus !== "idle" && (
@@ -628,21 +671,42 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
 
         {/* Error Alert */}
         {error && (
-          <Alert variant="destructive" role="alert" aria-live="assertive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
+          <Alert 
+            variant="destructive" 
+            role="alert" 
+            aria-live="assertive"
+            className="animate-in fade-in slide-in-from-top-2 duration-300"
+          >
+            <AlertCircle className="h-4 w-4" aria-hidden="true" />
+            <AlertDescription id="form-error-message">
+              {error}
+              {error.includes("network") && (
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  className="ml-2 underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded"
+                  aria-label={t("button.retry") || "Retry submission"}
+                >
+                  {t("button.retry") || "Retry"}
+                </button>
+              )}
+            </AlertDescription>
           </Alert>
         )}
 
         {/* Contact Information Section */}
-        <div className="space-y-6">
+        <div 
+          className="space-y-6"
+          onFocus={() => setFocusedSection("contact")}
+          onBlur={() => setFocusedSection(null)}
+        >
           <div
             className={cn(
               "flex items-center gap-3 pb-2 border-b",
               isRTL && "flex-row-reverse"
             )}
           >
-            <User className="h-5 w-5 text-blue-600" />
+            <User className="h-5 w-5 text-blue-600" aria-hidden="true" />
             <h3 className="text-xl font-semibold text-gray-900">
               {t("section.contactInfo")}
             </h3>
@@ -830,14 +894,18 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
         </div>
 
         {/* Business Information Section */}
-        <div className="space-y-6">
+        <div 
+          className="space-y-6"
+          onFocus={() => setFocusedSection("business")}
+          onBlur={() => setFocusedSection(null)}
+        >
           <div
             className={cn(
               "flex items-center gap-3 pb-2 border-b",
               isRTL && "flex-row-reverse"
             )}
           >
-            <Building2 className="h-5 w-5 text-blue-600" />
+            <Building2 className="h-5 w-5 text-blue-600" aria-hidden="true" />
             <h3 className="text-xl font-semibold text-gray-900">
               {t("section.businessInfo")}
             </h3>
@@ -910,14 +978,18 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
         </div>
 
         {/* Service Details Section */}
-        <div className="space-y-6">
+        <div 
+          className="space-y-6"
+          onFocus={() => setFocusedSection("services")}
+          onBlur={() => setFocusedSection(null)}
+        >
           <div
             className={cn(
               "flex items-center gap-3 pb-2 border-b",
               isRTL && "flex-row-reverse"
             )}
           >
-            <Briefcase className="h-5 w-5 text-blue-600" />
+            <Briefcase className="h-5 w-5 text-blue-600" aria-hidden="true" />
             <h3 className="text-xl font-semibold text-gray-900">
               {t("section.serviceDetails")}
             </h3>
@@ -1073,14 +1145,18 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
         </div>
 
         {/* Additional Information Section */}
-        <div className="space-y-6">
+        <div 
+          className="space-y-6"
+          onFocus={() => setFocusedSection("additional")}
+          onBlur={() => setFocusedSection(null)}
+        >
           <div
             className={cn(
               "flex items-center gap-3 pb-2 border-b",
               isRTL && "flex-row-reverse"
             )}
           >
-            <MessageSquare className="h-5 w-5 text-blue-600" />
+            <MessageSquare className="h-5 w-5 text-blue-600" aria-hidden="true" />
             <h3 className="text-xl font-semibold text-gray-900">
               {t("section.additionalInfo")}
             </h3>
@@ -1142,17 +1218,26 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-semibold transition-all"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          aria-busy={loading}
+          aria-live="polite"
         >
           {loading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {t("button.submitting")}
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+              <span>{t("button.submitting")}</span>
             </>
           ) : (
-            t("button.submit")
+            <span>{t("button.submit")}</span>
           )}
         </Button>
+        
+        {/* Form completion estimate */}
+        {!success && !loading && (
+          <p className="text-xs text-center text-gray-500 mt-2" role="status">
+            {t("message.formCompletionEstimate") || "Estimated completion time: 3-5 minutes"}
+          </p>
+        )}
       </form>
     </Card>
   );

@@ -3,6 +3,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { setSEOTags } from "@/lib/seoUtils";
+import { trackEvent } from "@/lib/googleAnalytics";
+import { CheckCircle2 } from "lucide-react";
 
 export default function ConsultationThankYou() {
   const { t, language } = useLanguage();
@@ -17,7 +19,13 @@ export default function ConsultationThankYou() {
       type: "website",
       url: "https://smartpro-docs.vercel.app/consultation/thanks",
     });
-  }, [t]);
+
+    // Track thank you page view
+    trackEvent("consultation_thank_you_view", {
+      language,
+      timestamp: new Date().toISOString(),
+    });
+  }, [t, language]);
 
   return (
     <>
@@ -26,12 +34,22 @@ export default function ConsultationThankYou() {
         className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100"
         dir={isRTL ? "rtl" : "ltr"}
       >
-        <section className="max-w-3xl mx-auto px-4 py-16 md:py-24">
+        <section 
+          className="max-w-3xl mx-auto px-4 py-16 md:py-24"
+          aria-labelledby="thank-you-title"
+        >
           <div className="bg-white rounded-2xl shadow-xl shadow-slate-900/5 border border-slate-100 p-6 md:p-10 text-center">
-            <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50">
-              <span className="text-2xl">✅</span>
+            <div 
+              className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 animate-in zoom-in duration-500"
+              role="img"
+              aria-label={t("consultation.thanks.title")}
+            >
+              <CheckCircle2 className="h-8 w-8 text-emerald-600" aria-hidden="true" />
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+            <h1 
+              id="thank-you-title"
+              className="text-2xl md:text-3xl font-bold text-gray-900 mb-3"
+            >
               {t("consultation.thanks.title")}
             </h1>
             <p className="text-sm md:text-base text-gray-600 mb-4">
@@ -47,7 +65,12 @@ export default function ConsultationThankYou() {
             </div>
             <a
               href="/"
-              className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-5 py-2.5 text-xs md:text-sm font-medium text-white hover:bg-slate-800 transition"
+              className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-5 py-2.5 text-xs md:text-sm font-medium text-white hover:bg-slate-800 transition focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2"
+              onClick={() => {
+                trackEvent("consultation_thank_you_back_to_home", {
+                  language,
+                });
+              }}
             >
               {t("consultation.thanks.backToHome")}
             </a>
