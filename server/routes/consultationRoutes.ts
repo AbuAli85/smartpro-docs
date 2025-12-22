@@ -62,7 +62,10 @@ router.post(
       });
 
       // Check for duplicate submission (same email within 5 minutes)
+      // This prevents duplicate emails from being sent
       let submissionId: string | null = null;
+      let isDuplicate = false;
+      
       if (prisma) {
         try {
           const recentSubmission = await prisma.consultationSubmission.findFirst({
@@ -78,19 +81,29 @@ router.post(
           });
 
           if (recentSubmission) {
-            logger.warn('Duplicate submission detected', {
+            const timeSinceSubmission = Date.now() - recentSubmission.createdAt.getTime();
+            logger.warn('Duplicate submission detected - preventing duplicate email', {
               email: formData.email,
               existingSubmissionId: recentSubmission.id,
-              timeSinceSubmission: Date.now() - recentSubmission.createdAt.getTime(),
+              timeSinceSubmission: `${Math.round(timeSinceSubmission / 1000)} seconds`,
+              webhookAlreadySent: recentSubmission.webhookSent,
             });
 
-            // Return existing submission ID (don't create duplicate)
-            return res.status(200).json({
-              success: true,
-              message: 'Submission already received',
-              submissionId: recentSubmission.id,
-              duplicate: true,
-            });
+            // If webhook was already sent, don't send again
+            if (recentSubmission.webhookSent) {
+              isDuplicate = true;
+              submissionId = recentSubmission.id;
+              
+              // Return success but indicate it's a duplicate (no email sent)
+              return res.status(200).json({
+                success: true,
+                message: 'Submission already received. We will contact you soon.',
+                submissionId: recentSubmission.id,
+                duplicate: true,
+                emailSent: false,
+              });
+            }
+            // If webhook wasn't sent, continue to send it (retry scenario)
           }
         } catch (duplicateCheckError: any) {
           logger.warn('Error checking for duplicate submission', duplicateCheckError);
@@ -225,6 +238,12 @@ router.post(
           servicesForDisplay,
         });
 
+        // Generate unique submission ID to prevent duplicate processing in Make.com
+        const uniqueSubmissionId = submissionId || `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Ensure is_duplicate is always a boolean (not undefined) for Make.com filter
+        const isDuplicateFlag = isDuplicate === true;
+        
         const webhookPayload = {
           form_type: 'consultation',
           client_name: formData.name.trim(),
@@ -253,6 +272,8 @@ router.post(
           language: formData.language,
           source: 'smartpro-consultation-form', // Added: required by Make.com
           timestamp: new Date().toISOString(),
+          submission_id: uniqueSubmissionId, // Unique ID to prevent duplicate processing in Make.com
+          is_duplicate: isDuplicateFlag, // Always boolean: true for duplicates, false for new submissions (required for Make.com filter)
         };
 
         // Verify service_interested_translated is present
@@ -267,11 +288,35 @@ router.post(
           webhookPayload.service_interested_translated = primaryService || 'Other';
         }
 
-        console.log('Sending webhook payload with service_interested_translated:', {
-          service_interested_translated: webhookPayload.service_interested_translated,
+        logger.info('Sending webhook payload to Make.com', {
+          email: formData.email,
+          submission_id: webhookPayload.submission_id,
+          is_duplicate: webhookPayload.is_duplicate,
           service_interested: webhookPayload.service_interested,
           language: webhookPayload.language,
         });
+        
+        console.log('Webhook payload details:', {
+          submission_id: webhookPayload.submission_id,
+          is_duplicate: webhookPayload.is_duplicate,
+          is_duplicate_type: typeof webhookPayload.is_duplicate,
+        });
+
+        // Don't send webhook if this is a duplicate that already had webhook sent
+        if (isDuplicate) {
+          logger.info('Skipping webhook for duplicate submission', {
+            submissionId: uniqueSubmissionId,
+            email: formData.email,
+          });
+          
+          return res.status(200).json({
+            success: true,
+            message: 'Submission already received. We will contact you soon.',
+            submissionId: uniqueSubmissionId,
+            duplicate: true,
+            emailSent: false,
+          });
+        }
 
         const webhookResponse = await webhookClient.send(webhookPayload);
 

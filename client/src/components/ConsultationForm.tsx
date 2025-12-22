@@ -449,9 +449,19 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
     e.preventDefault();
     
     // Prevent double-submission
-    if (loading) {
-      console.warn('Form submission already in progress, ignoring duplicate submit');
+    if (loading || success) {
+      console.warn('Form submission already in progress or completed, ignoring duplicate submit');
       return;
+    }
+    
+    // Additional check: prevent rapid re-submissions
+    const lastSubmitTime = localStorage.getItem("lastConsultationSubmitTime");
+    if (lastSubmitTime) {
+      const timeSinceLastSubmit = Date.now() - parseInt(lastSubmitTime);
+      if (timeSinceLastSubmit < 2000) { // 2 second cooldown
+        console.warn('Form submitted too quickly, ignoring duplicate submit');
+        return;
+      }
     }
     
     // Track form submission attempt
@@ -462,6 +472,9 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
     
     setError(null);
     setSuccess(false);
+    
+    // Mark submission time to prevent rapid duplicates
+    localStorage.setItem("lastConsultationSubmitTime", Date.now().toString());
 
     // Rate limiting
     const submitAttempts = parseInt(localStorage.getItem("submitAttempts") || "0");
@@ -517,6 +530,7 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem("submitAttempts");
         localStorage.removeItem("lastFormSubmitTime");
+        localStorage.removeItem("lastConsultationSubmitTime");
 
         // Reset form
         setFormData({
