@@ -149,6 +149,20 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.thanks.backToHome': 'Back to Homepage',
     'consultation.thanks.submitAnother': 'Submit Another Request',
     
+    // Registration CTA
+    'registration.cta.badge': 'Unlock Full Platform Access',
+    'registration.cta.title': 'Take Your Business to the Next Level',
+    'registration.cta.description': 'Register on our platform to follow up on your request, access more features, and connect with verified providers for your business needs.',
+    'registration.cta.registerProvider': 'Register as Provider',
+    'registration.cta.registerClient': 'Register as Client',
+    'registration.cta.free': 'Free to register • No credit card required',
+    'registration.benefit.tracking.title': 'Track Your Request',
+    'registration.benefit.tracking.description': 'Follow up and manage your consultation in real-time',
+    'registration.benefit.features.title': 'More Features',
+    'registration.benefit.features.description': 'Access advanced tools and business solutions',
+    'registration.benefit.providers.title': 'Verified Providers',
+    'registration.benefit.providers.description': 'Connect with trusted professionals instantly',
+    
     // Tracking
     'tracking.title': 'Track Your Request',
     'tracking.subtitle': 'Keep this ID for your records',
@@ -454,6 +468,20 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.thanks.point3': 'يمكنك تجهيز أي مستندات أو أسئلة ترغب في مناقشتها خلال جلسة الاستشارة.',
     'consultation.thanks.backToHome': 'العودة إلى الصفحة الرئيسية',
     'consultation.thanks.submitAnother': 'إرسال طلب آخر',
+    
+    // Registration CTA
+    'registration.cta.badge': 'افتح الوصول الكامل للمنصة',
+    'registration.cta.title': 'ارتقِ بعملك إلى المستوى التالي',
+    'registration.cta.description': 'سجل في منصتنا لمتابعة طلبك، والوصول إلى المزيد من الميزات، والتواصل مع مزودين موثقين لاحتياجات عملك.',
+    'registration.cta.registerProvider': 'سجل كمزود',
+    'registration.cta.registerClient': 'سجل كعميل',
+    'registration.cta.free': 'التسجيل مجاني • لا حاجة لبطاقة ائتمان',
+    'registration.benefit.tracking.title': 'تتبع طلبك',
+    'registration.benefit.tracking.description': 'تابع وأدر استشارتك في الوقت الفعلي',
+    'registration.benefit.features.title': 'المزيد من الميزات',
+    'registration.benefit.features.description': 'الوصول إلى أدوات وحلول أعمال متقدمة',
+    'registration.benefit.providers.title': 'مزودون موثقون',
+    'registration.benefit.providers.description': 'تواصل مع محترفين موثوقين على الفور',
     
     // Tracking
     'tracking.title': 'تتبع طلبك',

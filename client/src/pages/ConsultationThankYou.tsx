@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { setSEOTags } from "@/lib/seoUtils";
 import { trackEvent } from "@/lib/googleAnalytics";
-import { CheckCircle2, Mail, Phone, Clock, FileText, Users, ArrowRight, Home, MessageSquare } from "lucide-react";
+import { CheckCircle2, Mail, Phone, Clock, FileText, Users, ArrowRight, Home, MessageSquare, Sparkles, Shield, Zap, UserPlus } from "lucide-react";
 import { Link } from "wouter";
 import { TrackingStatus } from "@/components/TrackingStatus";
 import { Card } from "@/components/ui/card";
@@ -130,6 +130,96 @@ export default function ConsultationThankYou() {
               <TrackingStatus submissionId={submissionId} executionId={executionId} />
             </div>
           )}
+
+          {/* Platform Registration CTA - Conversion Opportunity */}
+          <Card className="mb-8 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white border-0 shadow-2xl overflow-hidden">
+            <div className="p-8 md:p-12 relative">
+              {/* Background Pattern */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0" style={{
+                  backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
+                  backgroundSize: '40px 40px'
+                }}></div>
+              </div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-4">
+                  <Sparkles className="h-6 w-6 text-yellow-300" />
+                  <span className="text-sm font-semibold text-yellow-300 uppercase tracking-wide">
+                    {t("registration.cta.badge") || "Unlock Full Platform Access"}
+                  </span>
+                </div>
+                
+                <h2 className="text-2xl md:text-3xl font-bold mb-4">
+                  {t("registration.cta.title") || "Take Your Business to the Next Level"}
+                </h2>
+                <p className="text-lg md:text-xl text-blue-100 mb-6 max-w-2xl">
+                  {t("registration.cta.description") || "Register on our platform to follow up on your request, access more features, and connect with verified providers for your business needs."}
+                </p>
+
+                {/* Benefits Grid */}
+                <div className="grid md:grid-cols-3 gap-4 mb-8">
+                  <div className="flex items-start gap-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                    <Shield className="h-5 w-5 text-yellow-300 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="font-semibold mb-1">{t("registration.benefit.tracking.title") || "Track Your Request"}</h3>
+                      <p className="text-sm text-blue-100">{t("registration.benefit.tracking.description") || "Follow up and manage your consultation in real-time"}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                    <Zap className="h-5 w-5 text-yellow-300 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="font-semibold mb-1">{t("registration.benefit.features.title") || "More Features"}</h3>
+                      <p className="text-sm text-blue-100">{t("registration.benefit.features.description") || "Access advanced tools and business solutions"}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                    <Users className="h-5 w-5 text-yellow-300 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h3 className="font-semibold mb-1">{t("registration.benefit.providers.title") || "Verified Providers"}</h3>
+                      <p className="text-sm text-blue-100">{t("registration.benefit.providers.description") || "Connect with trusted professionals instantly"}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CTA Buttons */}
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <Link
+                    href="/get-started-providers"
+                    className="inline-flex items-center justify-center gap-2 rounded-lg bg-white text-blue-600 px-6 py-3 text-sm md:text-base font-semibold hover:bg-blue-50 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600 shadow-lg"
+                    onClick={() => {
+                      trackEvent("consultation_thank_you_register_provider", {
+                        language,
+                        submission_id: submissionId,
+                        source: "thank_you_page",
+                      });
+                    }}
+                  >
+                    <UserPlus className="h-5 w-5" />
+                    {t("registration.cta.registerProvider") || "Register as Provider"}
+                  </Link>
+                  <Link
+                    href="/clients"
+                    className="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-white text-white px-6 py-3 text-sm md:text-base font-semibold hover:bg-white/10 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600"
+                    onClick={() => {
+                      trackEvent("consultation_thank_you_register_client", {
+                        language,
+                        submission_id: submissionId,
+                        source: "thank_you_page",
+                      });
+                    }}
+                  >
+                    <Users className="h-5 w-5" />
+                    {t("registration.cta.registerClient") || "Register as Client"}
+                  </Link>
+                </div>
+
+                <p className="text-sm text-blue-200 mt-4 text-center">
+                  {t("registration.cta.free") || "Free to register • No credit card required"}
+                </p>
+              </div>
+            </div>
+          </Card>
 
           {/* Next Steps Grid */}
           <div className="grid md:grid-cols-2 gap-6 mb-8">
