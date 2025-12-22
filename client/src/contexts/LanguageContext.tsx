@@ -148,6 +148,39 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.thanks.point3': "You can prepare any documents or questions you'd like to discuss during the session.",
     'consultation.thanks.backToHome': 'Back to homepage',
     
+    // Tracking
+    'tracking.title': 'Track Your Request',
+    'tracking.submissionId': 'Submission ID',
+    'tracking.executionId': 'Execution ID',
+    'tracking.note': "We typically respond within 24 hours. You'll receive an email confirmation shortly.",
+    'tracking.step.submitted': 'Request Submitted',
+    'tracking.step.received': 'Request Received',
+    'tracking.step.processing': 'Processing Your Request',
+    'tracking.step.reviewing': 'Team Reviewing',
+    'tracking.step.contacting': "We'll Contact You Soon",
+    
+    // Next Steps - Client
+    'nextSteps.client.title': 'Next Steps for You (Client)',
+    'nextSteps.client.email.title': 'Check Your Email',
+    'nextSteps.client.email.description': "We've sent a confirmation email with your submission details.",
+    'nextSteps.client.wait.title': 'Wait for Our Response',
+    'nextSteps.client.wait.description': 'Our team will review your request and contact you within 24 hours.',
+    'nextSteps.client.contact.title': 'Be Available',
+    'nextSteps.client.contact.description': 'Keep your phone and email accessible for our team to reach you.',
+    'nextSteps.client.prepare.title': 'Prepare Your Documents',
+    'nextSteps.client.prepare.description': 'Have your business documents ready for the consultation.',
+    
+    // Next Steps - Provider
+    'nextSteps.provider.title': 'Next Steps for Our Team',
+    'nextSteps.provider.review.title': 'Review Request',
+    'nextSteps.provider.review.description': 'The request has been received and is in the system.',
+    'nextSteps.provider.notify.title': 'Client Notification',
+    'nextSteps.provider.notify.description': 'Client has been notified via email confirmation.',
+    'nextSteps.provider.process.title': 'Process Request',
+    'nextSteps.provider.process.description': 'Assign to appropriate team member and prepare response.',
+    'nextSteps.provider.followup.title': 'Follow Up',
+    'nextSteps.provider.followup.description': 'Contact client within 24 hours as per SLA.',
+    
     // Accessibility
     'accessibility.skipToForm': 'Skip to consultation form',
     'accessibility.formNavigation': 'Form section navigation',
@@ -416,6 +449,39 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.thanks.point2': 'إذا قمت بإدخال رقم واتساب، قد نقوم بالتواصل معك من خلاله أيضاً.',
     'consultation.thanks.point3': 'يمكنك تجهيز أي مستندات أو أسئلة ترغب في مناقشتها خلال جلسة الاستشارة.',
     'consultation.thanks.backToHome': 'العودة إلى الصفحة الرئيسية',
+    
+    // Tracking
+    'tracking.title': 'تتبع طلبك',
+    'tracking.submissionId': 'رقم الطلب',
+    'tracking.executionId': 'رقم التنفيذ',
+    'tracking.note': 'نقوم عادة بالرد خلال 24 ساعة. ستصلك رسالة تأكيد عبر البريد الإلكتروني قريباً.',
+    'tracking.step.submitted': 'تم إرسال الطلب',
+    'tracking.step.received': 'تم استلام الطلب',
+    'tracking.step.processing': 'جاري معالجة طلبك',
+    'tracking.step.reviewing': 'جاري مراجعة الفريق',
+    'tracking.step.contacting': 'سنتواصل معك قريباً',
+    
+    // Next Steps - Client
+    'nextSteps.client.title': 'الخطوات التالية لك (العميل)',
+    'nextSteps.client.email.title': 'تحقق من بريدك الإلكتروني',
+    'nextSteps.client.email.description': 'لقد أرسلنا رسالة تأكيد عبر البريد الإلكتروني مع تفاصيل طلبك.',
+    'nextSteps.client.wait.title': 'انتظر ردنا',
+    'nextSteps.client.wait.description': 'سيقوم فريقنا بمراجعة طلبك والتواصل معك خلال 24 ساعة.',
+    'nextSteps.client.contact.title': 'كن متاحاً',
+    'nextSteps.client.contact.description': 'احتفظ بهاتفك وبريدك الإلكتروني متاحين حتى يتمكن فريقنا من الوصول إليك.',
+    'nextSteps.client.prepare.title': 'جهز مستنداتك',
+    'nextSteps.client.prepare.description': 'احتفظ بمستندات عملك جاهزة للاستشارة.',
+    
+    // Next Steps - Provider
+    'nextSteps.provider.title': 'الخطوات التالية لفريقنا',
+    'nextSteps.provider.review.title': 'مراجعة الطلب',
+    'nextSteps.provider.review.description': 'تم استلام الطلب وهو الآن في النظام.',
+    'nextSteps.provider.notify.title': 'إشعار العميل',
+    'nextSteps.provider.notify.description': 'تم إشعار العميل عبر رسالة تأكيد بريد إلكتروني.',
+    'nextSteps.provider.process.title': 'معالجة الطلب',
+    'nextSteps.provider.process.description': 'تعيين إلى عضو الفريق المناسب وإعداد الرد.',
+    'nextSteps.provider.followup.title': 'المتابعة',
+    'nextSteps.provider.followup.description': 'التواصل مع العميل خلال 24 ساعة وفقاً لاتفاقية مستوى الخدمة.',
     
     // Form fields
     'form.name': 'الاسم الكامل',

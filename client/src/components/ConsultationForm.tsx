@@ -551,9 +551,16 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
 
         setSuccess(true);
 
-        // Redirect to thank-you page
+        // Redirect to thank-you page with tracking information
         setTimeout(() => {
-          navigate("/consultation/thanks");
+          const params = new URLSearchParams();
+          if (response.submissionId) {
+            params.set('id', response.submissionId);
+          }
+          if (response.executionId) {
+            params.set('execution', response.executionId);
+          }
+          navigate(`/consultation/thanks?${params.toString()}`);
         }, 2000);
       } else {
         const errorMessage = response.message || t("message.error");
