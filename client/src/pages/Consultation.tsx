@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ConsultationForm } from "@/components/ConsultationForm";
+import Breadcrumb from "@/components/Breadcrumb";
+import BackToTop from "@/components/BackToTop";
 import { setSEOTags } from "@/lib/seoUtils";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { trackEvent } from "@/lib/googleAnalytics";
@@ -55,6 +57,10 @@ export default function Consultation() {
         className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100"
         dir={isRTL ? "rtl" : "ltr"}
       >
+        {/* Breadcrumb Navigation */}
+        <div className="max-w-7xl mx-auto px-4 pt-6">
+          <Breadcrumb items={[{ label: t("consultation.form.title") || "Free Consultation" }]} />
+        </div>
         {/* Hero Section */}
         <section 
           className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-16 md:py-24 px-4"
@@ -247,6 +253,7 @@ export default function Consultation() {
           </div>
         </section>
       </div>
+      <BackToTop />
       <Footer />
     </>
   );

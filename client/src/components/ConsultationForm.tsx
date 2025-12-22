@@ -41,6 +41,7 @@ import {
   validateServices,
 } from "@/lib/validation";
 import { FormProgressIndicator } from "@/components/FormProgressIndicator";
+import { FormSectionNav } from "@/components/FormSectionNav";
 import { cn } from "@/lib/utils";
 
 export interface ConsultationFormData {
@@ -708,12 +709,33 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
           </Alert>
         )}
 
-        {/* Contact Information Section */}
-        <div 
-          className="space-y-6"
-          onFocus={() => setFocusedSection("contact")}
-          onBlur={() => setFocusedSection(null)}
-        >
+        {/* Form Layout with Navigation */}
+        <div className="lg:grid lg:grid-cols-12 lg:gap-6">
+          {/* Form Section Navigation (Desktop only) */}
+          <aside className="lg:col-span-3 hidden lg:block">
+            <FormSectionNav
+              sections={formSections.map((section) => ({
+                id: section.id,
+                label: section.label,
+                icon: section.id === "contact" ? User :
+                      section.id === "business" ? Building2 :
+                      section.id === "services" ? Briefcase :
+                      MessageSquare,
+                completed: section.completed,
+              }))}
+            />
+          </aside>
+
+          {/* Form Content */}
+          <div className="lg:col-span-9 space-y-8">
+            {/* Contact Information Section */}
+            <section
+              id="section-contact"
+              className="space-y-6"
+              onFocus={() => setFocusedSection("contact")}
+              onBlur={() => setFocusedSection(null)}
+              aria-labelledby="section-contact-heading"
+            >
           <div
             className={cn(
               "flex items-center gap-3 pb-2 border-b",
@@ -721,7 +743,7 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
             )}
           >
             <User className="h-5 w-5 text-blue-600" aria-hidden="true" />
-            <h3 className="text-xl font-semibold text-gray-900">
+            <h3 id="section-contact-heading" className="text-xl font-semibold text-gray-900">
               {t("section.contactInfo")}
             </h3>
           </div>
@@ -905,27 +927,29 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
               )}
             </div>
           </div>
-        </div>
+            </section>
 
-        {/* Business Information Section */}
-        <div 
-          className="space-y-6"
-          onFocus={() => setFocusedSection("business")}
-          onBlur={() => setFocusedSection(null)}
-        >
-          <div
-            className={cn(
-              "flex items-center gap-3 pb-2 border-b",
-              isRTL && "flex-row-reverse"
-            )}
-          >
-            <Building2 className="h-5 w-5 text-blue-600" aria-hidden="true" />
-            <h3 className="text-xl font-semibold text-gray-900">
-              {t("section.businessInfo")}
-            </h3>
-          </div>
+            {/* Business Information Section */}
+            <section
+              id="section-business"
+              className="space-y-6"
+              onFocus={() => setFocusedSection("business")}
+              onBlur={() => setFocusedSection(null)}
+              aria-labelledby="section-business-heading"
+            >
+              <div
+                className={cn(
+                  "flex items-center gap-3 pb-2 border-b",
+                  isRTL && "flex-row-reverse"
+                )}
+              >
+                <Building2 className="h-5 w-5 text-blue-600" aria-hidden="true" />
+                <h3 id="section-business-heading" className="text-xl font-semibold text-gray-900">
+                  {t("section.businessInfo")}
+                </h3>
+              </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 gap-6">
             {/* Company Name */}
             <div className="space-y-2">
               <Label htmlFor="company" className={cn(isRTL && "text-right")}>
@@ -988,29 +1012,31 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-        </div>
+              </div>
+            </section>
 
-        {/* Service Details Section */}
-        <div 
-          className="space-y-6"
-          onFocus={() => setFocusedSection("services")}
-          onBlur={() => setFocusedSection(null)}
-        >
-          <div
-            className={cn(
-              "flex items-center gap-3 pb-2 border-b",
-              isRTL && "flex-row-reverse"
-            )}
-          >
-            <Briefcase className="h-5 w-5 text-blue-600" aria-hidden="true" />
-            <h3 className="text-xl font-semibold text-gray-900">
-              {t("section.serviceDetails")}
-            </h3>
-          </div>
+            {/* Service Details Section */}
+            <section
+              id="section-services"
+              className="space-y-6"
+              onFocus={() => setFocusedSection("services")}
+              onBlur={() => setFocusedSection(null)}
+              aria-labelledby="section-services-heading"
+            >
+              <div
+                className={cn(
+                  "flex items-center gap-3 pb-2 border-b",
+                  isRTL && "flex-row-reverse"
+                )}
+              >
+                <Briefcase className="h-5 w-5 text-blue-600" aria-hidden="true" />
+                <h3 id="section-services-heading" className="text-xl font-semibold text-gray-900">
+                  {t("section.serviceDetails")}
+                </h3>
+              </div>
 
-          {/* Services Selection */}
-          <div className="space-y-2">
+              {/* Services Selection */}
+              <div className="space-y-2">
             <Label className={cn(isRTL && "text-right")}>
               {t("form.services")} <span className="text-red-500">*</span>
             </Label>
@@ -1049,9 +1075,9 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
                 {fieldErrors.services}
               </p>
             )}
-          </div>
+              </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 gap-6">
             {/* Budget */}
             <div className="space-y-2">
               <Label htmlFor="budget" className={cn(isRTL && "text-right")}>
@@ -1155,103 +1181,109 @@ export function ConsultationForm({ className }: ConsultationFormProps) {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-        </div>
+              </div>
+            </section>
 
-        {/* Additional Information Section */}
-        <div 
-          className="space-y-6"
-          onFocus={() => setFocusedSection("additional")}
-          onBlur={() => setFocusedSection(null)}
-        >
-          <div
-            className={cn(
-              "flex items-center gap-3 pb-2 border-b",
-              isRTL && "flex-row-reverse"
-            )}
-          >
-            <MessageSquare className="h-5 w-5 text-blue-600" aria-hidden="true" />
-            <h3 className="text-xl font-semibold text-gray-900">
-              {t("section.additionalInfo")}
-            </h3>
-          </div>
-
-          {/* Message */}
-          <div className="space-y-2">
-            <Label htmlFor="message" className={cn(isRTL && "text-right")}>
-              {t("form.message")}{" "}
-              <span className="text-gray-500 text-sm">({t("form.optional")})</span>
-            </Label>
-            <div className="relative">
-              <MessageSquare
+            {/* Additional Information Section */}
+            <section
+              id="section-additional"
+              className="space-y-6"
+              onFocus={() => setFocusedSection("additional")}
+              onBlur={() => setFocusedSection(null)}
+              aria-labelledby="section-additional-heading"
+            >
+              <div
                 className={cn(
-                  "absolute top-3 h-4 w-4 text-gray-400",
-                  isRTL ? "right-3" : "left-3"
+                  "flex items-center gap-3 pb-2 border-b",
+                  isRTL && "flex-row-reverse"
                 )}
-              />
-              <Textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                onBlur={(e) => handleBlur("message", e.target.value)}
-                placeholder={t("placeholder.message")}
-                rows={5}
+              >
+                <MessageSquare className="h-5 w-5 text-blue-600" aria-hidden="true" />
+                <h3 id="section-additional-heading" className="text-xl font-semibold text-gray-900">
+                  {t("section.additionalInfo")}
+                </h3>
+              </div>
+
+              {/* Message */}
+              <div className="space-y-2">
+                <Label htmlFor="message" className={cn(isRTL && "text-right")}>
+                  {t("form.message")}{" "}
+                  <span className="text-gray-500 text-sm">({t("form.optional")})</span>
+                </Label>
+                <div className="relative">
+                  <MessageSquare
+                    className={cn(
+                      "absolute top-3 h-4 w-4 text-gray-400",
+                      isRTL ? "right-3" : "left-3"
+                    )}
+                  />
+                  <Textarea
+                    id="message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    onBlur={(e) => handleBlur("message", e.target.value)}
+                    placeholder={t("placeholder.message")}
+                    rows={5}
+                    disabled={loading}
+                    dir={isRTL ? "rtl" : "ltr"}
+                    className={cn(
+                      isRTL ? "pr-10" : "pl-10",
+                      fieldErrors.message &&
+                        "border-red-500 focus:border-red-500 focus:ring-red-500",
+                      messageOverLimit && "border-red-500"
+                    )}
+                    aria-invalid={!!fieldErrors.message || messageOverLimit}
+                    aria-describedby={
+                      fieldErrors.message || messageOverLimit ? "message-error" : undefined
+                    }
+                    maxLength={MAX_MESSAGE_LENGTH}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  {fieldErrors.message && (
+                    <p
+                      id="message-error"
+                      className="text-sm text-red-500 flex items-center gap-1"
+                      role="alert"
+                    >
+                      <XCircle className="h-3 w-3" />
+                      {fieldErrors.message}
+                    </p>
+                  )}
+                  <CharacterCounter current={messageLength} max={MAX_MESSAGE_LENGTH} />
+                </div>
+              </div>
+            </section>
+
+            {/* Submit Button */}
+            <div className="pt-4">
+              <Button
+                type="submit"
                 disabled={loading}
-                dir={isRTL ? "rtl" : "ltr"}
-                className={cn(
-                  isRTL ? "pr-10" : "pl-10",
-                  fieldErrors.message &&
-                    "border-red-500 focus:border-red-500 focus:ring-red-500",
-                  messageOverLimit && "border-red-500"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-busy={loading}
+                aria-live="polite"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+                    <span>{t("button.submitting")}</span>
+                  </>
+                ) : (
+                  <span>{t("button.submit")}</span>
                 )}
-                aria-invalid={!!fieldErrors.message || messageOverLimit}
-                aria-describedby={
-                  fieldErrors.message || messageOverLimit ? "message-error" : undefined
-                }
-                maxLength={MAX_MESSAGE_LENGTH}
-              />
-            </div>
-            <div className="flex items-center justify-between">
-              {fieldErrors.message && (
-                <p
-                  id="message-error"
-                  className="text-sm text-red-500 flex items-center gap-1"
-                  role="alert"
-                >
-                  <XCircle className="h-3 w-3" />
-                  {fieldErrors.message}
+              </Button>
+              
+              {/* Form completion estimate */}
+              {!success && !loading && (
+                <p className="text-xs text-center text-gray-500 mt-2" role="status">
+                  {t("message.formCompletionEstimate") || "Estimated completion time: 3-5 minutes"}
                 </p>
               )}
-              <CharacterCounter current={messageLength} max={MAX_MESSAGE_LENGTH} />
             </div>
           </div>
         </div>
-
-        {/* Submit Button */}
-        <Button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-semibold transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-busy={loading}
-          aria-live="polite"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
-              <span>{t("button.submitting")}</span>
-            </>
-          ) : (
-            <span>{t("button.submit")}</span>
-          )}
-        </Button>
-        
-        {/* Form completion estimate */}
-        {!success && !loading && (
-          <p className="text-xs text-center text-gray-500 mt-2" role="status">
-            {t("message.formCompletionEstimate") || "Estimated completion time: 3-5 minutes"}
-          </p>
-        )}
       </form>
     </Card>
   );
