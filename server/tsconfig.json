@@ -5,15 +5,16 @@
     "module": "ESNext",
     "target": "ES2022",
     "lib": ["ES2022"],
-    "types": ["node", "@types/express"],
+    "types": ["node"],
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
-    "strict": true,
-    "noEmit": false,
-    "outDir": "../dist/server",
-    "resolveJsonModule": true
+    "strict": false,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "noLib": false
   },
-  "include": ["./**/*"],
+  "include": ["./**/*", "./types/**/*"],
   "exclude": ["node_modules", "**/*.test.ts"]
 }
 

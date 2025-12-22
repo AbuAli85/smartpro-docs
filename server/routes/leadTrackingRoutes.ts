@@ -202,7 +202,7 @@ router.get('/:submissionId', async (req: Request, res: Response) => {
  * Calculate progress percentage based on completed stages
  */
 function calculateProgress(stages: string[]): number {
-  const allStages = [
+  const allStages: string[] = [
     LeadStage.CONSULTATION_SUBMITTED,
     LeadStage.CONSULTATION_VIEWED,
     LeadStage.REGISTRATION_STARTED,

@@ -33,7 +33,7 @@ export function validate(schema: ValidationSchema) {
         return res.status(400).json({
           error: 'Validation error',
           message: 'Invalid request data',
-          details: error.errors.map((err) => ({
+          details: error.issues.map((err) => ({
             path: err.path.join('.'),
             message: err.message,
           })),
