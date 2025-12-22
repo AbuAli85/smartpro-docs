@@ -150,8 +150,11 @@ const translations: Record<Language, Record<string, string>> = {
     
     // Tracking
     'tracking.title': 'Track Your Request',
+    'tracking.subtitle': 'Keep this ID for your records',
     'tracking.submissionId': 'Submission ID',
     'tracking.executionId': 'Execution ID',
+    'tracking.copy': 'Copy tracking ID',
+    'tracking.copied': 'Copied to clipboard!',
     'tracking.note': "We typically respond within 24 hours. You'll receive an email confirmation shortly.",
     'tracking.step.submitted': 'Request Submitted',
     'tracking.step.received': 'Request Received',
@@ -454,6 +457,8 @@ const translations: Record<Language, Record<string, string>> = {
     'tracking.title': 'تتبع طلبك',
     'tracking.submissionId': 'رقم الطلب',
     'tracking.executionId': 'رقم التنفيذ',
+    'tracking.copy': 'نسخ رقم التتبع',
+    'tracking.copied': 'تم النسخ إلى الحافظة!',
     'tracking.note': 'نقوم عادة بالرد خلال 24 ساعة. ستصلك رسالة تأكيد عبر البريد الإلكتروني قريباً.',
     'tracking.step.submitted': 'تم إرسال الطلب',
     'tracking.step.received': 'تم استلام الطلب',

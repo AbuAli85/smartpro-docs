@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { CheckCircle2, Clock, Package } from "lucide-react";
+import { CheckCircle2, Clock, Package, Copy, Check } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +22,7 @@ export function TrackingStatus({ submissionId, executionId, className }: Trackin
   const { t, language } = useLanguage();
   const isRTL = language === "ar";
   const [steps, setSteps] = useState<TrackingStep[]>([]);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     // Initialize tracking steps
@@ -76,33 +78,74 @@ export function TrackingStatus({ submissionId, executionId, className }: Trackin
     return id.toUpperCase();
   };
 
+  const copyTrackingId = async () => {
+    if (!submissionId) return;
+    
+    try {
+      const formattedId = formatTrackingId(submissionId);
+      await navigator.clipboard.writeText(formattedId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      console.error('Failed to copy tracking ID:', error);
+    }
+  };
+
   return (
-    <Card className={cn("p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200", className)}>
+    <Card className={cn("p-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-50 border-2 border-blue-300 shadow-lg", className)}>
       <div className="space-y-4">
-        <div className="flex items-center gap-3 mb-4">
-          <Package className="h-6 w-6 text-blue-600" />
-          <h3 className="text-lg font-semibold text-gray-900">
-            {t("tracking.title") || "Track Your Request"}
-          </h3>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-blue-100 rounded-lg">
+            <Package className="h-6 w-6 text-blue-600" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-gray-900">
+              {t("tracking.title") || "Track Your Request"}
+            </h3>
+            <p className="text-sm text-gray-600 mt-1">
+              {t("tracking.subtitle") || "Keep this ID for your records"}
+            </p>
+          </div>
         </div>
 
         {submissionId && (
-          <div className="bg-white rounded-lg p-4 border border-blue-200">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">
+          <div className="bg-white rounded-lg p-4 border-2 border-blue-300 shadow-sm">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-700 mb-2">
                   {t("tracking.submissionId") || "Submission ID"}
                 </p>
-                <p className="font-mono text-base font-semibold text-gray-900">
-                  {formatTrackingId(submissionId)}
-                </p>
+                <div className="flex items-center gap-2">
+                  <p className="font-mono text-lg font-bold text-gray-900 break-all">
+                    {formatTrackingId(submissionId)}
+                  </p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={copyTrackingId}
+                    className="h-8 w-8 p-0 flex-shrink-0"
+                    aria-label={copied ? (t("tracking.copied") || "Copied!") : (t("tracking.copy") || "Copy tracking ID")}
+                    title={copied ? (t("tracking.copied") || "Copied!") : (t("tracking.copy") || "Copy tracking ID")}
+                  >
+                    {copied ? (
+                      <Check className="h-4 w-4 text-green-600" />
+                    ) : (
+                      <Copy className="h-4 w-4 text-gray-600" />
+                    )}
+                  </Button>
+                </div>
+                {copied && (
+                  <p className="text-xs text-green-600 mt-1 animate-in fade-in">
+                    {t("tracking.copied") || "Copied to clipboard!"}
+                  </p>
+                )}
               </div>
               {executionId && (
-                <div className="text-right">
-                  <p className="text-sm text-gray-600 mb-1">
+                <div className="text-right border-l border-gray-200 pl-3">
+                  <p className="text-sm font-medium text-gray-700 mb-1">
                     {t("tracking.executionId") || "Execution ID"}
                   </p>
-                  <p className="font-mono text-xs text-gray-700">
+                  <p className="font-mono text-sm font-semibold text-gray-700">
                     {executionId.slice(0, 8).toUpperCase()}...
                   </p>
                 </div>

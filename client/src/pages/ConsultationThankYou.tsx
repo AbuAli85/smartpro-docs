@@ -123,9 +123,9 @@ export default function ConsultationThankYou() {
             </p>
           </div>
 
-          {/* Tracking Status */}
+          {/* Tracking Status - Always show if submissionId exists */}
           {submissionId && (
-            <div className="mb-8">
+            <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <TrackingStatus submissionId={submissionId} executionId={executionId} />
             </div>
           )}
