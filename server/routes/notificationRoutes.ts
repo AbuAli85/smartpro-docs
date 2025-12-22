@@ -4,7 +4,7 @@
  */
 
 import express, { Request, Response, NextFunction } from "express";
-import NotificationService from "../services/notificationService";
+import NotificationService from "../services/notificationService.js";
 
 // Initialize Prisma client
 let prisma: any;

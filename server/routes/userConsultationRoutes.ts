@@ -5,8 +5,8 @@
 
 import express, { Request, Response } from 'express';
 import { z } from 'zod';
-import { validate } from '../middleware/validation';
-import { logger } from '../services/logger';
+import { validate } from '../middleware/validation.js';
+import { logger } from '../services/logger.js';
 
 const router = express.Router();
 

@@ -4,8 +4,8 @@
  */
 
 import express, { Request, Response, NextFunction } from 'express';
-import { logger } from './services/logger';
-import { rateLimiters } from './middleware/rateLimit';
+import { logger } from './services/logger.js';
+import { rateLimiters } from './middleware/rateLimit.js';
 
 // Simple CORS middleware
 const corsMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -22,12 +22,12 @@ const corsMiddleware = (req: Request, res: Response, next: NextFunction) => {
 };
 
 // Import routes
-import authRoutes from './routes/authRoutes';
-import notificationRoutes from './routes/notificationRoutes';
-import preferencesRoutes from './routes/preferencesRoutes';
-import consultationRoutes from './routes/consultationRoutes';
-import leadTrackingRoutes from './routes/leadTrackingRoutes';
-import userConsultationRoutes from './routes/userConsultationRoutes';
+import authRoutes from './routes/authRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
+import preferencesRoutes from './routes/preferencesRoutes.js';
+import consultationRoutes from './routes/consultationRoutes.js';
+import leadTrackingRoutes from './routes/leadTrackingRoutes.js';
+import userConsultationRoutes from './routes/userConsultationRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;

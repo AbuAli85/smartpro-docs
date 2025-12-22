@@ -4,7 +4,7 @@
  */
 
 import express, { Request, Response } from 'express';
-import { logger } from '../services/logger';
+import { logger } from '../services/logger.js';
 
 const router = express.Router();
 

@@ -4,7 +4,7 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { logger } from '../services/logger';
+import { logger } from '../services/logger.js';
 
 let prisma: any;
 try {

@@ -4,10 +4,10 @@
  */
 
 import express, { Request, Response } from 'express';
-import { validate } from '../middleware/validation';
+import { validate } from '../middleware/validation.js';
 import { z } from 'zod';
-import { webhookClient } from '../lib/webhookClient';
-import { logger } from '../services/logger';
+import { webhookClient } from '../lib/webhookClient.js';
+import { logger } from '../services/logger.js';
 
 const router = express.Router();
 
