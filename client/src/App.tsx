@@ -91,6 +91,12 @@ const DocsSecurity = lazyWithErrorHandling(() => import("./pages/docs/Security")
 const LetterAutomationDemo = lazyWithErrorHandling(() => import("./pages/demo/LetterAutomationDemo"));
 const ProfessionalLetterBuilder = lazyWithErrorHandling(() => import("./pages/demo/ProfessionalLetterBuilder"));
 
+// Marketplace pages
+const ServicesPage = lazyWithErrorHandling(() => import("./pages/marketplace/services"));
+const ServiceCreatePage = lazyWithErrorHandling(() => import("./pages/marketplace/services/create"));
+const ServiceDetailPage = lazyWithErrorHandling(() => import("./pages/marketplace/services/[id]"));
+const ServiceEditPage = lazyWithErrorHandling(() => import("./pages/marketplace/services/[id]/edit"));
+
 import { ToastContainer } from "./components/ToastContainer";
 // Lazy load non-critical widgets to improve INP/LCP
 const LiveChat = lazy(() => import("./components/LiveChat"));
@@ -173,6 +179,13 @@ function Router() {
         <Route path={"/privacy"} component={Privacy} />
         <Route path={"/terms"} component={Terms} />
         <Route path={"/cookies"} component={Cookies} />
+        
+        {/* Marketplace Routes */}
+        <Route path={"/marketplace/services"} component={ServicesPage} />
+        <Route path={"/marketplace/services/create"} component={ServiceCreatePage} />
+        <Route path={"/marketplace/services/:id/edit"} component={ServiceEditPage} />
+        <Route path={"/marketplace/services/:id"} component={ServiceDetailPage} />
+        
         <Route path={"/404"} component={NotFound} />
         {/* Final fallback route */}
         <Route component={NotFound} />
