@@ -146,7 +146,8 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.thanks.point1': 'Check your email (and spam folder) for a confirmation message.',
     'consultation.thanks.point2': 'If you provided a WhatsApp number, we may also contact you there.',
     'consultation.thanks.point3': "You can prepare any documents or questions you'd like to discuss during the session.",
-    'consultation.thanks.backToHome': 'Back to homepage',
+    'consultation.thanks.backToHome': 'Back to Homepage',
+    'consultation.thanks.submitAnother': 'Submit Another Request',
     
     // Tracking
     'tracking.title': 'Track Your Request',
@@ -452,6 +453,7 @@ const translations: Record<Language, Record<string, string>> = {
     'consultation.thanks.point2': 'إذا قمت بإدخال رقم واتساب، قد نقوم بالتواصل معك من خلاله أيضاً.',
     'consultation.thanks.point3': 'يمكنك تجهيز أي مستندات أو أسئلة ترغب في مناقشتها خلال جلسة الاستشارة.',
     'consultation.thanks.backToHome': 'العودة إلى الصفحة الرئيسية',
+    'consultation.thanks.submitAnother': 'إرسال طلب آخر',
     
     // Tracking
     'tracking.title': 'تتبع طلبك',

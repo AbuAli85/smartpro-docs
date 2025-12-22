@@ -5,7 +5,8 @@ import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { setSEOTags } from "@/lib/seoUtils";
 import { trackEvent } from "@/lib/googleAnalytics";
-import { CheckCircle2, Mail, Phone, Clock, FileText, Users, ArrowRight } from "lucide-react";
+import { CheckCircle2, Mail, Phone, Clock, FileText, Users, ArrowRight, Home, MessageSquare } from "lucide-react";
+import { Link } from "wouter";
 import { TrackingStatus } from "@/components/TrackingStatus";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -201,11 +202,24 @@ export default function ConsultationThankYou() {
             </Card>
           </div>
 
-          {/* Action Button */}
-          <div className="text-center">
-            <a
+          {/* Action Buttons - Less Prominent, More Options */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
+            <Link
+              href="/consultation"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-xs md:text-sm font-medium text-white hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              onClick={() => {
+                trackEvent("consultation_thank_you_submit_another", {
+                  language,
+                  submission_id: submissionId,
+                });
+              }}
+            >
+              <MessageSquare className="h-4 w-4" />
+              {t("consultation.thanks.submitAnother") || "Submit Another Request"}
+            </Link>
+            <Link
               href="/"
-              className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-5 py-2.5 text-xs md:text-sm font-medium text-white hover:bg-slate-800 transition focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-xs md:text-sm font-medium text-gray-700 hover:bg-gray-50 transition focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
               onClick={() => {
                 trackEvent("consultation_thank_you_back_to_home", {
                   language,
@@ -213,8 +227,9 @@ export default function ConsultationThankYou() {
                 });
               }}
             >
-              {t("consultation.thanks.backToHome")}
-            </a>
+              <Home className="h-4 w-4" />
+              {t("consultation.thanks.backToHome") || "Back to Homepage"}
+            </Link>
           </div>
         </section>
       </div>
