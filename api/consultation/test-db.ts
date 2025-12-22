@@ -19,9 +19,20 @@ async function getPrisma() {
   }
 
   try {
-    const prismaModule = await import('@prisma/client');
-    // Handle both default export and named export
-    const PrismaClient = prismaModule.PrismaClient || (prismaModule as any).default?.PrismaClient || (prismaModule as any).default;
+    // Dynamic import for ES modules in Vercel serverless functions
+    // Prisma generates the client at build time, so we need to handle the import carefully
+    const prismaModule: any = await import('@prisma/client');
+    
+    // Try multiple ways to access PrismaClient (handles different export patterns)
+    let PrismaClient = prismaModule.PrismaClient;
+    if (!PrismaClient && prismaModule.default) {
+      PrismaClient = prismaModule.default.PrismaClient || prismaModule.default;
+    }
+    
+    if (!PrismaClient || typeof PrismaClient !== 'function') {
+      throw new Error('PrismaClient not found or invalid in @prisma/client module');
+    }
+    
     prisma = new PrismaClient();
     return prisma;
   } catch (error: any) {
@@ -68,11 +79,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   } catch (error: any) {
     console.error('Database connection test failed', error);
+    
+    // Extract connection details for debugging (without exposing password)
+    const dbUrl = process.env.DATABASE_URL || '';
+    const urlMatch = dbUrl.match(/postgresql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
+    const connectionInfo = urlMatch ? {
+      host: urlMatch[3],
+      port: urlMatch[4],
+      database: urlMatch[5],
+      usingPooling: urlMatch[4] === '6543',
+    } : null;
+    
     return res.status(500).json({
       success: false,
       error: error?.message || 'Unknown error',
       code: error?.code,
       DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET',
+      connectionInfo: connectionInfo,
+      recommendation: connectionInfo?.port === '5432' 
+        ? 'For Vercel serverless functions, use connection pooling (port 6543) instead of direct connection (port 5432). Get it from Supabase Dashboard → Settings → Database → Connection pooling.'
+        : 'Check your DATABASE_URL in Vercel environment variables. Ensure the hostname, password, and port are correct.',
     });
   }
 }
