@@ -462,6 +462,12 @@ export default function ConsultationThankYou() {
                 {submissionId ? (
                   <button
                     onClick={() => {
+                      // Double-check submissionId exists before proceeding
+                      if (!submissionId || submissionId === 'undefined') {
+                        console.warn('Cannot schedule appointment: submissionId is missing');
+                        return;
+                      }
+                      
                       trackEvent("consultation_schedule_appointment", { submission_id: submissionId });
                       // Open calendar booking link or platform
                       const calendarUrl = `https://marketing.thedigitalmorph.com/book?consultation=${submissionId}&email=${encodeURIComponent(email || '')}`;
