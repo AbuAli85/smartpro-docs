@@ -98,8 +98,10 @@ app.use((req: Request, res: Response) => {
   });
 });
 
-// Start server (only if not in serverless environment)
-if (require.main === module && !process.env.VERCEL) {
+// Start server (only if not in serverless environment like Vercel)
+// In ES modules, we can't use require.main, so we check for VERCEL env var
+// When running via tsx watch or node directly, start the server
+if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     logger.info(`Server started on port ${PORT}`, {
       port: PORT,
