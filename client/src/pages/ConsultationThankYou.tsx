@@ -886,8 +886,264 @@ export default function ConsultationThankYou() {
             </Card>
           )}
 
+          {/* How to Connect and Respond - Complete Guide */}
+          <Card className="mb-8 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border-2 border-amber-200 shadow-xl">
+            <div className="p-6 md:p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-amber-100 rounded-lg">
+                  <MessageCircle className="h-6 w-6 text-amber-600" />
+                </div>
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-gray-900">
+                    {t("consultation.connect.title") || "How to Connect & Respond"}
+                  </h2>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {t("consultation.connect.subtitle") || "Complete guide for clients and providers"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* For Clients */}
+                <div className="bg-white rounded-lg p-6 border-2 border-blue-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <Users className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900">
+                      {t("consultation.connect.clientTitle") || "For Clients"}
+                    </h3>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                        <span className="text-xs font-bold text-blue-600">1</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-1">
+                          {t("consultation.connect.clientStep1") || "Check Your Email"}
+                        </h4>
+                        <p className="text-sm text-gray-600">
+                          {t("consultation.connect.clientStep1Desc") || "You'll receive a confirmation email with your submission details. Check your inbox (and spam folder) for our response."}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                        <span className="text-xs font-bold text-blue-600">2</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-1">
+                          {t("consultation.connect.clientStep2") || "Wait for Our Response"}
+                        </h4>
+                        <p className="text-sm text-gray-600">
+                          {t("consultation.connect.clientStep2Desc") || "Our team will review your request and contact you within 24 hours via email or phone."}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                        <span className="text-xs font-bold text-blue-600">3</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-1">
+                          {t("consultation.connect.clientStep3") || "Reply to Our Email"}
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-2">
+                          {t("consultation.connect.clientStep3Desc") || "When you receive our email, simply reply directly to continue the conversation. Your reply will be automatically tracked."}
+                        </p>
+                        <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                          <p className="text-xs text-blue-900">
+                            <strong>💡 Tip:</strong> {t("consultation.connect.clientTip") || "Reply to the same email thread to keep all communication in one place."}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
+                        <span className="text-xs font-bold text-blue-600">4</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-1">
+                          {t("consultation.connect.clientStep4") || "Check Status Anytime"}
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-2">
+                          {t("consultation.connect.clientStep4Desc") || "Bookmark this page or use the link below to check your consultation status anytime."}
+                        </p>
+                        {submissionId && (
+                          <Link
+                            href={`/consultation/status/${submissionId}`}
+                            className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                            onClick={() => trackEvent("consultation_check_status", { submission_id: submissionId })}
+                          >
+                            {t("consultation.connect.viewStatus") || "View Status Page"}
+                            <ArrowRight className="h-4 w-4" />
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* For Providers */}
+                <div className="bg-white rounded-lg p-6 border-2 border-green-200">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-green-100 rounded-lg">
+                      <UserCheck className="h-5 w-5 text-green-600" />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900">
+                      {t("consultation.connect.providerTitle") || "For Providers"}
+                    </h3>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+                        <span className="text-xs font-bold text-green-600">1</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-1">
+                          {t("consultation.connect.providerStep1") || "Access Provider Dashboard"}
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-2">
+                          {t("consultation.connect.providerStep1Desc") || "Log in to your provider dashboard to view all consultation requests assigned to you."}
+                        </p>
+                        <a
+                          href="https://marketing.thedigitalmorph.com/dashboard/provider/consultations"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-sm text-green-600 hover:text-green-700 font-medium"
+                          onClick={() => trackEvent("consultation_provider_dashboard_guide", { submission_id: submissionId })}
+                        >
+                          {t("consultation.connect.openDashboard") || "Open Dashboard"}
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+                        <span className="text-xs font-bold text-green-600">2</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-1">
+                          {t("consultation.connect.providerStep2") || "Review Consultation Details"}
+                        </h4>
+                        <p className="text-sm text-gray-600">
+                          {t("consultation.connect.providerStep2Desc") || "Click on the consultation to view full details: client info, services needed, budget, timeline, and message."}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+                        <span className="text-xs font-bold text-green-600">3</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-1">
+                          {t("consultation.connect.providerStep3") || "Respond to Client"}
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-2">
+                          {t("consultation.connect.providerStep3Desc") || "Send an email directly to the client from the dashboard. Your response will be automatically tracked."}
+                        </p>
+                        <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                          <p className="text-xs text-green-900">
+                            <strong>💡 Tip:</strong> {t("consultation.connect.providerTip") || "Respond within 24 hours as per SLA. Use the 'Reply' button in the dashboard for quick response."}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+                        <span className="text-xs font-bold text-green-600">4</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-1">
+                          {t("consultation.connect.providerStep4") || "Track Communication"}
+                        </h4>
+                        <p className="text-sm text-gray-600">
+                          {t("consultation.connect.providerStep4Desc") || "All email exchanges are automatically tracked. View the conversation history in the dashboard."}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Response Actions */}
+              <div className="mt-6 pt-6 border-t border-amber-200">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 text-center">
+                  {t("consultation.connect.quickActions") || "Quick Response Actions"}
+                </h3>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <button
+                    onClick={() => {
+                      const recipientEmail = consultationData?.email || email || 'info@smartpro.io';
+                      const subject = encodeURIComponent(`Re: Consultation Request - ${submissionId || ''}`);
+                      const body = encodeURIComponent(`Hello,\n\nThank you for your consultation request.\n\nWe have received your submission and will review it shortly.\n\nBest regards,\nSmartPro Team`);
+                      window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+                      trackEvent("consultation_quick_email", { submission_id: submissionId, type: "provider_response" });
+                    }}
+                    className="flex flex-col items-center gap-2 p-4 bg-white rounded-lg border-2 border-amber-200 hover:border-amber-400 hover:shadow-md transition-all"
+                  >
+                    <Mail className="h-5 w-5 text-amber-600" />
+                    <span className="text-sm font-semibold text-gray-900">
+                      {t("consultation.connect.sendEmail") || "Send Email Response"}
+                    </span>
+                  </button>
+
+                  {submissionId && (
+                    <Link
+                      href={`/consultation/status/${submissionId}`}
+                      className="flex flex-col items-center gap-2 p-4 bg-white rounded-lg border-2 border-amber-200 hover:border-amber-400 hover:shadow-md transition-all"
+                      onClick={() => trackEvent("consultation_check_status_quick", { submission_id: submissionId })}
+                    >
+                      <Clock className="h-5 w-5 text-amber-600" />
+                      <span className="text-sm font-semibold text-gray-900">
+                        {t("consultation.connect.checkStatus") || "Check Status"}
+                      </span>
+                    </Link>
+                  )}
+
+                  <a
+                    href="https://marketing.thedigitalmorph.com/dashboard/provider/consultations"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center gap-2 p-4 bg-white rounded-lg border-2 border-amber-200 hover:border-amber-400 hover:shadow-md transition-all"
+                    onClick={() => trackEvent("consultation_provider_dashboard_quick", { submission_id: submissionId })}
+                  >
+                    <ExternalLink className="h-5 w-5 text-amber-600" />
+                    <span className="text-sm font-semibold text-gray-900">
+                      {t("consultation.connect.providerPortal") || "Provider Portal"}
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </Card>
+
           {/* Action Buttons - Less Prominent, More Options */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
+            {submissionId && (
+              <Link
+                href={`/consultation/status/${submissionId}`}
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-xs md:text-sm font-medium text-white hover:bg-indigo-700 transition focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                onClick={() => {
+                  trackEvent("consultation_thank_you_view_status", {
+                    language,
+                    submission_id: submissionId,
+                  });
+                }}
+              >
+                <Clock className="h-4 w-4" />
+                {t("consultation.thanks.viewStatus") || "View Status & Responses"}
+              </Link>
+            )}
             <Link
               href="/consultation"
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-xs md:text-sm font-medium text-white hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
