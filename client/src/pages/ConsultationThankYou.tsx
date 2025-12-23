@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { setSEOTags } from "@/lib/seoUtils";
 import { trackEvent } from "@/lib/googleAnalytics";
-import { CheckCircle2, Mail, Phone, Clock, FileText, Users, ArrowRight, Home, MessageSquare, Sparkles, Shield, Zap, UserPlus, Loader2 } from "lucide-react";
+import { CheckCircle2, Mail, Phone, Clock, FileText, Users, ArrowRight, Home, MessageSquare, Sparkles, Shield, Zap, UserPlus, Loader2, Calendar, Upload, Download, Send, Building2, MapPin, Briefcase, DollarSign, Calendar as CalendarIcon, UserCheck, MessageCircle, ExternalLink, Copy, Check } from "lucide-react";
 import { Link } from "wouter";
 import { TrackingStatus } from "@/components/TrackingStatus";
 import { LeadProgress } from "@/components/LeadProgress";
@@ -20,6 +20,8 @@ export default function ConsultationThankYou() {
   const [consultationData, setConsultationData] = useState<any>(null);
   const [loadingConsultation, setLoadingConsultation] = useState(false);
   const [consultationError, setConsultationError] = useState<string | null>(null);
+  const [copiedContact, setCopiedContact] = useState<string | null>(null);
+  const [showConsultationDetails, setShowConsultationDetails] = useState(false);
 
   // Extract tracking IDs and email from URL params
   const { submissionId, executionId, email } = useMemo(() => {
@@ -223,6 +225,354 @@ export default function ConsultationThankYou() {
             </Card>
           )}
 
+          {/* Consultation Details Section - Enhanced Display */}
+          {consultationData && (
+            <Card className="mb-8 bg-white border-2 border-blue-200 shadow-lg">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <FileText className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-bold text-gray-900">
+                        {t("consultation.details.title") || "Your Consultation Details"}
+                      </h2>
+                      <p className="text-sm text-gray-600">
+                        {t("consultation.details.subtitle") || "Review your submission information"}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowConsultationDetails(!showConsultationDetails)}
+                    className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2"
+                  >
+                    {showConsultationDetails ? "Hide Details" : "Show Details"}
+                    <ArrowRight className={cn("h-4 w-4 transition-transform", showConsultationDetails && "rotate-90")} />
+                  </button>
+                </div>
+
+                {showConsultationDetails && (
+                  <div className="grid md:grid-cols-2 gap-6 pt-6 border-t border-gray-200 animate-in fade-in slide-in-from-top-2">
+                    {/* Contact Information */}
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                        <Users className="h-5 w-5 text-blue-600" />
+                        {t("consultation.details.contact") || "Contact Information"}
+                      </h3>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-600 font-medium">{t("consultation.details.name") || "Name"}:</span>
+                          <span className="text-gray-900">{consultationData.name || "N/A"}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-600 font-medium">{t("consultation.details.email") || "Email"}:</span>
+                          <span className="text-gray-900">{consultationData.email || "N/A"}</span>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(consultationData.email);
+                              setCopiedContact('email');
+                              setTimeout(() => setCopiedContact(null), 2000);
+                            }}
+                            className="p-1 hover:bg-gray-100 rounded"
+                            title="Copy email"
+                          >
+                            {copiedContact === 'email' ? (
+                              <Check className="h-4 w-4 text-green-600" />
+                            ) : (
+                              <Copy className="h-4 w-4 text-gray-400" />
+                            )}
+                          </button>
+                        </div>
+                        {consultationData.phone && (
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-600 font-medium">{t("consultation.details.phone") || "Phone"}:</span>
+                            <span className="text-gray-900">{consultationData.phone}</span>
+                            <a
+                              href={`tel:${consultationData.phone}`}
+                              className="p-1 hover:bg-gray-100 rounded"
+                              title="Call"
+                            >
+                              <Phone className="h-4 w-4 text-blue-600" />
+                            </a>
+                          </div>
+                        )}
+                        {consultationData.location && (
+                          <div className="flex items-center gap-2">
+                            <MapPin className="h-4 w-4 text-gray-400" />
+                            <span className="text-gray-900">{consultationData.location}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Business Information */}
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                        <Building2 className="h-5 w-5 text-blue-600" />
+                        {t("consultation.details.business") || "Business Information"}
+                      </h3>
+                      <div className="space-y-2 text-sm">
+                        {consultationData.company && (
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-600 font-medium">{t("consultation.details.company") || "Company"}:</span>
+                            <span className="text-gray-900">{consultationData.company}</span>
+                          </div>
+                        )}
+                        {consultationData.businessType && (
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-600 font-medium">{t("consultation.details.businessType") || "Business Type"}:</span>
+                            <span className="text-gray-900">{consultationData.businessType}</span>
+                          </div>
+                        )}
+                        {consultationData.services && Array.isArray(consultationData.services) && consultationData.services.length > 0 && (
+                          <div>
+                            <span className="text-gray-600 font-medium">{t("consultation.details.services") || "Services"}:</span>
+                            <div className="flex flex-wrap gap-2 mt-1">
+                              {consultationData.services.map((service: string, idx: number) => (
+                                <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs">
+                                  {service}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Project Details */}
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                        <Briefcase className="h-5 w-5 text-blue-600" />
+                        {t("consultation.details.project") || "Project Details"}
+                      </h3>
+                      <div className="space-y-2 text-sm">
+                        {consultationData.budget && (
+                          <div className="flex items-center gap-2">
+                            <DollarSign className="h-4 w-4 text-gray-400" />
+                            <span className="text-gray-600 font-medium">{t("consultation.details.budget") || "Budget"}:</span>
+                            <span className="text-gray-900">{consultationData.budget}</span>
+                          </div>
+                        )}
+                        {consultationData.timeline && (
+                          <div className="flex items-center gap-2">
+                            <CalendarIcon className="h-4 w-4 text-gray-400" />
+                            <span className="text-gray-600 font-medium">{t("consultation.details.timeline") || "Timeline"}:</span>
+                            <span className="text-gray-900">{consultationData.timeline}</span>
+                          </div>
+                        )}
+                        {consultationData.preferredContact && (
+                          <div className="flex items-center gap-2">
+                            <span className="text-gray-600 font-medium">{t("consultation.details.preferredContact") || "Preferred Contact"}:</span>
+                            <span className="text-gray-900">{consultationData.preferredContact}</span>
+                          </div>
+                        )}
+                        {consultationData.preferredTime && (
+                          <div className="flex items-center gap-2">
+                            <Clock className="h-4 w-4 text-gray-400" />
+                            <span className="text-gray-600 font-medium">{t("consultation.details.preferredTime") || "Preferred Time"}:</span>
+                            <span className="text-gray-900">{consultationData.preferredTime}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Message */}
+                    {consultationData.message && (
+                      <div className="space-y-4">
+                        <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                          <MessageCircle className="h-5 w-5 text-blue-600" />
+                          {t("consultation.details.message") || "Your Message"}
+                        </h3>
+                        <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                          <p className="text-sm text-gray-700 whitespace-pre-wrap">{consultationData.message}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </Card>
+          )}
+
+          {/* Direct Communication Section - Bridge Between Client and Provider */}
+          <Card className="mb-8 bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 border-2 border-indigo-200 shadow-xl">
+            <div className="p-6 md:p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-indigo-100 rounded-lg">
+                  <MessageCircle className="h-6 w-6 text-indigo-600" />
+                </div>
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-gray-900">
+                    {t("consultation.communication.title") || "Connect with Our Team"}
+                  </h2>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {t("consultation.communication.subtitle") || "Get in touch directly - we're here to help"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-4 mb-6">
+                {/* Email Contact */}
+                <button
+                  onClick={() => {
+                    const recipientEmail = consultationData?.email || email || 'info@smartpro.io';
+                    const subject = encodeURIComponent(`Consultation Follow-up: ${submissionId || ''}`);
+                    const body = encodeURIComponent(`Hello,\n\nI would like to follow up on my consultation request.\n\nSubmission ID: ${submissionId || 'N/A'}\n\nThank you!`);
+                    window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+                    trackEvent("consultation_contact_email", { submission_id: submissionId });
+                  }}
+                  className="flex flex-col items-center gap-3 p-4 bg-white rounded-lg border-2 border-indigo-200 hover:border-indigo-400 hover:shadow-md transition-all group"
+                >
+                  <div className="p-3 bg-indigo-100 rounded-full group-hover:bg-indigo-200 transition-colors">
+                    <Mail className="h-6 w-6 text-indigo-600" />
+                  </div>
+                  <div className="text-center">
+                    <h3 className="font-semibold text-gray-900 mb-1">
+                      {t("consultation.communication.email") || "Send Email"}
+                    </h3>
+                    <p className="text-xs text-gray-600">
+                      {t("consultation.communication.emailDesc") || "Quick response guaranteed"}
+                    </p>
+                  </div>
+                </button>
+
+                {/* Phone Contact */}
+                {consultationData?.phone && (
+                  <a
+                    href={`tel:${consultationData.phone}`}
+                    onClick={() => trackEvent("consultation_contact_phone", { submission_id: submissionId })}
+                    className="flex flex-col items-center gap-3 p-4 bg-white rounded-lg border-2 border-indigo-200 hover:border-indigo-400 hover:shadow-md transition-all group"
+                  >
+                    <div className="p-3 bg-indigo-100 rounded-full group-hover:bg-indigo-200 transition-colors">
+                      <Phone className="h-6 w-6 text-indigo-600" />
+                    </div>
+                    <div className="text-center">
+                      <h3 className="font-semibold text-gray-900 mb-1">
+                        {t("consultation.communication.phone") || "Call Us"}
+                      </h3>
+                      <p className="text-xs text-gray-600">
+                        {t("consultation.communication.phoneDesc") || "Speak directly"}
+                      </p>
+                    </div>
+                  </a>
+                )}
+
+                {/* Schedule Appointment */}
+                <button
+                  onClick={() => {
+                    trackEvent("consultation_schedule_appointment", { submission_id: submissionId });
+                    // Open calendar booking link or platform
+                    const calendarUrl = `https://marketing.thedigitalmorph.com/book?consultation=${submissionId}&email=${encodeURIComponent(email || '')}`;
+                    window.open(calendarUrl, '_blank', 'noopener,noreferrer');
+                  }}
+                  className="flex flex-col items-center gap-3 p-4 bg-white rounded-lg border-2 border-indigo-200 hover:border-indigo-400 hover:shadow-md transition-all group"
+                >
+                  <div className="p-3 bg-indigo-100 rounded-full group-hover:bg-indigo-200 transition-colors">
+                    <Calendar className="h-6 w-6 text-indigo-600" />
+                  </div>
+                  <div className="text-center">
+                    <h3 className="font-semibold text-gray-900 mb-1">
+                      {t("consultation.communication.schedule") || "Schedule Call"}
+                    </h3>
+                    <p className="text-xs text-gray-600">
+                      {t("consultation.communication.scheduleDesc") || "Book a consultation"}
+                    </p>
+                  </div>
+                </button>
+              </div>
+
+              {/* Provider Dashboard Link (for providers viewing this) */}
+              {submissionId && (
+                <div className="mt-6 p-4 bg-white/80 backdrop-blur-sm rounded-lg border border-indigo-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <UserCheck className="h-5 w-5 text-indigo-600" />
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">
+                          {t("consultation.communication.providerAccess") || "Provider Access"}
+                        </p>
+                        <p className="text-xs text-gray-600">
+                          {t("consultation.communication.providerAccessDesc") || "View this consultation in your dashboard"}
+                        </p>
+                      </div>
+                    </div>
+                    <a
+                      href={`https://marketing.thedigitalmorph.com/dashboard/provider/consultations?submission=${submissionId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => trackEvent("consultation_provider_dashboard", { submission_id: submissionId })}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
+                    >
+                      {t("consultation.communication.viewDashboard") || "View Dashboard"}
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
+          </Card>
+
+          {/* Document Sharing Section */}
+          <Card className="mb-8 bg-white border-2 border-green-200 shadow-lg">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <Upload className="h-6 w-6 text-green-600" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    {t("consultation.documents.title") || "Share Documents"}
+                  </h2>
+                  <p className="text-sm text-gray-600">
+                    {t("consultation.documents.subtitle") || "Upload files to help us better understand your needs"}
+                  </p>
+                </div>
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <p className="text-sm font-medium text-gray-900 mb-2">
+                    {t("consultation.documents.clientUpload") || "For Clients"}
+                  </p>
+                  <p className="text-xs text-gray-600 mb-3">
+                    {t("consultation.documents.clientUploadDesc") || "Upload business documents, requirements, or any relevant files"}
+                  </p>
+                  <button
+                    onClick={() => {
+                      trackEvent("consultation_upload_documents", { submission_id: submissionId });
+                      // Open document upload interface or platform
+                      const uploadUrl = `https://marketing.thedigitalmorph.com/documents/upload?consultation=${submissionId}`;
+                      window.open(uploadUrl, '_blank', 'noopener,noreferrer');
+                    }}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                  >
+                    <Upload className="h-4 w-4" />
+                    {t("consultation.documents.upload") || "Upload Documents"}
+                  </button>
+                </div>
+                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <p className="text-sm font-medium text-gray-900 mb-2">
+                    {t("consultation.documents.providerShare") || "For Providers"}
+                  </p>
+                  <p className="text-xs text-gray-600 mb-3">
+                    {t("consultation.documents.providerShareDesc") || "Share resources, proposals, or documents with the client"}
+                  </p>
+                  <button
+                    onClick={() => {
+                      trackEvent("consultation_provider_share", { submission_id: submissionId });
+                      const shareUrl = `https://marketing.thedigitalmorph.com/dashboard/provider/consultations/${submissionId}/share`;
+                      window.open(shareUrl, '_blank', 'noopener,noreferrer');
+                    }}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                  >
+                    <Send className="h-4 w-4" />
+                    {t("consultation.documents.share") || "Share Resources"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </Card>
+
           {/* Tracking Status - Always show if submissionId exists */}
           {submissionId && (
             <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -348,76 +698,193 @@ export default function ConsultationThankYou() {
             </div>
           </Card>
 
-          {/* Next Steps Grid */}
+          {/* Connection Bridge Visual */}
+          <div className="mb-8 relative">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-full h-0.5 bg-gradient-to-r from-blue-200 via-indigo-300 to-green-200"></div>
+            </div>
+            <div className="relative flex items-center justify-center">
+              <div className="bg-white px-4 py-2 rounded-full border-2 border-indigo-300 shadow-lg">
+                <div className="flex items-center gap-2">
+                  <MessageCircle className="h-5 w-5 text-indigo-600" />
+                  <span className="text-sm font-semibold text-gray-900">
+                    {t("consultation.connection.bridge") || "Client ↔ Provider Connection"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Next Steps Grid - Enhanced with Connection */}
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             {/* Client Next Steps */}
-            <Card className="p-6 bg-white">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Users className="h-5 w-5 text-blue-600" />
+            <Card className="p-6 bg-gradient-to-br from-blue-50 to-white border-2 border-blue-200 shadow-lg relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -mr-16 -mt-16 opacity-50"></div>
+              <div className="relative">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <Users className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    {t("nextSteps.client.title") || "Next Steps for You (Client)"}
+                  </h2>
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">
-                  {t("nextSteps.client.title") || "Next Steps for You (Client)"}
-                </h2>
-              </div>
-              <div className="space-y-4">
-                {nextStepsClient.map((step, index) => {
-                  const Icon = step.icon;
-                  return (
-                    <div
-                      key={index}
-                      className="flex gap-4 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
-                    >
-                      <div className="flex-shrink-0">
-                        <div className="p-2 bg-white rounded-lg">
-                          <Icon className="h-5 w-5 text-blue-600" />
+                <div className="space-y-4">
+                  {nextStepsClient.map((step, index) => {
+                    const Icon = step.icon;
+                    return (
+                      <div
+                        key={index}
+                        className="flex gap-4 p-4 rounded-lg bg-white border border-blue-100 hover:border-blue-300 hover:shadow-md transition-all group"
+                      >
+                        <div className="flex-shrink-0">
+                          <div className="p-2 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition-colors">
+                            <Icon className="h-5 w-5 text-blue-600" />
+                          </div>
                         </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-900 mb-1">{step.title}</h3>
+                          <p className="text-sm text-gray-600">{step.description}</p>
+                        </div>
+                        <ArrowRight className="h-5 w-5 text-blue-400 flex-shrink-0 mt-1 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 mb-1">{step.title}</h3>
-                        <p className="text-sm text-gray-600">{step.description}</p>
-                      </div>
-                      <ArrowRight className="h-5 w-5 text-gray-400 flex-shrink-0 mt-1" />
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </Card>
 
             {/* Provider Next Steps */}
-            <Card className="p-6 bg-white">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <CheckCircle2 className="h-5 w-5 text-green-600" />
+            <Card className="p-6 bg-gradient-to-br from-green-50 to-white border-2 border-green-200 shadow-lg relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-32 h-32 bg-green-100 rounded-full -ml-16 -mt-16 opacity-50"></div>
+              <div className="relative">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    <CheckCircle2 className="h-5 w-5 text-green-600" />
+                  </div>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    {t("nextSteps.provider.title") || "Next Steps for Our Team"}
+                  </h2>
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">
-                  {t("nextSteps.provider.title") || "Next Steps for Our Team"}
-                </h2>
-              </div>
-              <div className="space-y-4">
-                {nextStepsProvider.map((step, index) => {
-                  const Icon = step.icon;
-                  return (
-                    <div
-                      key={index}
-                      className="flex gap-4 p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
-                    >
-                      <div className="flex-shrink-0">
-                        <div className="p-2 bg-white rounded-lg">
-                          <Icon className="h-5 w-5 text-green-600" />
+                <div className="space-y-4">
+                  {nextStepsProvider.map((step, index) => {
+                    const Icon = step.icon;
+                    return (
+                      <div
+                        key={index}
+                        className="flex gap-4 p-4 rounded-lg bg-white border border-green-100 hover:border-green-300 hover:shadow-md transition-all group"
+                      >
+                        <div className="flex-shrink-0">
+                          <div className="p-2 bg-green-50 rounded-lg group-hover:bg-green-100 transition-colors">
+                            <Icon className="h-5 w-5 text-green-600" />
+                          </div>
                         </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-900 mb-1">{step.title}</h3>
+                          <p className="text-sm text-gray-600">{step.description}</p>
+                        </div>
+                        <ArrowRight className="h-5 w-5 text-green-400 flex-shrink-0 mt-1 group-hover:text-green-600 group-hover:translate-x-1 transition-all" />
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 mb-1">{step.title}</h3>
-                        <p className="text-sm text-gray-600">{step.description}</p>
-                      </div>
-                      <ArrowRight className="h-5 w-5 text-gray-400 flex-shrink-0 mt-1" />
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </Card>
           </div>
+
+          {/* Consultation Status Timeline */}
+          {consultationData && (
+            <Card className="mb-8 bg-white border-2 border-purple-200 shadow-lg">
+              <div className="p-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-purple-100 rounded-lg">
+                    <Clock className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">
+                      {t("consultation.timeline.title") || "Consultation Timeline"}
+                    </h2>
+                    <p className="text-sm text-gray-600">
+                      {t("consultation.timeline.subtitle") || "Track the progress of your request"}
+                    </p>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  {/* Timeline Items */}
+                  <div className="relative pl-8 border-l-2 border-purple-200">
+                    <div className="absolute -left-2 top-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow"></div>
+                    <div className="pb-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        <span className="font-semibold text-gray-900">
+                          {t("consultation.timeline.submitted") || "Request Submitted"}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 ml-6">
+                        {consultationData.createdAt 
+                          ? new Date(consultationData.createdAt).toLocaleString(language === "ar" ? "ar-SA" : "en-US", {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })
+                          : t("consultation.timeline.justNow") || "Just now"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="relative pl-8 border-l-2 border-purple-200">
+                    <div className="absolute -left-2 top-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow"></div>
+                    <div className="pb-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        <span className="font-semibold text-gray-900">
+                          {t("consultation.timeline.received") || "Request Received"}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 ml-6">
+                        {t("consultation.timeline.receivedDesc") || "Your request has been received and is being processed"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="relative pl-8 border-l-2 border-purple-300">
+                    <div className="absolute -left-2 top-0 w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow animate-pulse"></div>
+                    <div className="pb-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Clock className="h-4 w-4 text-blue-600 animate-pulse" />
+                        <span className="font-semibold text-gray-900">
+                          {t("consultation.timeline.reviewing") || "Under Review"}
+                        </span>
+                        <span className="px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-700 rounded-full">
+                          {t("consultation.timeline.current") || "Current"}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 ml-6">
+                        {t("consultation.timeline.reviewingDesc") || "Our team is reviewing your request"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="relative pl-8 border-l-2 border-gray-200">
+                    <div className="absolute -left-2 top-0 w-4 h-4 bg-gray-300 rounded-full border-2 border-white"></div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Clock className="h-4 w-4 text-gray-400" />
+                        <span className="font-semibold text-gray-500">
+                          {t("consultation.timeline.contact") || "We'll Contact You"}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-500 ml-6">
+                        {t("consultation.timeline.contactDesc") || "We'll reach out within 24 hours"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          )}
 
           {/* Action Buttons - Less Prominent, More Options */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">

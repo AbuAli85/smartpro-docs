@@ -1,0 +1,14 @@
+-- Alternative migration script that SKIPS the bookings table section
+-- Use this if your bookings table already exists with the correct structure
+--
+-- Instructions:
+-- 1. Copy everything from UNIFIED_SCHEMA_MIGRATION.sql BEFORE the bookings section
+-- 2. Skip the bookings section (lines ~265-520)
+-- 3. Copy everything AFTER the bookings section
+--
+-- This file is a placeholder - you'll need to manually create it by:
+-- 1. Opening UNIFIED_SCHEMA_MIGRATION.sql
+-- 2. Finding the bookings section
+-- 3. Commenting it out or removing it
+-- 4. Saving as a new file
+
