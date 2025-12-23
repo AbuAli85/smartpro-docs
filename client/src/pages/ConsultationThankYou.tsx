@@ -523,16 +523,23 @@ export default function ConsultationThankYou() {
                         </p>
                       </div>
                     </div>
-                    <a
-                      href={`https://marketing.thedigitalmorph.com/dashboard/provider/consultations?submission=${submissionId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => trackEvent("consultation_provider_dashboard", { submission_id: submissionId })}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
-                    >
-                      {t("consultation.communication.viewDashboard") || "View Dashboard"}
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
+                    {submissionId ? (
+                      <a
+                        href={`https://marketing.thedigitalmorph.com/dashboard/provider/consultations?submission=${submissionId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => trackEvent("consultation_provider_dashboard", { submission_id: submissionId })}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
+                      >
+                        {t("consultation.communication.viewDashboard") || "View Dashboard"}
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                    ) : (
+                      <span className="inline-flex items-center gap-2 px-4 py-2 bg-gray-400 text-white rounded-lg cursor-not-allowed text-sm font-medium opacity-60">
+                        {t("consultation.communication.viewDashboard") || "View Dashboard"}
+                        <ExternalLink className="h-4 w-4" />
+                      </span>
+                    )}
                   </div>
                 </div>
               )}
@@ -565,12 +572,19 @@ export default function ConsultationThankYou() {
                   </p>
                   <button
                     onClick={() => {
+                      // Double-check submissionId exists before proceeding
+                      if (!submissionId || submissionId === 'undefined') {
+                        console.warn('Cannot upload documents: submissionId is missing');
+                        return;
+                      }
+                      
                       trackEvent("consultation_upload_documents", { submission_id: submissionId });
                       // Open document upload interface or platform
                       const uploadUrl = `https://marketing.thedigitalmorph.com/documents/upload?consultation=${submissionId}`;
                       window.open(uploadUrl, '_blank', 'noopener,noreferrer');
                     }}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                    disabled={!submissionId}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
                   >
                     <Upload className="h-4 w-4" />
                     {t("consultation.documents.upload") || "Upload Documents"}
@@ -585,11 +599,18 @@ export default function ConsultationThankYou() {
                   </p>
                   <button
                     onClick={() => {
+                      // Double-check submissionId exists before proceeding
+                      if (!submissionId || submissionId === 'undefined') {
+                        console.warn('Cannot share resources: submissionId is missing');
+                        return;
+                      }
+                      
                       trackEvent("consultation_provider_share", { submission_id: submissionId });
                       const shareUrl = `https://marketing.thedigitalmorph.com/dashboard/provider/consultations/${submissionId}/share`;
                       window.open(shareUrl, '_blank', 'noopener,noreferrer');
                     }}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                    disabled={!submissionId}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
                   >
                     <Send className="h-4 w-4" />
                     {t("consultation.documents.share") || "Share Resources"}
