@@ -223,7 +223,10 @@ export default function ConsultationThankYou() {
                         {t("consultation.thanks.dataSaved") || "✅ Data saved to database"}
                       </p>
                       <p className="text-xs text-green-700">
-                        {t("consultation.thanks.dataDetails") || `Name: ${consultationData.name || 'N/A'}, Email: ${consultationData.email || 'N/A'}`}
+                        {t("consultation.thanks.dataDetails", {
+                          name: consultationData.name || 'N/A',
+                          email: consultationData.email || 'N/A'
+                        }) || `Name: ${consultationData.name || 'N/A'}, Email: ${consultationData.email || 'N/A'}`}
                       </p>
                     </div>
                   </>
@@ -254,7 +257,9 @@ export default function ConsultationThankYou() {
                     onClick={() => setShowConsultationDetails(!showConsultationDetails)}
                     className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-2"
                   >
-                    {showConsultationDetails ? "Hide Details" : "Show Details"}
+                    {showConsultationDetails 
+                      ? (t("consultation.details.hide") || "Hide Details")
+                      : (t("consultation.details.show") || "Show Details")}
                     <ArrowRight className={cn("h-4 w-4 transition-transform", showConsultationDetails && "rotate-90")} />
                   </button>
                 </div>
@@ -329,7 +334,7 @@ export default function ConsultationThankYou() {
                         {consultationData.businessType && (
                           <div className="flex items-center gap-2">
                             <span className="text-gray-600 font-medium">{t("consultation.details.businessType") || "Business Type"}:</span>
-                            <span className="text-gray-900">{consultationData.businessType}</span>
+                            <span className="text-gray-900">{t(`businessType.${consultationData.businessType}`) || consultationData.businessType}</span>
                           </div>
                         )}
                         {consultationData.services && Array.isArray(consultationData.services) && consultationData.services.length > 0 && (
@@ -338,7 +343,7 @@ export default function ConsultationThankYou() {
                             <div className="flex flex-wrap gap-2 mt-1">
                               {consultationData.services.map((service: string, idx: number) => (
                                 <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs">
-                                  {service}
+                                  {t(`service.${service}`) || service}
                                 </span>
                               ))}
                             </div>
@@ -358,27 +363,28 @@ export default function ConsultationThankYou() {
                           <div className="flex items-center gap-2">
                             <DollarSign className="h-4 w-4 text-gray-400" />
                             <span className="text-gray-600 font-medium">{t("consultation.details.budget") || "Budget"}:</span>
-                            <span className="text-gray-900">{consultationData.budget}</span>
+                            <span className="text-gray-900">{t(`budget.${consultationData.budget}`) || consultationData.budget}</span>
                           </div>
                         )}
                         {consultationData.timeline && (
                           <div className="flex items-center gap-2">
                             <CalendarIcon className="h-4 w-4 text-gray-400" />
                             <span className="text-gray-600 font-medium">{t("consultation.details.timeline") || "Timeline"}:</span>
-                            <span className="text-gray-900">{consultationData.timeline}</span>
+                            <span className="text-gray-900">{t(`timeline.${consultationData.timeline}`) || consultationData.timeline}</span>
                           </div>
                         )}
                         {consultationData.preferredContact && (
                           <div className="flex items-center gap-2">
+                            <MessageCircle className="h-4 w-4 text-gray-400" />
                             <span className="text-gray-600 font-medium">{t("consultation.details.preferredContact") || "Preferred Contact"}:</span>
-                            <span className="text-gray-900">{consultationData.preferredContact}</span>
+                            <span className="text-gray-900">{t(`contact.${consultationData.preferredContact}`) || consultationData.preferredContact}</span>
                           </div>
                         )}
                         {consultationData.preferredTime && (
                           <div className="flex items-center gap-2">
                             <Clock className="h-4 w-4 text-gray-400" />
                             <span className="text-gray-600 font-medium">{t("consultation.details.preferredTime") || "Preferred Time"}:</span>
-                            <span className="text-gray-900">{consultationData.preferredTime}</span>
+                            <span className="text-gray-900">{t(`time.${consultationData.preferredTime}`) || consultationData.preferredTime}</span>
                           </div>
                         )}
                       </div>
