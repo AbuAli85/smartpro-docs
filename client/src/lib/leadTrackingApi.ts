@@ -3,7 +3,9 @@
  * Handles lead progression tracking from consultation → registration
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+// Use environment variable or fallback to relative path for production
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api');
 
 export enum LeadStage {
   CONSULTATION_SUBMITTED = 'consultation_submitted',

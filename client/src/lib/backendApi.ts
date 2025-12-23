@@ -3,7 +3,11 @@
  * Centralized client for communicating with the SmartPro backend API
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+// Use environment variable or fallback to relative path for production
+// In production, if backend is on same domain, use relative path
+// Otherwise, use absolute URL from env var
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api');
 
 export interface ApiError {
   error: string;

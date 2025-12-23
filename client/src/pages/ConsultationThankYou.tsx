@@ -63,7 +63,11 @@ export default function ConsultationThankYou() {
       setConsultationError(null);
       
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+        // Use environment variable or fallback to relative path for production
+        // In production, if backend is on same domain, use relative path
+        // Otherwise, use absolute URL from env var
+        const apiUrl = import.meta.env.VITE_API_URL || 
+          (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api');
         const response = await fetch(`${apiUrl}/consultation/${submissionId}`);
         
         if (response.ok) {

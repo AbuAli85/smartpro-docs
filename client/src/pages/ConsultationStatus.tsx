@@ -45,7 +45,9 @@ export default function ConsultationStatus() {
     const fetchData = async () => {
       try {
         // Fetch consultation details
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+        // Use environment variable or fallback to relative path for production
+        const apiUrl = import.meta.env.VITE_API_URL || 
+          (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api');
         const consultationResponse = await fetch(`${apiUrl}/consultation/${submissionId}`);
         if (consultationResponse.ok) {
           const data = await consultationResponse.json();
