@@ -459,27 +459,47 @@ export default function ConsultationThankYou() {
                 )}
 
                 {/* Schedule Appointment */}
-                <button
-                  onClick={() => {
-                    trackEvent("consultation_schedule_appointment", { submission_id: submissionId });
-                    // Open calendar booking link or platform
-                    const calendarUrl = `https://marketing.thedigitalmorph.com/book?consultation=${submissionId}&email=${encodeURIComponent(email || '')}`;
-                    window.open(calendarUrl, '_blank', 'noopener,noreferrer');
-                  }}
-                  className="flex flex-col items-center gap-3 p-4 bg-white rounded-lg border-2 border-indigo-200 hover:border-indigo-400 hover:shadow-md transition-all group"
-                >
-                  <div className="p-3 bg-indigo-100 rounded-full group-hover:bg-indigo-200 transition-colors">
-                    <Calendar className="h-6 w-6 text-indigo-600" />
-                  </div>
-                  <div className="text-center">
-                    <h3 className="font-semibold text-gray-900 mb-1">
-                      {t("consultation.communication.schedule") || "Schedule Call"}
-                    </h3>
-                    <p className="text-xs text-gray-600">
-                      {t("consultation.communication.scheduleDesc") || "Book a consultation"}
-                    </p>
-                  </div>
-                </button>
+                {submissionId ? (
+                  <button
+                    onClick={() => {
+                      trackEvent("consultation_schedule_appointment", { submission_id: submissionId });
+                      // Open calendar booking link or platform
+                      const calendarUrl = `https://marketing.thedigitalmorph.com/book?consultation=${submissionId}&email=${encodeURIComponent(email || '')}`;
+                      window.open(calendarUrl, '_blank', 'noopener,noreferrer');
+                    }}
+                    className="flex flex-col items-center gap-3 p-4 bg-white rounded-lg border-2 border-indigo-200 hover:border-indigo-400 hover:shadow-md transition-all group"
+                  >
+                    <div className="p-3 bg-indigo-100 rounded-full group-hover:bg-indigo-200 transition-colors">
+                      <Calendar className="h-6 w-6 text-indigo-600" />
+                    </div>
+                    <div className="text-center">
+                      <h3 className="font-semibold text-gray-900 mb-1">
+                        {t("consultation.communication.schedule") || "Schedule Call"}
+                      </h3>
+                      <p className="text-xs text-gray-600">
+                        {t("consultation.communication.scheduleDesc") || "Book a consultation"}
+                      </p>
+                    </div>
+                  </button>
+                ) : (
+                  <button
+                    disabled
+                    className="flex flex-col items-center gap-3 p-4 bg-gray-100 rounded-lg border-2 border-gray-200 cursor-not-allowed opacity-60"
+                    title={t("consultation.communication.scheduleDisabled") || "Submission ID required"}
+                  >
+                    <div className="p-3 bg-gray-200 rounded-full">
+                      <Calendar className="h-6 w-6 text-gray-400" />
+                    </div>
+                    <div className="text-center">
+                      <h3 className="font-semibold text-gray-500 mb-1">
+                        {t("consultation.communication.schedule") || "Schedule Call"}
+                      </h3>
+                      <p className="text-xs text-gray-500">
+                        {t("consultation.communication.scheduleDisabled") || "Not available"}
+                      </p>
+                    </div>
+                  </button>
+                )}
               </div>
 
               {/* Provider Dashboard Link (for providers viewing this) */}
