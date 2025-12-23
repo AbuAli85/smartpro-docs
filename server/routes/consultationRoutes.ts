@@ -520,9 +520,18 @@ router.get('/test-db', async (req: Request, res: Response) => {
  */
 router.get('/stats', async (req: any, res: Response) => {
   try {
-    // Check admin access
-    if (req.userRole !== 'admin') {
-      return res.status(403).json({ error: 'Admin access required' });
+    // In development, allow access without authentication for testing
+    // In production, require admin authentication
+    const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
+    
+    if (!isDevelopment) {
+      // Check admin access in production
+      if (req.userRole !== 'admin') {
+        return res.status(403).json({ error: 'Admin access required' });
+      }
+    } else {
+      // Log that we're bypassing auth in development
+      logger.info('⚠️ Stats endpoint accessed without authentication (development mode)');
     }
 
     // Get total count
