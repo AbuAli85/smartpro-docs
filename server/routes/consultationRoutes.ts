@@ -8,38 +8,9 @@ import { validate } from '../middleware/validation.js';
 import { z } from 'zod';
 import { webhookClient } from '../lib/webhookClient.js';
 import { logger } from '../services/logger.js';
+import { supabase } from '../lib/supabaseClient.js';
 
 const router = express.Router();
-
-// Initialize Prisma client
-let prisma: any;
-let prismaError: string | null = null;
-try {
-  const { PrismaClient } = require('@prisma/client');
-  prisma = new PrismaClient();
-  
-  // Test connection on startup
-  prisma.$connect()
-    .then(() => {
-      logger.info('✅ Prisma connected to database successfully');
-    })
-    .catch((err: any) => {
-      const errorMsg = err?.message || 'Unknown error';
-      logger.error('❌ Prisma failed to connect to database', err, {
-        message: errorMsg,
-        code: err?.code,
-        DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET',
-      });
-      prismaError = errorMsg;
-    });
-} catch (error: any) {
-  const errorMsg = error?.message || 'Unknown error';
-  logger.error('❌ Failed to initialize Prisma client', error, {
-    message: errorMsg,
-    DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET',
-  });
-  prismaError = errorMsg;
-}
 
 // Validation schema for consultation form
 const consultationSchema = z.object({
@@ -87,134 +58,137 @@ router.post(
       let submissionId: string | null = null;
       let isDuplicate = false;
       
-      if (prisma) {
-        try {
-          const recentSubmission = await prisma.consultationSubmission.findFirst({
-            where: {
-              email: formData.email,
-              createdAt: {
-                gte: new Date(Date.now() - 5 * 60 * 1000), // Last 5 minutes
-              },
-            },
-            orderBy: {
-              createdAt: 'desc',
-            },
+      try {
+        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+        
+        const { data: recentSubmissions, error: duplicateError } = await supabase
+          .from('consultation_submissions')
+          .select('id, submission_id, created_at, webhook_sent')
+          .eq('email', formData.email)
+          .gte('created_at', fiveMinutesAgo)
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (duplicateError) {
+          logger.warn('Error checking for duplicate submission', duplicateError);
+        } else if (recentSubmissions && recentSubmissions.length > 0) {
+          const recentSubmission = recentSubmissions[0];
+          const timeSinceSubmission = Date.now() - new Date(recentSubmission.created_at).getTime();
+          
+          logger.warn('Duplicate submission detected - preventing duplicate email', {
+            email: formData.email,
+            existingSubmissionId: recentSubmission.submission_id,
+            timeSinceSubmission: `${Math.round(timeSinceSubmission / 1000)} seconds`,
+            webhookAlreadySent: recentSubmission.webhook_sent,
           });
 
-          if (recentSubmission) {
-            const timeSinceSubmission = Date.now() - recentSubmission.createdAt.getTime();
-            logger.warn('Duplicate submission detected - preventing duplicate email', {
-              email: formData.email,
-              existingSubmissionId: recentSubmission.id,
-              timeSinceSubmission: `${Math.round(timeSinceSubmission / 1000)} seconds`,
-              webhookAlreadySent: recentSubmission.webhookSent,
+          // If webhook was already sent, don't send again
+          if (recentSubmission.webhook_sent) {
+            isDuplicate = true;
+            submissionId = recentSubmission.submission_id;
+            
+            // Return success but indicate it's a duplicate (no email sent)
+            return res.status(200).json({
+              success: true,
+              message: 'Submission already received. We will contact you soon.',
+              submissionId: recentSubmission.submission_id,
+              duplicate: true,
+              emailSent: false,
             });
-
-            // If webhook was already sent, don't send again
-            if (recentSubmission.webhookSent) {
-              isDuplicate = true;
-              submissionId = recentSubmission.id;
-              
-              // Return success but indicate it's a duplicate (no email sent)
-              return res.status(200).json({
-                success: true,
-                message: 'Submission already received. We will contact you soon.',
-                submissionId: recentSubmission.id,
-                duplicate: true,
-                emailSent: false,
-              });
-            }
-            // If webhook wasn't sent, continue to send it (retry scenario)
           }
-        } catch (duplicateCheckError: any) {
-          logger.warn('Error checking for duplicate submission', duplicateCheckError);
-          // Continue with submission even if duplicate check fails
+          // If webhook wasn't sent, continue to send it (retry scenario)
         }
+      } catch (duplicateCheckError: any) {
+        logger.warn('Error checking for duplicate submission', duplicateCheckError);
+        // Continue with submission even if duplicate check fails
       }
 
-      // Save to database (if Prisma available)
-      if (!prisma) {
-        logger.error('❌ Prisma client not available - cannot save to database', undefined, {
-          prismaError: prismaError || 'Prisma not initialized',
-          DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET - This is the problem!',
+      // Save to database using Supabase
+      try {
+        // Generate unique submission ID
+        const uniqueSubmissionId = `sub_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+        
+        logger.info('💾 Attempting to save consultation to database', {
+          email: formData.email,
+          submissionId: uniqueSubmissionId,
         });
-      } else {
-        try {
-          // Generate unique submission ID
-          const uniqueSubmissionId = `sub_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
-          
-          logger.info('💾 Attempting to save consultation to database', {
+        
+        const { data: submission, error: insertError } = await supabase
+          .from('consultation_submissions')
+          .insert({
+            submission_id: uniqueSubmissionId,
+            name: formData.name,
             email: formData.email,
-            submissionId: uniqueSubmissionId,
-          });
-          
-          const submission = await prisma.consultationSubmission.create({
-            data: {
-              submissionId: uniqueSubmissionId, // Set submissionId explicitly
-              name: formData.name,
-              email: formData.email,
-              phone: formData.phone,
-              location: formData.location,
-              company: formData.company,
-              businessType: formData.businessType,
-              services: formData.services,
-              primaryService: formData.services[0] || 'other',
-              budget: formData.budget,
-              timeline: formData.timeline,
-              preferredContact: formData.preferredContact,
-              preferredTime: formData.preferredTime,
-              message: formData.message,
-              language: formData.language,
-              source: 'consultation-form',
-              ipAddress: typeof ipAddress === 'string' ? ipAddress : JSON.stringify(ipAddress),
-              userAgent,
-              referrer,
-            },
-          });
-          submissionId = submission.submissionId || submission.id;
-          
-          // Create lead entry automatically (only for new submissions)
-          if (!isDuplicate && submissionId) {
-            try {
-              await prisma.lead.create({
-                data: {
-                  submissionId: submissionId,
-                  email: formData.email,
-                  currentStage: 'consultation_submitted',
-                  stages: ['consultation_submitted'],
-                  metadata: {
-                    name: formData.name,
-                    services: formData.services,
-                    language: formData.language,
-                    submittedAt: new Date().toISOString(),
-                  },
-                  source: 'consultation_form',
-                },
-              });
-              logger.info('Lead entry created automatically', { submissionId });
-            } catch (leadError: any) {
-              // Ignore if lead already exists (duplicate submission)
-              if (!leadError.message?.includes('Unique constraint')) {
-                logger.warn('Failed to create lead entry', leadError);
-              }
-            }
-          }
-          
-          logger.info('✅ Consultation submission saved to database successfully', { 
-            submissionId,
-            email: formData.email,
-          });
-        } catch (dbError: any) {
-          logger.error('❌ Failed to save consultation to database', dbError, {
-            email: formData.email,
-            errorMessage: dbError.message,
-            errorCode: dbError.code,
-            errorMeta: dbError.meta,
-            DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET',
-            stack: dbError.stack,
-          });
-          // Continue with webhook even if database save fails
+            phone: formData.phone || null,
+            location: formData.location || null,
+            company: formData.company || null,
+            business_type: formData.businessType || null,
+            services: formData.services,
+            primary_service: formData.services[0] || 'other',
+            budget: formData.budget || null,
+            timeline: formData.timeline || null,
+            preferred_contact: formData.preferredContact || null,
+            preferred_time: formData.preferredTime || null,
+            message: formData.message || null,
+            language: formData.language || 'en',
+            source: 'consultation-form',
+            ip_address: typeof ipAddress === 'string' ? ipAddress : JSON.stringify(ipAddress),
+            user_agent: userAgent || null,
+            referrer: referrer || null,
+            status: 'pending',
+            webhook_sent: false,
+          })
+          .select()
+          .single();
+        
+        if (insertError) {
+          throw insertError;
         }
+        
+        submissionId = submission?.submission_id || uniqueSubmissionId;
+        
+        // Create lead entry automatically (only for new submissions)
+        if (!isDuplicate && submissionId) {
+          try {
+            const { error: leadError } = await supabase
+              .from('leads')
+              .insert({
+                submission_id: submissionId,
+                email: formData.email,
+                current_stage: 'consultation_submitted',
+                stages: ['consultation_submitted'],
+                metadata: {
+                  name: formData.name,
+                  services: formData.services,
+                  language: formData.language,
+                  submittedAt: new Date().toISOString(),
+                },
+                source: 'consultation_form',
+              });
+            
+            if (leadError && !leadError.message?.includes('duplicate') && !leadError.message?.includes('unique')) {
+              logger.warn('Failed to create lead entry', leadError);
+            } else {
+              logger.info('Lead entry created automatically', { submissionId });
+            }
+          } catch (leadError: any) {
+            logger.warn('Failed to create lead entry', leadError);
+          }
+        }
+        
+        logger.info('✅ Consultation submission saved to database successfully', { 
+          submissionId,
+          email: formData.email,
+        });
+      } catch (dbError: any) {
+        logger.error('❌ Failed to save consultation to database', dbError, {
+          email: formData.email,
+          errorMessage: dbError.message,
+          errorCode: dbError.code,
+          errorDetails: dbError.details,
+          stack: dbError.stack,
+        });
+        // Continue with webhook even if database save fails
       }
 
       // Forward to Make.com webhook
@@ -400,16 +374,21 @@ router.post(
         });
 
         // Update database record with webhook status
-        if (prisma && uniqueSubmissionId) {
+        if (uniqueSubmissionId) {
           try {
-            await prisma.consultationSubmission.update({
-              where: { submissionId: uniqueSubmissionId }, // Use submissionId, not id
-              data: {
-                webhookSent: webhookResponse.success,
-                webhookSentAt: new Date(),
+            const { error: updateError } = await supabase
+              .from('consultation_submissions')
+              .update({
+                webhook_sent: webhookResponse.success,
+                webhook_sent_at: webhookResponse.success ? new Date().toISOString() : null,
                 status: webhookResponse.success ? 'contacted' : 'pending',
-              },
-            });
+              })
+              .eq('submission_id', uniqueSubmissionId);
+            
+            if (updateError) {
+              throw updateError;
+            }
+            
             logger.info('Webhook status updated in database', {
               submissionId: uniqueSubmissionId,
               webhookSent: webhookResponse.success,
@@ -482,26 +461,22 @@ router.post(
  */
 router.get('/test-db', async (req: Request, res: Response) => {
   try {
-    if (!prisma) {
-      return res.status(503).json({ 
-        error: 'Database not available',
-        prismaError: prismaError || 'Prisma not initialized',
-        DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET',
-      });
-    }
-
-    // Test connection
-    await prisma.$queryRaw`SELECT 1`;
+    // Test connection by querying consultation_submissions table
+    const { data, error, count } = await supabase
+      .from('consultation_submissions')
+      .select('*', { count: 'exact', head: true });
     
-    // Check if tables exist
-    const tableCount = await prisma.consultationSubmission.count();
+    if (error) {
+      throw error;
+    }
     
     return res.json({
       success: true,
       message: 'Database connection successful',
       tableExists: true,
-      recordCount: tableCount,
-      DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET',
+      recordCount: count || 0,
+      SUPABASE_URL: process.env.SUPABASE_URL ? 'SET' : 'NOT SET',
+      SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET',
     });
   } catch (error: any) {
     logger.error('Database connection test failed', error);
@@ -509,7 +484,9 @@ router.get('/test-db', async (req: Request, res: Response) => {
       success: false,
       error: error?.message || 'Unknown error',
       code: error?.code,
-      DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET',
+      details: error?.details,
+      SUPABASE_URL: process.env.SUPABASE_URL ? 'SET' : 'NOT SET',
+      SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET',
     });
   }
 });
@@ -520,38 +497,40 @@ router.get('/test-db', async (req: Request, res: Response) => {
  */
 router.get('/stats', async (req: any, res: Response) => {
   try {
-    if (!prisma) {
-      return res.status(503).json({ error: 'Database not available' });
-    }
-
     // Check admin access
     if (req.userRole !== 'admin') {
       return res.status(403).json({ error: 'Admin access required' });
     }
 
-    const stats = await prisma.consultationSubmission.groupBy({
-      by: ['status'],
-      _count: {
-        id: true,
-      },
-    });
+    // Get total count
+    const { count: total } = await supabase
+      .from('consultation_submissions')
+      .select('*', { count: 'exact', head: true });
 
-    const total = await prisma.consultationSubmission.count();
-    const recent = await prisma.consultationSubmission.count({
-      where: {
-        createdAt: {
-          gte: new Date(Date.now() - 24 * 60 * 60 * 1000), // Last 24 hours
-        },
-      },
-    });
+    // Get recent count (last 24 hours)
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const { count: recent } = await supabase
+      .from('consultation_submissions')
+      .select('*', { count: 'exact', head: true })
+      .gte('created_at', oneDayAgo);
+
+    // Get stats by status
+    const { data: allSubmissions } = await supabase
+      .from('consultation_submissions')
+      .select('status');
+
+    const byStatus: Record<string, number> = {};
+    if (allSubmissions) {
+      allSubmissions.forEach((submission) => {
+        const status = submission.status || 'pending';
+        byStatus[status] = (byStatus[status] || 0) + 1;
+      });
+    }
 
     res.json({
-      total,
-      recent,
-      byStatus: stats.reduce((acc: any, stat: any) => {
-        acc[stat.status] = stat._count.id;
-        return acc;
-      }, {}),
+      total: total || 0,
+      recent: recent || 0,
+      byStatus,
     });
   } catch (error: any) {
     logger.error('Error fetching consultation stats', error);
@@ -567,41 +546,55 @@ router.get('/:submissionId', async (req: Request, res: Response) => {
   try {
     const { submissionId } = req.params;
 
-    if (!prisma) {
-      return res.status(503).json({ error: 'Database not available' });
-    }
-
     // Find consultation by submission ID
-    const consultation = await prisma.consultationSubmission.findFirst({
-      where: {
-        submissionId: submissionId,
-      },
-      select: {
-        id: true,
-        submissionId: true,
-        name: true,
-        email: true,
-        phone: true,
-        location: true,
-        company: true,
-        businessType: true,
-        services: true,
-        budget: true,
-        timeline: true,
-        preferredContact: true,
-        preferredTime: true,
-        message: true,
-        language: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    const { data: consultation, error } = await supabase
+      .from('consultation_submissions')
+      .select(`
+        id,
+        submission_id,
+        name,
+        email,
+        phone,
+        location,
+        company,
+        business_type,
+        services,
+        budget,
+        timeline,
+        preferred_contact,
+        preferred_time,
+        message,
+        language,
+        created_at,
+        updated_at
+      `)
+      .eq('submission_id', submissionId)
+      .single();
 
-    if (!consultation) {
+    if (error || !consultation) {
       return res.status(404).json({ error: 'Consultation not found' });
     }
 
-    res.json(consultation);
+    // Map database column names to API response format
+    res.json({
+      id: consultation.id,
+      submissionId: consultation.submission_id,
+      name: consultation.name,
+      email: consultation.email,
+      phone: consultation.phone,
+      location: consultation.location,
+      company: consultation.company,
+      businessType: consultation.business_type,
+      services: consultation.services,
+      budget: consultation.budget,
+      timeline: consultation.timeline,
+      preferredContact: consultation.preferred_contact,
+      preferredTime: consultation.preferred_time,
+      message: consultation.message,
+      language: consultation.language,
+      createdAt: consultation.created_at,
+      updatedAt: consultation.updated_at,
+    });
   } catch (error: any) {
     logger.error('Error fetching consultation', error, { submissionId: req.params.submissionId });
     res.status(500).json({ error: error.message || 'Failed to fetch consultation' });
