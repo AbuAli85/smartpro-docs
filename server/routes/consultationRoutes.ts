@@ -579,7 +579,7 @@ router.get('/:submissionId', async (req: Request, res: Response) => {
     const { submissionId } = req.params;
 
     // Find consultation by submission ID
-    const { data: consultation, error } = await supabase
+    const { data, error } = await supabase
       .from('consultation_submissions')
       .select(`
         id,
@@ -601,9 +601,27 @@ router.get('/:submissionId', async (req: Request, res: Response) => {
         updated_at
       `)
       .eq('submission_id', submissionId)
-      .single();
+      .maybeSingle(); // Use maybeSingle() to handle 0 or 1 results gracefully
 
-    if (error || !consultation) {
+    // Handle Supabase errors
+    if (error) {
+      // If error is "PGRST116" (no rows returned), that's expected for not found
+      if (error.code === 'PGRST116') {
+        return res.status(404).json({ error: 'Consultation not found' });
+      }
+      logger.error('Supabase error fetching consultation', error, { submissionId });
+      return res.status(500).json({ error: 'Database error', details: error.message });
+    }
+
+    // Handle case where data is null or undefined
+    if (!data) {
+      return res.status(404).json({ error: 'Consultation not found' });
+    }
+
+    // Handle case where data might be an array (shouldn't happen with maybeSingle, but safety check)
+    const consultation = Array.isArray(data) ? data[0] : data;
+    
+    if (!consultation) {
       return res.status(404).json({ error: 'Consultation not found' });
     }
 

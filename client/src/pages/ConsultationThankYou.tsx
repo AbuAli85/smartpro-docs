@@ -68,8 +68,15 @@ export default function ConsultationThankYou() {
         
         if (response.ok) {
           const data = await response.json();
-          setConsultationData(data);
-          console.log('✅ Consultation data fetched from database:', data);
+          // Handle case where API might return an array (backward compatibility)
+          const consultation = Array.isArray(data) ? data[0] : data;
+          if (consultation) {
+            setConsultationData(consultation);
+            console.log('✅ Consultation data fetched from database:', consultation);
+          } else {
+            setConsultationError('Invalid consultation data received');
+            console.warn('⚠️ Invalid consultation data:', data);
+          }
         } else if (response.status === 404) {
           setConsultationError('Consultation not found in database');
           console.warn('⚠️ Consultation not found:', submissionId);
