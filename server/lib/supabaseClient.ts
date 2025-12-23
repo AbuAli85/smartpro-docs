@@ -3,6 +3,9 @@
  * Uses service_role key for full database access (bypasses RLS)
  */
 
+// Ensure environment variables are loaded
+import '../config/env.js';
+
 import { createClient } from '@supabase/supabase-js';
 import { logger } from '../services/logger.js';
 

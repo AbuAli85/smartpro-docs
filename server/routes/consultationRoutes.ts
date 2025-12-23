@@ -462,12 +462,25 @@ router.post(
 router.get('/test-db', async (req: Request, res: Response) => {
   try {
     // Test connection by querying consultation_submissions table
-    const { data, error, count } = await supabase
+    // First, try a simple count query
+    const { count, error } = await supabase
       .from('consultation_submissions')
       .select('*', { count: 'exact', head: true });
     
     if (error) {
+      logger.error('Supabase query error', error);
       throw error;
+    }
+    
+    // Also verify we can actually query a record
+    const { data: sampleData, error: sampleError } = await supabase
+      .from('consultation_submissions')
+      .select('id')
+      .limit(1);
+    
+    if (sampleError && sampleError.code !== 'PGRST116') {
+      // PGRST116 is "no rows returned" which is fine for an empty table
+      logger.warn('Sample query warning', sampleError);
     }
     
     return res.json({
@@ -475,18 +488,28 @@ router.get('/test-db', async (req: Request, res: Response) => {
       message: 'Database connection successful',
       tableExists: true,
       recordCount: count || 0,
+      canQuery: !sampleError || sampleError.code === 'PGRST116',
       SUPABASE_URL: process.env.SUPABASE_URL ? 'SET' : 'NOT SET',
       SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET',
+      timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
-    logger.error('Database connection test failed', error);
+    logger.error('Database connection test failed', error, {
+      errorMessage: error?.message,
+      errorCode: error?.code,
+      errorDetails: error?.details,
+      errorHint: error?.hint,
+    });
+    
     return res.status(500).json({
       success: false,
       error: error?.message || 'Unknown error',
       code: error?.code,
       details: error?.details,
+      hint: error?.hint,
       SUPABASE_URL: process.env.SUPABASE_URL ? 'SET' : 'NOT SET',
       SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET',
+      timestamp: new Date().toISOString(),
     });
   }
 });

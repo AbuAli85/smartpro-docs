@@ -3,6 +3,9 @@
  * Main server setup for SmartPro API
  */
 
+// Load environment variables FIRST (before any other imports)
+import './config/env.js';
+
 import express, { Request, Response, NextFunction } from 'express';
 import { logger } from './services/logger.js';
 import { rateLimiters } from './middleware/rateLimit.js';
