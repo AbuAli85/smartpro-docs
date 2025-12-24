@@ -23,24 +23,83 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+    // Get initial session - with retry logic
+    const initializeSession = async () => {
+      try {
+        // First attempt
+        let { data: { session }, error } = await supabase.auth.getSession()
+        
+        // If no session, wait a bit and try again (in case other platform just logged in)
+        if (!session && !error) {
+          await new Promise(resolve => setTimeout(resolve, 500))
+          const retry = await supabase.auth.getSession()
+          session = retry.data.session
+        }
+        
+        setSession(session)
+        setUser(session?.user ?? null)
+        setLoading(false)
+      } catch (error) {
+        console.error('Error getting session:', error)
+        setLoading(false)
+      }
+    }
+
+    initializeSession()
 
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state changed:', event, session?.user?.email)
       setSession(session)
       setUser(session?.user ?? null)
       setLoading(false)
     })
 
-    return () => subscription.unsubscribe()
-  }, [])
+    // Listen for storage events (cross-tab/cross-platform sync)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'sb-auth-token' || e.key?.startsWith('sb-')) {
+        console.log('Storage changed, refreshing session:', e.key)
+        // Refresh session when localStorage changes
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          setSession(session)
+          setUser(session?.user ?? null)
+        })
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+
+    // Also listen for custom events (for same-tab updates)
+    const handleCustomStorage = () => {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setSession(session)
+        setUser(session?.user ?? null)
+      })
+    }
+
+    window.addEventListener('auth-state-change', handleCustomStorage)
+
+    // Periodic session check (every 2 seconds) as fallback
+    // This helps detect sessions created by other platforms
+    const intervalId = setInterval(() => {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        // Only update if session changed (to avoid unnecessary re-renders)
+        if (session?.user?.id !== user?.id) {
+          setSession(session)
+          setUser(session?.user ?? null)
+        }
+      })
+    }, 2000)
+
+    return () => {
+      subscription.unsubscribe()
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('auth-state-change', handleCustomStorage)
+      clearInterval(intervalId)
+    }
+  }, [user?.id])
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -51,7 +110,21 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
 
       if (error) throw error
 
-      if (data.user) {
+      if (data.user && data.session) {
+        // Ensure session is set
+        setSession(data.session)
+        setUser(data.user)
+        
+        // Dispatch custom event to notify other tabs/platforms
+        window.dispatchEvent(new Event('auth-state-change'))
+        
+        // Also trigger storage event for cross-tab sync
+        if (typeof window !== 'undefined' && window.localStorage) {
+          // Trigger a storage event by updating a dummy key
+          const current = localStorage.getItem('sb-auth-sync') || '0'
+          localStorage.setItem('sb-auth-sync', String(Number(current) + 1))
+        }
+        
         toast.success('Signed in successfully!')
       }
     } catch (error: any) {
@@ -87,6 +160,20 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
     try {
       const { error } = await supabase.auth.signOut()
       if (error) throw error
+      
+      // Clear session state
+      setSession(null)
+      setUser(null)
+      
+      // Dispatch custom event to notify other tabs/platforms
+      window.dispatchEvent(new Event('auth-state-change'))
+      
+      // Also trigger storage event for cross-tab sync
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const current = localStorage.getItem('sb-auth-sync') || '0'
+        localStorage.setItem('sb-auth-sync', String(Number(current) + 1))
+      }
+      
       toast.success('Signed out successfully')
     } catch (error: any) {
       toast.error(error?.message || 'Failed to sign out')
