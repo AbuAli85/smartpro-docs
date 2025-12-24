@@ -114,10 +114,7 @@ export default function SignInPage() {
               </p>
               <p className="text-gray-600">
                 <button
-                  onClick={() => {
-                    // TODO: Implement password reset page
-                    toast.info('Password reset feature coming soon. Please contact support for assistance.');
-                  }}
+                  onClick={() => setLocation('/marketplace/auth/forgot-password')}
                   className="text-blue-600 hover:underline"
                 >
                   Forgot password?

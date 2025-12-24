@@ -11,6 +11,8 @@ interface SupabaseAuthContextType {
   signUp: (email: string, password: string, fullName?: string) => Promise<void>
   signOut: () => Promise<void>
   refreshSession: () => Promise<void>
+  resetPassword: (email: string) => Promise<void>
+  updatePassword: (newPassword: string) => Promise<void>
 }
 
 const SupabaseAuthContext = createContext<SupabaseAuthContextType | undefined>(undefined)
@@ -105,6 +107,36 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  const resetPassword = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/marketplace/auth/reset-password`,
+      })
+
+      if (error) throw error
+
+      toast.success('Password reset email sent! Please check your inbox.')
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to send password reset email')
+      throw error
+    }
+  }
+
+  const updatePassword = async (newPassword: string) => {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      })
+
+      if (error) throw error
+
+      toast.success('Password updated successfully!')
+    } catch (error: any) {
+      toast.error(error?.message || 'Failed to update password')
+      throw error
+    }
+  }
+
   return (
     <SupabaseAuthContext.Provider
       value={{
@@ -115,6 +147,8 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
         signUp,
         signOut,
         refreshSession,
+        resetPassword,
+        updatePassword,
       }}
     >
       {children}

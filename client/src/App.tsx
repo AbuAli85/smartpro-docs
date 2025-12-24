@@ -97,8 +97,12 @@ const ServicesPage = lazyWithErrorHandling(() => import("./pages/marketplace/ser
 const ServiceCreatePage = lazyWithErrorHandling(() => import("./pages/marketplace/services/create"));
 const ServiceDetailPage = lazyWithErrorHandling(() => import("./pages/marketplace/services/[id]"));
 const ServiceEditPage = lazyWithErrorHandling(() => import("./pages/marketplace/services/[id]/edit"));
+const BookServicePage = lazyWithErrorHandling(() => import("./pages/marketplace/services/[id]/book"));
+const DashboardPage = lazyWithErrorHandling(() => import("./pages/marketplace/dashboard"));
 const SignInPage = lazyWithErrorHandling(() => import("./pages/marketplace/auth/sign-in"));
 const SignUpPage = lazyWithErrorHandling(() => import("./pages/marketplace/auth/sign-up"));
+const ForgotPasswordPage = lazyWithErrorHandling(() => import("./pages/marketplace/auth/forgot-password"));
+const ResetPasswordPage = lazyWithErrorHandling(() => import("./pages/marketplace/auth/reset-password"));
 
 import { ToastContainer } from "./components/ToastContainer";
 // Lazy load non-critical widgets to improve INP/LCP
@@ -186,10 +190,13 @@ function Router() {
         {/* Marketplace Routes */}
         <Route path={"/marketplace/services"} component={ServicesPage} />
         <Route path={"/marketplace/services/create"} component={ServiceCreatePage} />
+        <Route path={"/marketplace/services/:id/book"} component={BookServicePage} />
         <Route path={"/marketplace/services/:id/edit"} component={ServiceEditPage} />
         <Route path={"/marketplace/services/:id"} component={ServiceDetailPage} />
         <Route path={"/marketplace/auth/sign-in"} component={SignInPage} />
         <Route path={"/marketplace/auth/sign-up"} component={SignUpPage} />
+        <Route path={"/marketplace/auth/forgot-password"} component={ForgotPasswordPage} />
+        <Route path={"/marketplace/auth/reset-password"} component={ResetPasswordPage} />
         
         <Route path={"/404"} component={NotFound} />
         {/* Final fallback route */}
