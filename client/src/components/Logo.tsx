@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { OptimizedImage } from "./OptimizedImage";
 
 interface LogoProps {
   showTagline?: boolean;
@@ -9,16 +10,16 @@ interface LogoProps {
 export default function Logo({ showTagline = false, className = "", size = "md" }: LogoProps) {
   const sizeClasses = {
     sm: {
-      height: "h-12",
-      width: "w-auto",
+      height: "h-10 sm:h-12",
+      maxWidth: "max-w-[180px] sm:max-w-[220px]",
     },
     md: {
-      height: "h-16",
-      width: "w-auto",
+      height: "h-14 sm:h-16",
+      maxWidth: "max-w-[240px] sm:max-w-[280px]",
     },
     lg: {
-      height: "h-24",
-      width: "w-auto",
+      height: "h-20 sm:h-24",
+      maxWidth: "max-w-[320px] sm:max-w-[400px]",
     },
   };
 
@@ -27,16 +28,24 @@ export default function Logo({ showTagline = false, className = "", size = "md" 
   return (
     <Link href="/">
       <div className={`flex flex-col items-start ${className}`}>
-        <img
-          src="/logo.png"
+        <OptimizedImage
+          src="/Logo.png"
           alt="Smart PRO - ONE-STATION BUSINESS SOLUTIONS!"
-          className={`${currentSize.height} ${currentSize.width} object-contain`}
+          className={`${currentSize.height} ${currentSize.maxWidth} w-auto object-contain`}
+          priority={true}
+          objectFit="contain"
           onError={(e) => {
-            // Fallback if logo.png doesn't exist, try other common names
+            // Fallback if Logo.png doesn't exist, try other common names
             const target = e.target as HTMLImageElement;
-            if (target.src.includes('logo.png')) {
+            if (target.src.includes('Logo.png')) {
+              target.src = '/logo.png';
+            } else if (target.src.includes('logo.png')) {
+              target.src = '/Logo.svg';
+            } else if (target.src.includes('Logo.svg')) {
               target.src = '/logo.svg';
             } else if (target.src.includes('logo.svg')) {
+              target.src = '/Logo.jpg';
+            } else if (target.src.includes('Logo.jpg')) {
               target.src = '/logo.jpg';
             }
           }}
