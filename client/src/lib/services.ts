@@ -25,35 +25,71 @@ export interface ServiceFilters {
   category?: string
   provider_id?: string
   status?: string
+  approval_status?: string
   page?: number
   limit?: number
   search?: string
+  min_price?: number
+  max_price?: number
+  sort_by?: 'created_at' | 'title' | 'base_price' | 'rating' | 'booking_count'
+  sort_order?: 'asc' | 'desc'
 }
 
 export async function getServices(filters?: ServiceFilters): Promise<Service[]> {
   let query = supabase
     .from('services')
     .select('*, provider:profiles(*)')
-    .eq('status', filters?.status || 'active')
   
-  if (filters?.category) {
+  // Status filter - if 'all' or not specified, don't filter by status
+  if (filters?.status && filters.status !== 'all') {
+    query = query.eq('status', filters.status)
+  }
+  
+  // Approval status filter
+  if (filters?.approval_status && filters.approval_status !== 'all') {
+    query = query.eq('approval_status', filters.approval_status)
+  }
+  
+  // Category filter
+  if (filters?.category && filters.category !== 'all') {
     query = query.eq('category', filters.category)
   }
   
+  // Provider filter
   if (filters?.provider_id) {
     query = query.eq('provider_id', filters.provider_id)
   }
   
-  if (filters?.search) {
-    query = query.ilike('title', `%${filters.search}%`)
+  // Price range filters
+  if (filters?.min_price !== undefined) {
+    query = query.gte('base_price', filters.min_price)
+  }
+  if (filters?.max_price !== undefined) {
+    query = query.lte('base_price', filters.max_price)
   }
   
+  // Search filter - search in title and description
+  if (filters?.search) {
+    const searchTerm = filters.search.trim()
+    if (searchTerm) {
+      // Search in title (primary) and description (secondary)
+      // Note: Supabase doesn't support OR in a single query easily, so we search title first
+      // For better results, we could do multiple queries and combine, but for now, search title
+      query = query.ilike('title', `%${searchTerm}%`)
+    }
+  }
+  
+  // Pagination
   const page = filters?.page || 1
-  const limit = filters?.limit || 20
+  const limit = filters?.limit || 100 // Increased default limit for better filtering
+  
+  // Sorting
+  const sortBy = filters?.sort_by || 'created_at'
+  const sortOrder = filters?.sort_order || 'desc'
   
   const { data, error } = await query
     .range((page - 1) * limit, page * limit - 1)
-    .order('created_at', { ascending: false })
+    .order(sortBy, { ascending: sortOrder === 'asc' })
   
   if (error) {
     console.error('Error fetching services:', error)

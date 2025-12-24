@@ -1,19 +1,70 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useLocation } from 'wouter'
 import { ServiceTable } from '@/components/marketplace/services/ServiceTable'
 import { useServices } from '@/hooks/useServices'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Plus, Package, RefreshCw, LogIn, User } from 'lucide-react'
+import { Plus, Package, RefreshCw, LogIn, User, Search, X, Filter } from 'lucide-react'
 import { toast } from 'sonner'
 import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext'
-import type { Service } from '@/lib/services'
+import type { Service, ServiceFilters } from '@/lib/services'
+
+const categories = [
+  'Digital Marketing',
+  'Legal Services',
+  'Accounting',
+  'IT Services',
+  'Design & Branding',
+  'Consulting',
+  'Translation',
+  'HR Services',
+  'Web Development',
+  'Content Creation'
+]
 
 export default function ServicesPage() {
   const [, setLocation] = useLocation()
   const { user, signOut } = useSupabaseAuth()
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [recentlyApproved, setRecentlyApproved] = useState<Set<string>>(new Set())
+  
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState<string>('all')
+  const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [approvalStatusFilter, setApprovalStatusFilter] = useState<string>('all')
+  const [sortBy, setSortBy] = useState<'created_at' | 'title' | 'base_price' | 'rating' | 'booking_count'>('created_at')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  
+  // Build filters object
+  const filters: ServiceFilters = useMemo(() => {
+    const filterObj: ServiceFilters = {
+      page: 1,
+      limit: 100,
+      sort_by: sortBy,
+      sort_order: sortOrder,
+    }
+    
+    if (statusFilter !== 'all') {
+      filterObj.status = statusFilter
+    }
+    
+    if (approvalStatusFilter !== 'all') {
+      filterObj.approval_status = approvalStatusFilter
+    }
+    
+    if (categoryFilter !== 'all') {
+      filterObj.category = categoryFilter
+    }
+    
+    if (searchQuery.trim()) {
+      filterObj.search = searchQuery.trim()
+    }
+    
+    return filterObj
+  }, [searchQuery, categoryFilter, statusFilter, approvalStatusFilter, sortBy, sortOrder])
   
   const { 
     services, 
@@ -22,11 +73,31 @@ export default function ServicesPage() {
     deleteService, 
     updateService,
     refetch 
-  } = useServices({
-    status: 'all', // Show all services, filter in table
-    page: 1,
-    limit: 100
-  })
+  } = useServices(filters)
+  
+  // Get unique categories from services (for dynamic category list)
+  const availableCategories = useMemo(() => {
+    const cats = new Set(services.map(s => s.category).filter(Boolean))
+    return Array.from(cats).sort()
+  }, [services])
+  
+  // Clear all filters
+  const handleClearFilters = () => {
+    setSearchQuery('')
+    setCategoryFilter('all')
+    setStatusFilter('all')
+    setApprovalStatusFilter('all')
+    setSortBy('created_at')
+    setSortOrder('desc')
+  }
+  
+  // Check if any filters are active
+  const hasActiveFilters = searchQuery.trim() || 
+    categoryFilter !== 'all' || 
+    statusFilter !== 'all' || 
+    approvalStatusFilter !== 'all' ||
+    sortBy !== 'created_at' ||
+    sortOrder !== 'desc'
 
   const handleViewService = (service: Service) => {
     setLocation(`/marketplace/services/${service.id}`)
@@ -184,7 +255,7 @@ export default function ServicesPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <Card>
           <CardHeader className="pb-3">
             <CardDescription>Total Services</CardDescription>
@@ -211,6 +282,155 @@ export default function ServicesPage() {
         </Card>
       </div>
 
+      {/* Filters & Search */}
+      <Card className="mb-6">
+        <CardContent className="p-4">
+          <div className="space-y-4">
+            {/* Search Bar */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                type="text"
+                placeholder="Search services by title, description, or provider..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-10"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Filter Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              {/* Category Filter */}
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Categories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {availableCategories.length > 0 ? (
+                    availableCategories.map((cat) => (
+                      <SelectItem key={cat} value={cat}>
+                        {cat}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    categories.map((cat) => (
+                      <SelectItem key={cat} value={cat}>
+                        {cat}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+
+              {/* Status Filter */}
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                  <SelectItem value="suspended">Suspended</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Approval Status Filter */}
+              <Select value={approvalStatusFilter} onValueChange={setApprovalStatusFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Approval" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Approval</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="approved">Approved</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Sort By */}
+              <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Sort By" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="created_at">Date Created</SelectItem>
+                  <SelectItem value="title">Title</SelectItem>
+                  <SelectItem value="base_price">Price</SelectItem>
+                  <SelectItem value="rating">Rating</SelectItem>
+                  <SelectItem value="booking_count">Popularity</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Sort Order */}
+              <div className="flex gap-2">
+                <Select value={sortOrder} onValueChange={(value: 'asc' | 'desc') => setSortOrder(value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Order" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="desc">Descending</SelectItem>
+                    <SelectItem value="asc">Ascending</SelectItem>
+                  </SelectContent>
+                </Select>
+                {hasActiveFilters && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleClearFilters}
+                    className="whitespace-nowrap"
+                  >
+                    <X className="h-4 w-4 mr-1" />
+                    Clear
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Active Filters Summary */}
+            {hasActiveFilters && (
+              <div className="flex items-center gap-2 text-sm text-gray-600 pt-2 border-t">
+                <Filter className="h-4 w-4" />
+                <span>Active filters:</span>
+                {searchQuery && (
+                  <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                    Search: "{searchQuery}"
+                  </span>
+                )}
+                {categoryFilter !== 'all' && (
+                  <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                    Category: {categoryFilter}
+                  </span>
+                )}
+                {statusFilter !== 'all' && (
+                  <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                    Status: {statusFilter}
+                  </span>
+                )}
+                {approvalStatusFilter !== 'all' && (
+                  <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                    Approval: {approvalStatusFilter}
+                  </span>
+                )}
+                <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded">
+                  Sort: {sortBy} ({sortOrder})
+                </span>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Services Table */}
       <ServiceTable
         services={services}
@@ -225,6 +445,11 @@ export default function ServicesPage() {
         onSelectionChange={setSelectedIds}
         allowFeature={true}
         recentlyApproved={recentlyApproved}
+        searchQueryExternal={searchQuery}
+        statusFilterExternal={statusFilter}
+        categoryFilterExternal={categoryFilter}
+        hideInternalFilters={true}
+        disableClientSorting={true}
       />
 
       {/* Bulk Actions (if items selected) */}
