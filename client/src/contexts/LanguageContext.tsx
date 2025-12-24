@@ -32,6 +32,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.caseStudies': 'Case Studies',
     'nav.visitMainPlatform': 'Visit Main Platform',
     'nav.startFreeTrial': 'Start Free Trial',
+    'nav.getConsultation': 'Get Consultation',
     'nav.loading': 'Loading...',
     
     // Footer
@@ -469,6 +470,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.caseStudies': 'دراسات الحالة',
     'nav.visitMainPlatform': 'زيارة المنصة الرئيسية',
     'nav.startFreeTrial': 'ابدأ التجربة المجانية',
+    'nav.getConsultation': 'احصل على استشارة',
     'nav.loading': 'جاري التحميل...',
     
     // Footer

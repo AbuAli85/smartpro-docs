@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "wouter";
-import { Menu, X, ChevronDown, Sun, Moon } from "lucide-react";
+import { Menu, X, ChevronDown, Sun, Moon, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Search from "@/components/Search";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -157,7 +157,7 @@ export default function Header() {
           </nav>
 
           {/* CTA Buttons */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-3">
             <Search />
             <LanguageSwitcher />
             {switchable && toggleTheme && (
@@ -174,21 +174,27 @@ export default function Header() {
                 )}
               </button>
             )}
+            <Link href="/consultation">
+              <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                <MessageSquare className="w-4 h-4" />
+                {t('nav.getConsultation') || 'Get Consultation'}
+              </Button>
+            </Link>
             <a 
               href="https://thesmartpro.io" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-sm font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 transition-colors"
+              className="text-sm font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 transition-colors hidden lg:inline"
             >
               {t('nav.visitMainPlatform')}
             </a>
             <Link href="/pricing">
-              <div className="text-sm font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 cursor-pointer">
+              <div className="text-sm font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100 cursor-pointer hidden lg:inline">
                 {t('nav.pricing')}
               </div>
             </Link>
             <Link href="/get-started-providers">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50 dark:border-blue-400 dark:text-blue-400">
                 {t('nav.startFreeTrial')}
               </Button>
             </Link>
@@ -262,6 +268,16 @@ export default function Header() {
               </div>
             ))}
             <div className="pt-4 border-t border-slate-200 dark:border-slate-700 space-y-2">
+              <Link href="/consultation">
+                <Button 
+                  className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white shadow-md mb-3 flex items-center justify-center gap-2" 
+                  onClick={() => setIsOpen(false)}
+                  aria-label={t('nav.getConsultation') || 'Get Consultation'}
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  {t('nav.getConsultation') || 'Get Consultation'}
+                </Button>
+              </Link>
               <div className="px-3 py-2">
                 <LanguageSwitcher />
               </div>
@@ -307,9 +323,15 @@ export default function Header() {
                   {t('nav.contact')}
                 </div>
               </Link>
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white" aria-label={t('nav.startFreeTrial')}>
-                {t('nav.startFreeTrial')}
-              </Button>
+              <Link href="/get-started-providers">
+                <Button 
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white" 
+                  onClick={() => setIsOpen(false)}
+                  aria-label={t('nav.startFreeTrial')}
+                >
+                  {t('nav.startFreeTrial')}
+                </Button>
+              </Link>
             </div>
           </nav>
         )}
