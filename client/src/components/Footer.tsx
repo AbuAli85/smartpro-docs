@@ -1,12 +1,16 @@
 import { Link } from "wouter";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Github, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Logo from "@/components/Logo";
+import { toast } from "sonner";
+import { getApiBaseUrl } from "@/lib/apiConfig";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const { t, language } = useLanguage();
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterLoading, setNewsletterLoading] = useState(false);
 
   const footerSections = useMemo(() => {
     if (import.meta.env.DEV) {
@@ -211,22 +215,60 @@ export default function Footer() {
                 {t('footer.newsletterDescription')}
               </p>
             </div>
-            <form className="flex gap-2 w-full md:w-auto" onSubmit={(e) => e.preventDefault()}>
+            <form 
+              className="flex gap-2 w-full md:w-auto" 
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (!newsletterEmail) {
+                  toast.error(t('message.error.email') || 'Please enter a valid email address');
+                  return;
+                }
+
+                setNewsletterLoading(true);
+                try {
+                  const apiUrl = getApiBaseUrl();
+                  const response = await fetch(`${apiUrl}/newsletter/subscribe`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: newsletterEmail }),
+                  });
+
+                  if (response.ok) {
+                    toast.success(t('footer.newsletterSuccess') || 'Successfully subscribed to newsletter!');
+                    setNewsletterEmail('');
+                  } else {
+                    const data = await response.json();
+                    toast.error(data.message || t('message.error') || 'Failed to subscribe. Please try again.');
+                  }
+                } catch (error) {
+                  console.error('Newsletter subscription error:', error);
+                  toast.error(t('message.error.network') || 'Network error. Please try again later.');
+                } finally {
+                  setNewsletterLoading(false);
+                }
+              }}
+            >
               <label htmlFor="newsletter-email" className="sr-only">Email address</label>
               <input
                 id="newsletter-email"
                 type="email"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
                 placeholder={t('footer.enterEmail')}
                 aria-label="Email address for newsletter"
                 required
-                className="px-4 py-2 rounded-lg flex-1 md:flex-none focus:outline-none focus:ring-2 focus:ring-white"
+                disabled={newsletterLoading}
+                className="px-4 py-2 rounded-lg flex-1 md:flex-none focus:outline-none focus:ring-2 focus:ring-white disabled:opacity-50"
               />
               <button 
                 type="submit"
-                className="px-6 py-2 bg-white text-blue-600 font-semibold rounded-lg hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white"
+                disabled={newsletterLoading}
+                className="px-6 py-2 bg-white text-blue-600 font-semibold rounded-lg hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label={t('footer.subscribe')}
               >
-                {t('footer.subscribe')}
+                {newsletterLoading ? (t('button.submitting') || 'Subscribing...') : t('footer.subscribe')}
               </button>
             </form>
           </div>

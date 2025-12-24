@@ -102,7 +102,7 @@ export default function SignInPage() {
               </Button>
             </form>
 
-            <div className="mt-6 text-center text-sm">
+            <div className="mt-6 space-y-3 text-center text-sm">
               <p className="text-gray-600">
                 Don't have an account?{' '}
                 <button
@@ -110,6 +110,17 @@ export default function SignInPage() {
                   className="text-blue-600 hover:underline"
                 >
                   Sign up
+                </button>
+              </p>
+              <p className="text-gray-600">
+                <button
+                  onClick={() => {
+                    // TODO: Implement password reset page
+                    toast.info('Password reset feature coming soon. Please contact support for assistance.');
+                  }}
+                  className="text-blue-600 hover:underline"
+                >
+                  Forgot password?
                 </button>
               </p>
             </div>

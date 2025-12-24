@@ -239,12 +239,89 @@ export default function ServicesPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => {
-                    // Bulk approve logic
-                    toast.info('Bulk approve feature coming soon')
+                  onClick={async () => {
+                    if (selectedIds.length === 0) {
+                      toast.error('Please select at least one service');
+                      return;
+                    }
+
+                    if (!confirm(`Are you sure you want to approve ${selectedIds.length} service(s)?`)) {
+                      return;
+                    }
+
+                    try {
+                      let successCount = 0;
+                      let failCount = 0;
+
+                      for (const id of selectedIds) {
+                        try {
+                          await updateService(id, {
+                            approval_status: 'approved',
+                            status: 'active'
+                          });
+                          successCount++;
+                        } catch (err) {
+                          failCount++;
+                        }
+                      }
+
+                      if (successCount > 0) {
+                        toast.success(`Successfully approved ${successCount} service(s)`);
+                      }
+                      if (failCount > 0) {
+                        toast.error(`Failed to approve ${failCount} service(s)`);
+                      }
+
+                      setSelectedIds([]);
+                      refetch();
+                    } catch (err) {
+                      toast.error('Failed to approve services. Please try again.');
+                    }
                   }}
                 >
                   Approve Selected
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={async () => {
+                    if (selectedIds.length === 0) {
+                      toast.error('Please select at least one service');
+                      return;
+                    }
+
+                    if (!confirm(`Are you sure you want to delete ${selectedIds.length} service(s)? This action cannot be undone.`)) {
+                      return;
+                    }
+
+                    try {
+                      let successCount = 0;
+                      let failCount = 0;
+
+                      for (const id of selectedIds) {
+                        try {
+                          await deleteService(id);
+                          successCount++;
+                        } catch (err) {
+                          failCount++;
+                        }
+                      }
+
+                      if (successCount > 0) {
+                        toast.success(`Successfully deleted ${successCount} service(s)`);
+                      }
+                      if (failCount > 0) {
+                        toast.error(`Failed to delete ${failCount} service(s)`);
+                      }
+
+                      setSelectedIds([]);
+                      refetch();
+                    } catch (err) {
+                      toast.error('Failed to delete services. Please try again.');
+                    }
+                  }}
+                >
+                  Delete Selected
                 </Button>
                 <Button
                   variant="outline"
