@@ -3,11 +3,38 @@
  * Centralized client for communicating with the SmartPro backend API
  */
 
-// Use environment variable or fallback to relative path for production
-// In production, if backend is on same domain, use relative path
-// Otherwise, use absolute URL from env var
-const API_BASE_URL = import.meta.env.VITE_API_URL || 
-  (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api');
+// Use environment variable or detect based on current domain
+// If frontend is on businesshub.thesmartpro.io, use smartpro-docs.vercel.app API
+// Otherwise, use relative path or localhost for development
+function getApiBaseUrl(): string {
+  // If explicitly set via env var, use that
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  
+  // In development, use localhost
+  if (!import.meta.env.PROD) {
+    return 'http://localhost:3001/api';
+  }
+  
+  // In production, check current domain
+  const currentHost = window.location.hostname;
+  
+  // If on businesshub domain, use the Vercel API
+  if (currentHost.includes('businesshub.thesmartpro.io')) {
+    return 'https://smartpro-docs.vercel.app/api';
+  }
+  
+  // If on smartpro-docs domain, use relative path
+  if (currentHost.includes('smartpro-docs.vercel.app')) {
+    return '/api';
+  }
+  
+  // Default fallback
+  return '/api';
+}
+
+const API_BASE_URL = getApiBaseUrl();
 
 export interface ApiError {
   error: string;

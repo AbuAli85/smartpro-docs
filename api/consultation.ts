@@ -326,6 +326,34 @@ export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
+  // Set CORS headers to allow requests from businesshub domain
+  const origin = req.headers.origin || req.headers.referer;
+  const allowedOrigins = [
+    'https://businesshub.thesmartpro.io',
+    'https://www.businesshub.thesmartpro.io',
+    'https://smartpro-docs.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:5173',
+  ];
+  
+  // Check if origin is allowed
+  const isAllowedOrigin = origin && allowedOrigins.some(allowed => 
+    origin.startsWith(allowed)
+  );
+  
+  // Set CORS headers
+  if (isAllowedOrigin) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
+
+  // Handle preflight OPTIONS request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   // Only allow POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
