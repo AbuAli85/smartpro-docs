@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Menu, X, Search, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Logo from '@/components/Logo';
 
 interface NavItem {
   label: string;
@@ -76,14 +77,8 @@ export default function EnterpriseHeader() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <div className="flex-shrink-0 flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">S</span>
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="text-xl font-bold text-gray-900">TheSmartPro.io</h1>
-              <p className="text-xs text-gray-500">Enterprise Solutions Hub</p>
-            </div>
+          <div className="flex-shrink-0 cursor-pointer">
+            <Logo size="sm" />
           </div>
 
           {/* Desktop Navigation */}

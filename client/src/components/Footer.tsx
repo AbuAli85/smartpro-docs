@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Github, ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useMemo } from "react";
+import Logo from "@/components/Logo";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -98,14 +99,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
           {/* Brand Section */}
           <div className="lg:col-span-1">
-            <Link href="/">
-              <div className="flex items-center gap-2 font-bold text-xl text-white hover:text-blue-400 mb-4 cursor-pointer">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">
-                  SP
-                </div>
-                <span>TheSmartPro.io</span>
-              </div>
-            </Link>
+            <div className="mb-4">
+              <Logo size="sm" />
+            </div>
             <p className="text-sm text-slate-400 mb-6">
               {t('footer.unifiedBusinessPlatform')}
             </p>
