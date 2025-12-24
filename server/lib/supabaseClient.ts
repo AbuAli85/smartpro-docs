@@ -10,25 +10,43 @@ import { createClient } from '@supabase/supabase-js';
 import { logger } from '../services/logger.js';
 
 // Get URL from environment, but ensure it matches the JWT token's project reference
-let supabaseUrl = process.env.SUPABASE_URL || 'https://xavocdikwiimrjgybiai.supabase.co';
+// Unified project: reootcngcptfogfozlmz (same as Contract-Management-System & business-services-hub)
+let supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 // Safety check: If service key exists, extract project reference from JWT and use it
-if (supabaseServiceKey) {
+if (supabaseServiceKey && !supabaseUrl) {
   try {
     const jwtParts = supabaseServiceKey.split('.');
     if (jwtParts.length === 3) {
       const payload = JSON.parse(Buffer.from(jwtParts[1], 'base64url').toString());
       const projectRef = payload.ref;
       if (projectRef) {
-        const correctUrl = `https://${projectRef}.supabase.co`;
-        if (supabaseUrl !== correctUrl) {
+        supabaseUrl = `https://${projectRef}.supabase.co`;
+        logger.info('✅ Extracted Supabase URL from JWT token', { supabaseUrl });
+      }
+    }
+  } catch (error) {
+    logger.warn('Could not decode JWT to verify project reference', error);
+  }
+}
+
+// Verify URL matches JWT token project reference
+if (supabaseServiceKey && supabaseUrl) {
+  try {
+    const jwtParts = supabaseServiceKey.split('.');
+    if (jwtParts.length === 3) {
+      const payload = JSON.parse(Buffer.from(jwtParts[1], 'base64url').toString());
+      const projectRef = payload.ref;
+      if (projectRef) {
+        const expectedUrl = `https://${projectRef}.supabase.co`;
+        if (supabaseUrl !== expectedUrl) {
           logger.warn('⚠️ SUPABASE_URL mismatch detected!', {
             current: supabaseUrl,
-            expected: correctUrl,
+            expected: expectedUrl,
             fixing: 'Using URL from JWT token',
           });
-          supabaseUrl = correctUrl;
+          supabaseUrl = expectedUrl;
         }
       }
     }
@@ -48,15 +66,11 @@ logger.info('🔍 Supabase Client Configuration', {
 
 if (!supabaseServiceKey) {
   logger.warn('⚠️ SUPABASE_SERVICE_ROLE_KEY not set - database operations will fail');
-  logger.warn('Get it from: https://supabase.com/dashboard/project/xavocdikwiimrjgybiai/settings/api');
+  logger.warn('Get it from: Supabase Dashboard → Project Settings → API');
 }
 
-// Verify the URL matches the expected project
-if (!supabaseUrl.includes('xavocdikwiimrjgybiai')) {
-  logger.error('❌ WARNING: Supabase URL does not match expected project!', {
-    expected: 'xavocdikwiimrjgybiai',
-    actual: supabaseUrl,
-  });
+if (!supabaseUrl) {
+  logger.error('❌ SUPABASE_URL not set - please configure in .env file');
 }
 
 // Create Supabase client with service_role key (full access, bypasses RLS)
@@ -68,17 +82,18 @@ export const supabase = createClient(supabaseUrl, supabaseServiceKey, {
 });
 
 // Test connection on import
-supabase
-  .from('consultation_submissions')
-  .select('id')
-  .limit(1)
-  .then(() => {
+void (async () => {
+  try {
+    await supabase
+      .from('consultation_submissions')
+      .select('id')
+      .limit(1);
     logger.info('✅ Supabase client connected successfully');
-  })
-  .catch((error) => {
+  } catch (error) {
     logger.error('❌ Supabase client connection failed', error, {
       supabaseUrl,
       hasServiceKey: !!supabaseServiceKey,
     });
-  });
+  }
+})();
 
